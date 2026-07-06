@@ -6,7 +6,7 @@ One page per DUN seat, three depths for three audiences:
 
 | Tab | Audience | What it shows |
 |---|---|---|
-| **Ringkas** (Brief) | Public / data novices | The official 2026 candidate list, local grocery prices vs the Johor median, income context, one-tap shareable summary |
+| **Ringkas** (Brief) | Public / data novices | The official 2026 candidate list, local grocery prices vs Mar 2022 (the last election), income context, one-tap shareable summary |
 | **Lapangan** (Field) | Candidates & volunteers | Auto-generated door-knocking talking points, 2026 voter-roll profile (age / ethnicity / Undi18 cohort), latest prices at named local markets |
 | **Analisis** (Analysis) | Campaign HQ | Full result history, 2022 polling-district (saluran) breakdown with bloc shares & turnout, DOSM Kawasanku indicators, HIES/LFS series, JSON/CSV export |
 

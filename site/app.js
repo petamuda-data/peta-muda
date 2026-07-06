@@ -29,9 +29,9 @@ const STR = {
     as_of: 'Harga setakat',
     cost_headline: 'Harga dapur di Johor — 12 minggu terkini',
     cost_sub: 'Perubahan harga median barangan asas di premis Johor (data PriceCatcher KPDN, dikemas kini harian)',
-    cost_trend_title: 'Kos sara hidup — arah nasional',
-    cost_trend_sub: 'Perubahan harga sebenar mengikut tempoh — naik (merah) atau turun (hijau) ikut data',
-    cost_trend_note: 'CPI: OpenDOSM (inflasi negeri Johor). Petrol: KPDN mingguan (seluruh negara). Bakul makanan: median PriceCatcher barangan bukan kawalan harga. Arah mengikut data — sahkan sebelum menerbitkan.',
+    cost_trend_title: 'Kos sara hidup — berbanding dulu',
+    cost_trend_sub: 'Perubahan harga sebenar berbanding 1 bulan hingga 1 tahun lalu — naik (merah) atau turun (hijau) ikut data',
+    cost_trend_note: 'Setiap angka membandingkan harga hari ini dengan harga tempoh lalu. CPI: OpenDOSM (inflasi rasmi Johor). Petrol: harga runcit mingguan KPDN. Bakul makanan: median PriceCatcher barangan bukan kawalan harga. Arah mengikut data — sahkan sebelum menerbitkan.',
     win_1m: '1 bln', win_3m: '3 bln', win_6m: '6 bln', win_12m: '1 thn',
     fuel_now: 'Harga petrol kini',
     fuel: 'Harga runcit petrol minggu ini (seluruh negara)',
@@ -97,10 +97,10 @@ const STR = {
     race_note: 'Kadar harga dikira daripada median bakul KPDN; pendapatan daripada HIES (anggaran DOSM); barangan yang kod KPDN-nya berubah selepas 2022 dikecualikan.',
     bloc_candidate: 'Calon Blok Progresif',
     prices_here: 'Harga barang dapur di kawasan anda',
-    prices_sub: (d) => `Harga median di premis KPDN daerah ${d} — vs median negeri Johor`,
+    prices_sub: (d) => `Harga median di premis KPDN daerah ${d} — berbanding Mac 2022, PRN lalu`,
     col_item: 'Barang',
     col_price: 'Harga',
-    col_johor: 'Johor',
+    col_then: 'Mac 2022',
     col_4w: '4 mgu',
     col_12w: '3 bln',
     trend: 'Arah',
@@ -110,7 +110,7 @@ const STR = {
     poverty: 'Kadar kemiskinan mutlak',
     gini: 'Ketaksamaan (Gini)',
     u_rate: 'Kadar pengangguran',
-    vs_johor_median: 'penengah DUN Johor',
+    pp_line: (b, i) => `Sejak PRN Mac 2022: bakul dapur naik ${b}%/thn, pendapatan hanya ${i}%/thn — kuasa beli keluarga semakin menyusut.`,
     share: 'Kongsi ringkasan',
     copied: 'Disalin ke papan keratan!',
     story_title: 'Cerita kempen — 5 langkah',
@@ -159,7 +159,7 @@ const STR = {
     income_note: (y) => `Anggaran HIES ${y}, DOSM`,
     price_note: 'Harga ialah median premis yang dipantau KPDN; boleh berbeza di kedai berlainan.',
     no_price: 'Tiada data harga daerah — median Johor ditunjukkan.',
-    top3_note: (n) => `3 kenaikan paling ketara daripada ${n} barangan dipantau.`,
+    top3_note: (n) => `3 kenaikan paling ketara sejak PRN Mac 2022, daripada ${n} barangan dipantau.`,
     clinics: 'Klinik', schools: 'Sekolah', hospitals: 'Hospital', grocery: 'Kedai runcit', atm: 'ATM', petrol: 'Stesen minyak', police_fire: 'Polis/Bomba', water: 'Akses air', electricity: 'Akses elektrik', expenditure: 'Perbelanjaan purata',
   },
   en: {
@@ -173,9 +173,9 @@ const STR = {
     as_of: 'Prices as of',
     cost_headline: 'Kitchen prices in Johor — last 12 weeks',
     cost_sub: 'Median price change for staples at Johor premises (KPDN PriceCatcher, updated daily)',
-    cost_trend_title: 'Cost of living — national direction',
-    cost_trend_sub: 'Real price change by period — up (red) or down (green), the direction the data shows',
-    cost_trend_note: 'CPI: OpenDOSM (Johor state inflation). Fuel: KPDN weekly (nationwide). Food basket: median PriceCatcher price of non-price-controlled staples. Direction follows the data — verify before publishing.',
+    cost_trend_title: 'Cost of living — versus before',
+    cost_trend_sub: 'Real price change versus 1 month to 1 year ago — up (red) or down (green), the direction the data shows',
+    cost_trend_note: 'Each figure compares today’s price with the price then. CPI: OpenDOSM (official Johor inflation). Fuel: KPDN weekly retail. Food basket: median PriceCatcher price of non-price-controlled staples. Direction follows the data — verify before publishing.',
     win_1m: '1mo', win_3m: '3mo', win_6m: '6mo', win_12m: '1yr',
     fuel_now: 'Fuel price now',
     fuel: 'This week’s retail fuel prices (nationwide)',
@@ -241,10 +241,10 @@ const STR = {
     race_note: 'Price rate computed from KPDN basket medians; income from HIES (DOSM estimates); items whose KPDN codes changed after 2022 are excluded.',
     bloc_candidate: 'Progressive Bloc candidate',
     prices_here: 'Grocery prices in your area',
-    prices_sub: (d) => `Median prices at KPDN premises in ${d} district — vs Johor state median`,
+    prices_sub: (d) => `Median prices at KPDN premises in ${d} district — versus Mar 2022, the last election`,
     col_item: 'Item',
     col_price: 'Price',
-    col_johor: 'Johor',
+    col_then: 'Mar 2022',
     col_4w: '4 wk',
     col_12w: '3 mo',
     trend: 'Trend',
@@ -254,7 +254,7 @@ const STR = {
     poverty: 'Absolute poverty rate',
     gini: 'Inequality (Gini)',
     u_rate: 'Unemployment rate',
-    vs_johor_median: 'Johor DUN median',
+    pp_line: (b, i) => `Since the Mar 2022 election: the kitchen basket is up ${b}%/yr but income only ${i}%/yr — household purchasing power is shrinking.`,
     share: 'Share summary',
     copied: 'Copied to clipboard!',
     story_title: 'The campaign story — 5 beats',
@@ -303,7 +303,7 @@ const STR = {
     income_note: (y) => `HIES ${y} estimate, DOSM`,
     price_note: 'Prices are medians across KPDN-monitored premises; individual shops vary.',
     no_price: 'No district price data — Johor median shown.',
-    top3_note: (n) => `Top 3 rises out of ${n} monitored items.`,
+    top3_note: (n) => `Top 3 rises since the Mar 2022 election, out of ${n} monitored items.`,
     clinics: 'Clinics', schools: 'Schools', hospitals: 'Hospitals', grocery: 'Grocery stores', atm: 'ATMs', petrol: 'Petrol stations', police_fire: 'Police/Fire', water: 'Water access', electricity: 'Electricity access', expenditure: 'Mean expenditure',
   },
   // Simplified Chinese. UI chrome only — curated content (issues/stances) falls
@@ -320,9 +320,9 @@ const STR = {
     as_of: '物价截至',
     cost_headline: '柔佛厨房物价 — 最近12周',
     cost_sub: '柔佛零售点基本食品中位价格变动（KPDN PriceCatcher，每日更新）',
-    cost_trend_title: '生活成本 — 全国走势',
-    cost_trend_sub: '各时段的实际价格变动 — 上涨（红）或下跌（绿），依数据显示',
-    cost_trend_note: 'CPI：OpenDOSM（柔佛州通胀）。汽油：KPDN 每周（全国）。食物篮子：PriceCatcher 非管制食品中位价。走势依数据 — 发布前请核实。',
+    cost_trend_title: '生活成本 — 与过去相比',
+    cost_trend_sub: '与1个月至1年前相比的实际价格变动 — 上涨（红）或下跌（绿），依数据显示',
+    cost_trend_note: '每个数字都是今天价格与当时价格的对比。CPI：OpenDOSM（柔佛官方通胀）。汽油：KPDN 每周零售价。食物篮子：PriceCatcher 非管制食品中位价。走势依数据 — 发布前请核实。',
     win_1m: '1个月', win_3m: '3个月', win_6m: '6个月', win_12m: '1年',
     fuel_now: '当前汽油价',
     fuel: '本周零售汽油价格（全国）',
@@ -388,10 +388,10 @@ const STR = {
     race_note: '物价率依 KPDN 篮子中位数计算；收入取自 HIES（DOSM 估算）；2022年后 KPDN 编码变更的品项已剔除。',
     bloc_candidate: '进步阵线候选人',
     prices_here: '你所在地区的厨房物价',
-    prices_sub: (d) => `${d} 县 KPDN 零售点中位价格 — vs 柔佛州中位数`,
+    prices_sub: (d) => `${d} 县 KPDN 零售点中位价格 — 对比2022年3月（上届选举）`,
     col_item: '品项',
     col_price: '价格',
-    col_johor: '柔佛',
+    col_then: '2022年3月',
     col_4w: '4周',
     col_12w: '3个月',
     trend: '走势',
@@ -401,7 +401,7 @@ const STR = {
     poverty: '绝对贫穷率',
     gini: '不平等（基尼系数）',
     u_rate: '失业率',
-    vs_johor_median: '柔佛州议席中位数',
+    pp_line: (b, i) => `自2022年3月选举以来：厨房篮子每年上涨 ${b}%，收入每年仅 ${i}% — 家庭购买力不断缩水。`,
     share: '分享摘要',
     copied: '已复制到剪贴板！',
     story_title: '竞选故事 — 5步',
@@ -450,7 +450,7 @@ const STR = {
     income_note: (y) => `HIES ${y} 估算，DOSM`,
     price_note: '价格为 KPDN 受监测零售点的中位数；各别商店会有差异。',
     no_price: '无县级价格数据 — 显示柔佛州中位数。',
-    top3_note: (n) => `${n} 项受监测品项中涨幅最大的3项。`,
+    top3_note: (n) => `自2022年3月选举以来，${n} 项受监测品项中涨幅最大的3项。`,
     clinics: '诊所', schools: '学校', hospitals: '医院', grocery: '杂货店', atm: 'ATM', petrol: '油站', police_fire: '警察/消防', water: '供水', electricity: '供电', expenditure: '平均开支',
   },
 }
@@ -580,19 +580,6 @@ async function loadSeat(slug) {
 async function loadGeo() {
   if (!state.geo) state.geo = await (await fetch('data/johor_dun.geojson')).json()
   return state.geo
-}
-
-// Johor benchmarks from the index (median across 56 DUNs)
-function johorBenchmarks(idx) {
-  const med = (arr) => {
-    const s = arr.filter(v => v != null).sort((a, b) => a - b)
-    return s.length ? s[s.length >> 1] : null
-  }
-  return {
-    income_median: med(idx.seats.map(s => s.income_median)),
-    u_rate: med(idx.seats.map(s => s.u_rate)),
-    youth_perc: med(idx.seats.map(s => s.youth_perc)),
-  }
 }
 
 // ---------- views ----------
@@ -785,6 +772,9 @@ Confirm setup now by replying with: a 3-line summary of this seat, the ledger (e
   if (movers.length || seat.socio?.income?.length) {
     lines.push('', '### Cost of living here')
     if (movers.length) lines.push(`- Top price rises (12 weeks, ${seat.prices.district ?? 'Johor'} district medians): ` + movers.map(i => `${i.label_en} +${i.change_12w_perc}%`).join(', '))
+    const sinceMovers = (seat.prices?.items ?? []).filter(i => i.since_se15?.perc != null)
+      .sort((a, b) => b.since_se15.perc - a.since_se15.perc).slice(0, 3)
+    if (sinceMovers.length) lines.push(`- Since the Mar 2022 state election (district medians): ` + sinceMovers.map(i => `${i.label_en} ${i.since_se15.perc > 0 ? '+' : ''}${i.since_se15.perc}%`).join(', '))
     const inc = seat.socio?.income?.at(-1)
     if (inc) lines.push(`- Median household income: RM${nf(inc.income_median)} (${'' + (seat.socio.income.at(-1).date ?? '').slice(0, 4)})`)
     const lab = seat.socio?.labour?.at(-1)
@@ -838,10 +828,10 @@ Confirm setup now by replying with: a 3-line summary of this seat, the ledger (e
     if (cpi) lines.push(`- Official Johor inflation: ${px(cpi.inflation_yoy)} YoY (${cpi.date?.slice(0, 7)})`)
   }
 
-  // national cost-of-living trend (direction per window — use the real sign)
+  // cost-of-living trend versus before (direction per window — use the real sign)
   const ct = idx.cost_trend
   if (ct?.series?.length) {
-    lines.push('', '### National cost-of-living trend (% change; + = up, − = down; verify before publishing)')
+    lines.push('', '### Cost of living versus before (% change vs 1/3/6/12 months ago; + = up, − = down; verify before publishing)')
     const wl = ct.windows.join(' / ')
     for (const s of ct.series) {
       const vals = ct.windows.map(w => s.deltas[w] == null ? '–' : `${s.deltas[w] > 0 ? '+' : ''}${s.deltas[w]}%`).join(' / ')
@@ -943,9 +933,17 @@ function crimeCard(idx) {
   </div>`
 }
 
-// National cost-of-living direction: one compact table, rows = series
+// Cost-of-living direction versus before: one compact table, rows = series
 // (official inflation, fuel, food basket), columns = 1/3/6/12-month % change.
 // deltaHtml colours rising prices red / falling green (house convention).
+// Labels come from this UI map (keyed on series.key) so all three languages
+// render properly; unknown future keys fall back to the JSON's own labels.
+const COST_TREND_LABELS = {
+  cpi: { bm: 'Inflasi rasmi (CPI Johor)', en: 'Official inflation (Johor CPI)', zh: '官方通胀（柔佛CPI）' },
+  fuel_ron95: { bm: 'Petrol RON95 (tanpa subsidi)', en: 'Petrol RON95 (unsubsidised)', zh: 'RON95汽油（无补贴）' },
+  fuel_diesel: { bm: 'Diesel (tanpa subsidi)', en: 'Diesel (unsubsidised)', zh: '柴油（无补贴）' },
+  food_basket: { bm: 'Bakul makanan (bukan kawalan harga)', en: 'Food basket (non-price-controlled)', zh: '食品篮子（非管制品）' },
+}
 function costTrendCard(idx) {
   const ct = idx.cost_trend
   const winLabel = { '1m': L('win_1m'), '3m': L('win_3m'), '6m': L('win_6m'), '12m': L('win_12m') }
@@ -953,7 +951,7 @@ function costTrendCard(idx) {
   if (!ct?.series?.length) return ''
   const rows = ct.series.map(s => {
     const cells = ct.windows.map(w => `<td class="num">${deltaHtml(s.deltas[w])}</td>`).join('')
-    const label = pick(s, 'label')
+    const label = COST_TREND_LABELS[s.key]?.[state.lang] ?? pick(s, 'label')
     const yoy = s.yoy != null ? `<br><span style="color:var(--muted);font-size:.7rem">${T('tahunan', 'YoY', '年比')} ${fmtPct(s.yoy, 1)}</span>` : ''
     return `<tr><td><strong>${esc(label)}</strong>${yoy}</td>${cells}</tr>`
   }).join('')
@@ -1137,26 +1135,28 @@ function contestCard(seat) {
 function pricesCard(seat, compact = true) {
   const p = seat.prices
   if (!p?.items?.length) return ''
-  // signal over noise: only the 3 items that rose the most across the plotted
-  // window — ranked and labelled by the same first-to-last change the
-  // sparkline marks, so number and line always agree
+  // signal over noise: only the 3 items that got most expensive since the
+  // Mar 2022 election (items with no 2022 anchor fall back to the 12-week
+  // change). The sparkline still shows the recent 12-week direction.
   const top = p.items.map(it => {
     const hasDistrict = it.latest_district != null
     const series = hasDistrict ? it.series.district : it.series.johor
     return { it, hasDistrict, series, ws: windowStats(series, p.weeks) }
   }).filter(e => e.ws)
-    .sort((a, b) => b.ws.perc - a.ws.perc)
+    .sort((a, b) => (b.it.since_se15?.perc ?? b.ws.perc) - (a.it.since_se15?.perc ?? a.ws.perc))
     .slice(0, 3)
   if (!top.length) return ''
   const rows = top.map(({ it, hasDistrict, series, ws }) => {
     const spark = sparkline(p.weeks, [
-      { data: it.series.johor, color: '#c9c9c4', width: 1.5, dash: true },
       { data: series, color: 'var(--ink)', width: 2, mark: true },
     ])
+    const then = it.since_se15
+      ? `${fmtRM(it.since_se15.then)}<br>${deltaHtml(it.since_se15.perc)}`
+      : '–'
     return `<tr>
       <td><strong>${esc(state.lang === 'bm' ? it.label_bm : it.label_en)}</strong><br><span style="color:var(--muted);font-size:.72rem">${esc(it.unit)}</span></td>
       <td class="num"><strong>${fmtRM(ws.last)}</strong></td>
-      <td class="num">${fmtRM(it.latest_johor)}</td>
+      <td class="num">${then}</td>
       <td>${spark}</td>
       <td class="num">${deltaHtml(ws.perc)}</td>
     </tr>`
@@ -1166,7 +1166,7 @@ function pricesCard(seat, compact = true) {
     <h2>${L('prices_here')}</h2>
     <p class="sub">${L('prices_sub', esc(p.district ?? '–'))}${asOfHtml(p.max_date)}</p>
     <table class="data">
-      <thead><tr><th>${L('col_item')}</th><th class="num">${L('col_price')}</th><th class="num">${L('col_johor')}</th><th>${L('trend')}</th><th class="num">${L('col_12w')}</th></tr></thead>
+      <thead><tr><th>${L('col_item')}</th><th class="num">${L('col_price')}</th><th class="num">${L('col_then')}</th><th>${L('trend')}</th><th class="num">${L('col_12w')}</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
     <div class="notice">${L('top3_note', p.items.length)} ${anyDistrict ? L('price_note') : L('no_price')}</div>
@@ -1208,23 +1208,32 @@ function ceilingCard(seat) {
   </div>`
 }
 
-function incomeCard(seat, bench) {
+function incomeCard(seat, idx) {
   const inc = seat.socio.income?.at(-1)
   const pov = seat.socio.poverty?.at(-1)
   const gin = seat.socio.inequality?.at(-1)
-  const lab = seat.socio.labour?.at(-1)
+  const labArr = seat.socio.labour ?? []
+  const lab = labArr.at(-1)
+  const labPrev = labArr.length >= 2 ? labArr.at(-2) : null
   if (!inc && !lab) return ''
   const year = inc?.date?.slice(0, 4)
+  // purchasing-power squeeze: only shown when the basket is genuinely
+  // outrunning income — never present nominal income growth as the story
+  const r = seat.prices?.items ? raceStats(seat, idx) : null
+  const squeeze = r?.basketAnnual != null && r.incomeAnnual != null && r.basketAnnual > r.incomeAnnual
+    ? `<div class="notice" style="margin-top:.5rem"><span class="delta-up">▲</span> ${L('pp_line', r.basketAnnual.toFixed(1), r.incomeAnnual.toFixed(1))}</div>`
+    : ''
   return `<div class="card">
     <h2>${L('income_ctx')}</h2>
     ${inc ? `<p class="sub">${L('income_note', year)}</p>` : ''}
     <table class="data"><tbody>
-      ${inc ? `<tr><td>${L('income_median')}</td><td class="num"><strong>RM${fmtNum(inc.income_median)}</strong></td><td class="num" style="color:var(--muted)">${L('vs_johor_median')}: RM${fmtNum(bench.income_median)}</td></tr>` : ''}
+      ${inc ? `<tr><td>${L('income_median')}</td><td class="num"><strong>RM${fmtNum(inc.income_median)}</strong></td><td></td></tr>` : ''}
       ${inc ? `<tr><td>${L('income_mean')}</td><td class="num">RM${fmtNum(inc.income_mean)}</td><td></td></tr>` : ''}
       ${pov ? `<tr><td>${L('poverty')}</td><td class="num">${fmtPct(pov.poverty ?? pov.poverty_absolute)}</td><td></td></tr>` : ''}
       ${gin ? `<tr><td>${L('gini')}</td><td class="num">${(gin.gini ?? '–')}</td><td></td></tr>` : ''}
-      ${lab ? `<tr><td>${L('u_rate')} (${lab.date?.slice(0, 4)})</td><td class="num">${fmtPct(lab.u_rate)}</td><td class="num" style="color:var(--muted)">${L('vs_johor_median')}: ${fmtPct(bench.u_rate)}</td></tr>` : ''}
+      ${lab ? `<tr><td>${L('u_rate')} (${lab.date?.slice(0, 4)})</td><td class="num">${fmtPct(lab.u_rate)}</td><td class="num" style="color:var(--muted)">${labPrev ? `${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)}` : ''}</td></tr>` : ''}
     </tbody></table>
+    ${squeeze}
   </div>`
 }
 
@@ -1275,33 +1284,43 @@ function raceCard(seat, idx) {
 function shareText(seat) {
   const e = seat.election2026
   const inc = seat.socio.income?.at(-1)
-  const worst = seat.prices.items.map(it => {
+  // lead with the biggest rise since the Mar 2022 election; fall back to the
+  // 12-week mover when no item carries a 2022 anchor
+  const scored = seat.prices.items.map(it => {
     const series = it.latest_district != null ? it.series.district : it.series.johor
     return { it, ws: windowStats(series, seat.prices.weeks) }
-  }).filter(x => x.ws).sort((a, b) => b.ws.perc - a.ws.perc)[0]
+  }).filter(x => x.ws)
+  const since = scored.filter(x => x.it.since_se15?.perc != null)
+    .sort((a, b) => b.it.since_se15.perc - a.it.since_se15.perc)[0]
+  const worst = scored.sort((a, b) => b.ws.perc - a.ws.perc)[0]
+  const basketLine = since
+    ? `🧺 ${since.it.label_bm}: ${fmtRM(since.ws.last)} (${since.it.since_se15.perc > 0 ? '+' : ''}${since.it.since_se15.perc}% sejak PRN Mac 2022)`
+    : worst
+      ? `🧺 ${worst.it.label_bm}: ${fmtRM(worst.ws.last)} (${worst.ws.perc > 0 ? '+' : ''}${worst.ws.perc}% / 3 bln)`
+      : null
   const lines = [
     `📍 ${seat.code} ${seat.name} — PRN Johor ${e.polling_date === '2026-07-11' ? '11 Julai 2026' : e.polling_date}`,
     e.muda_candidate ? `★ ${L('bloc_candidate')}: ${e.muda_candidate}${e.bloc_party ? ` (${e.bloc_party})` : ''}` : null,
-    worst ? `🧺 ${worst.it.label_bm}: ${fmtRM(worst.ws.last)} (${worst.ws.perc > 0 ? '+' : ''}${worst.ws.perc}% / 3 bln)` : null,
+    basketLine,
     inc ? `💰 ${L('income_median')}: RM${fmtNum(inc.income_median)}` : null,
     `Data terbuka rasmi · ${location.origin}${location.pathname}#/seat/${seat.slug}`,
   ].filter(Boolean)
   return lines.join('\n')
 }
 
-function renderBrief(seat, bench, idx) {
+function renderBrief(seat, idx) {
   return `
     ${contestCard(seat)}
     ${pricesCard(seat)}
     ${ceilingCard(seat)}
     ${raceCard(seat, idx)}
-    ${incomeCard(seat, bench)}
+    ${incomeCard(seat, idx)}
     <div class="btn-row">
       <button class="btn" id="shareBtn">${L('share')}</button>
     </div>`
 }
 
-function talkingPoints(seat, bench, idx) {
+function talkingPoints(seat, idx) {
   const pts = []
   const p = seat.prices
   const bm = state.lang === 'bm'
@@ -1331,17 +1350,21 @@ function talkingPoints(seat, bench, idx) {
       ? `Harga <strong>${esc(it.label_bm.toLowerCase())}</strong> naik <strong>${ws.perc}%</strong> dalam 3 bulan di daerah ${esc(p.district)} (kini ${fmtRM(ws.last)}/${esc(it.unit)}).`
       : `<strong>${esc(it.label_en)}</strong> price up <strong>${ws.perc}%</strong> in 3 months in ${esc(p.district)} district (now ${fmtRM(ws.last)}/${esc(it.unit)}).`)
   }
-  const inc = seat.socio.income?.at(-1)
-  if (inc && bench.income_median && inc.income_median < bench.income_median * 0.9) {
+  const incArr = seat.socio.income ?? []
+  const inc0 = incArr[0]
+  const incN = incArr.at(-1)
+  if (inc0 && incN && incN !== inc0 && incN.income_median < inc0.income_median) {
     pts.push(bm
-      ? `Pendapatan penengah isi rumah di sini <strong>RM${fmtNum(inc.income_median)}</strong> — lebih rendah daripada penengah DUN Johor (RM${fmtNum(bench.income_median)}).`
-      : `Median household income here is <strong>RM${fmtNum(inc.income_median)}</strong> — below the Johor DUN median (RM${fmtNum(bench.income_median)}).`)
+      ? `Pendapatan penengah isi rumah di sini <strong>RM${fmtNum(incN.income_median)}</strong> — masih belum pulih ke paras ${inc0.date.slice(0, 4)} (RM${fmtNum(inc0.income_median)}). Harga naik, gaji tidak.`
+      : `Median household income here is <strong>RM${fmtNum(incN.income_median)}</strong> — still below its ${inc0.date.slice(0, 4)} level (RM${fmtNum(inc0.income_median)}). Prices went up; pay didn't.`)
   }
-  const lab = seat.socio.labour?.at(-1)
-  if (lab && bench.u_rate && lab.u_rate > bench.u_rate) {
+  const labArr = seat.socio.labour ?? []
+  const labN = labArr.at(-1)
+  const labPrev = labArr.length >= 2 ? labArr.at(-2) : null
+  if (labN && labPrev && labN.u_rate != null && labPrev.u_rate != null && labN.u_rate > labPrev.u_rate) {
     pts.push(bm
-      ? `Kadar pengangguran <strong>${fmtPct(lab.u_rate)}</strong>, melebihi penengah Johor (${fmtPct(bench.u_rate)}).`
-      : `Unemployment at <strong>${fmtPct(lab.u_rate)}</strong>, above the Johor median (${fmtPct(bench.u_rate)}).`)
+      ? `Kadar pengangguran naik ke <strong>${fmtPct(labN.u_rate)}</strong> (${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)}).`
+      : `Unemployment has risen to <strong>${fmtPct(labN.u_rate)}</strong> (${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)}).`)
   }
   const demo = seat.demographics.find(d => d.election === 'JHR-SE-16')
   const ge15 = seat.demographics.find(d => d.election === 'GE-15')
@@ -1402,7 +1425,7 @@ function mudaAngleFor(theme, seat) {
   return `<br><span style="color:var(--muted);font-size:.82rem"><strong>MUDA:</strong> ${esc(stanceLead)}${quoteHtml}</span>`
 }
 
-function storyFor(seat, bench, idx) {
+function storyFor(seat, idx) {
   const bm = state.lang === 'bm'
   const beats = []
   const hist = seat.history
@@ -1497,8 +1520,8 @@ function storyFor(seat, bench, idx) {
   return beats
 }
 
-function storyCard(seat, bench, idx) {
-  const beats = storyFor(seat, bench, idx)
+function storyCard(seat, idx) {
+  const beats = storyFor(seat, idx)
   if (beats.length < 3) return ''
   return `<div class="card">
     <h2>${L('story_title')}</h2>
@@ -1592,9 +1615,9 @@ function recordCard(seat) {
   </div>`
 }
 
-function renderField(seat, bench, idx) {
+function renderField(seat, idx) {
   const demo = seat.demographics.find(d => d.election === 'JHR-SE-16') ?? seat.demographics[0]
-  const pts = talkingPoints(seat, bench, idx)
+  const pts = talkingPoints(seat, idx)
   let demoHtml = ''
   if (demo) {
     const ageBands = [['18–20', demo.age.age_18_20], ['21–29', demo.age.age_21_29], ['30–39', demo.age.age_30_39], ['40–49', demo.age.age_40_49], ['50–59', demo.age.age_50_59], ['60–69', demo.age.age_60_69], ['70+', demo.age.age_70_79 + demo.age.age_80_89 + demo.age['age_90+']]]
@@ -1628,7 +1651,7 @@ function renderField(seat, bench, idx) {
   </div>` : ''
 
   return `
-    ${storyCard(seat, bench, idx)}
+    ${storyCard(seat, idx)}
     ${issuesCard(seat, idx)}
     ${mudaStancesCard(seat)}
     ${mudaSeatCard(seat, idx)}
@@ -1738,7 +1761,6 @@ function renderHq(seat) {
 
 async function renderSeat(slug, tab = 'brief') {
   const [idx, seat] = await Promise.all([loadIndex(), loadSeat(slug)])
-  const bench = johorBenchmarks(idx)
   let mapSvg = ''
   try {
     const geo = await loadGeo()
@@ -1763,7 +1785,7 @@ async function renderSeat(slug, tab = 'brief') {
     <div id="tabContent"></div>`
 
   const content = document.getElementById('tabContent')
-  content.innerHTML = tab === 'field' ? renderField(seat, bench, idx) : tab === 'hq' ? renderHq(seat) : renderBrief(seat, bench, idx)
+  content.innerHTML = tab === 'field' ? renderField(seat, idx) : tab === 'hq' ? renderHq(seat) : renderBrief(seat, idx)
 
   document.querySelectorAll('.tabs button').forEach(btn =>
     btn.addEventListener('click', () => { location.hash = `#/seat/${slug}/${btn.dataset.tab}` }))
