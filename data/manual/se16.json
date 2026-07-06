@@ -1,0 +1,35 @@
+{
+  "_comment": "Manually maintained 2026 Johor state election (SE-16) contest info. Edit freely; the pipeline merges this into seat JSONs. Set 'muda_candidate' to null if unknown. 'bloc' distinguishes MUDA vs PSM seats within the Progressive Bloc.",
+  "election": {
+    "id": "JHR-SE-16",
+    "polling_date": "2026-07-11",
+    "early_voting_date": "2026-07-07",
+    "nomination_date": "2026-06-27"
+  },
+  "seats": {
+    "N.41": {
+      "bloc": "MUDA",
+      "muda_candidate": "Rashifa Aljunied",
+      "notes_bm": "Kerusi tunggal MUDA (penyandang: Presiden Amira Aisya). Pertandingan lima penjuru.",
+      "notes_en": "MUDA's sole seat (incumbent: President Amira Aisya). Five-cornered fight."
+    },
+    "N.13": {
+      "bloc": "MUDA",
+      "muda_candidate": null,
+      "notes_bm": "Kerusi sasaran Blok Progresif MUDA-PSM.",
+      "notes_en": "MUDA-PSM Progressive Bloc target seat."
+    },
+    "N.15": {
+      "bloc": "MUDA",
+      "muda_candidate": null,
+      "notes_bm": "Kerusi sasaran Blok Progresif MUDA-PSM.",
+      "notes_en": "MUDA-PSM Progressive Bloc target seat."
+    },
+    "N.51": {
+      "bloc": "MUDA",
+      "muda_candidate": null,
+      "notes_bm": "Kerusi sasaran Blok Progresif MUDA-PSM.",
+      "notes_en": "MUDA-PSM Progressive Bloc target seat."
+    }
+  }
+}

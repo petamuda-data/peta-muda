@@ -1,0 +1,35 @@
+{
+  "_comment": "Government-set price ceilings for basket items that currently have one (verified as standing, year-round ceilings — NOT the short-lived festive 'Skim Harga Maksimum Musim Perayaan' lists, which are excluded). KPDN does not publish these as open/machine-readable data — no API, no data.gov.my dataset — so values are hand-entered from press coverage and must be re-verified/updated if policy changes. Each entry carries a `verdict` (VERIFIED = an exact RM figure + date is corroborated by a specific cited article; REPORTED = the figure is credibly reported but the start date or source is less precise). Matched to basket items by `key`. Re-check before publishing campaign material, same discipline as issues.json/muda_stances.json.",
+  "updated": "2026-07-05",
+  "items": {
+    "ayam": {
+      "price": 9.40,
+      "unit": "1kg",
+      "label_bm": "Harga siling ayam bersih standard",
+      "label_en": "Standard whole chicken price ceiling",
+      "since": "2022-07-01",
+      "verdict": "VERIFIED",
+      "source": "https://berita.rtm.gov.my/nasional/senarai-berita-nasional/senarai-artikel/harga-ayam-tidak-diapungkan-rm9-40-sekilogram-bermula-1-julai-ini/"
+    },
+    "minyak": {
+      "price": 2.50,
+      "unit": "1kg",
+      "label_bm": "Harga siling minyak masak paket bersubsidi",
+      "label_en": "Subsidised 1kg packet cooking oil price ceiling",
+      "since": null,
+      "since_note": "Long-running subsidised-oil scheme; exact start date not independently verified. Reported still enforced as of June 2026 (KPDN deactivated 179 companies from the eCOSS distribution system for violations, 12 Jun 2026).",
+      "verdict": "REPORTED",
+      "source": null
+    },
+    "beras": {
+      "price": 2.60,
+      "unit": "1kg",
+      "label_bm": "Harga siling beras putih tempatan (SST)",
+      "label_en": "Local white rice (SST) price ceiling",
+      "since": null,
+      "since_note": "Reported unchanged for approximately 17 years as of the source article (~2009).",
+      "verdict": "VERIFIED",
+      "source": "https://berita.rtm.gov.my/nasional/senarai-berita-nasional/senarai-artikel/harga-beras-putih-tempatan-kekal-rm2-60-per-kilogram"
+    }
+  }
+}

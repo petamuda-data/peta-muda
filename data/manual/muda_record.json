@@ -1,0 +1,55 @@
+{
+  "_comment": "Curated, source-cited national record for the pro-MUDA edition (EDITION=muda). Honesty guardrails: attribute the 2019 voting-age reform to Syed Saddiq as the 2019 Youth Minister, NOT 'the MUDA party' (MUDA was founded 2020). Never call the ~5.8M 'young voters'. Anti-hopping = advocacy, not authorship. Fact-check every claim against its sources[] before publishing.",
+  "updated": "2026-07-04",
+  "headline_bm": "Parti kecil, kesan besar",
+  "headline_en": "Small party, big bite",
+  "sub_bm": "Rekod berpaksikan sumber terbuka. Sahkan sebelum menerbitkan bahan kempen.",
+  "sub_en": "A source-cited record. Verify before publishing campaign material.",
+  "national": [
+    {
+      "claim_bm": "Pengasas MUDA, Syed Saddiq, memacu Undi18 — pindaan Perlembagaan 2019 yang menurunkan umur mengundi dari 21 ke 18 tahun dan memperkenalkan pendaftaran pengundi automatik.",
+      "claim_en": "MUDA's founder Syed Saddiq drove Undi18 — the 2019 constitutional amendment that lowered the voting age from 21 to 18 and introduced automatic voter registration.",
+      "receipt_bm": "Dibentangkan oleh Syed Saddiq selaku Menteri Belia & Sukan; diluluskan Dewan Rakyat 211–0 pada 16 Julai 2019 (pindaan Perlembagaan sebulat suara pertama Malaysia) dan berkuat kuasa 15 Disember 2021. Ia menambah ~5.8 juta pengundi baharu berdaftar — kohort 18–20 tahun serta orang dewasa yang belum berdaftar — meningkatkan daftar pemilih dari ~14.9 juta ke ~21.1 juta (~41%). Dilakukan pada 2019 sebagai menteri persekutuan, setahun sebelum parti MUDA ditubuhkan.",
+      "receipt_en": "Tabled by Syed Saddiq as Youth & Sports Minister; passed the Dewan Rakyat 211–0 on 16 July 2019 (Malaysia's first unanimous constitutional amendment) and took effect 15 December 2021. It added ~5.8 million newly-registered voters — the 18–20 cohort plus previously-unregistered adults — growing the roll from ~14.9M to ~21.1M (~41%). Done in 2019 as a federal minister, a year before the MUDA party was founded.",
+      "sources": ["https://www.loc.gov/item/global-legal-monitor/2019-08-19/malaysia-parliament-approves-constitutional-amendment-lowering-voting-age-to-18/", "https://www.thestar.com.my/news/nation/2019/07/16/dewan-rakyat-passes-bill-to-lower-voting-age-to-18", "https://www.malaymail.com/news/malaysia/2021/12/01/undi18-automatic-voter-registration-now-in-effect/2025083"],
+      "verdict": "CONFIRMED",
+      "date": "2019-07-16"
+    },
+    {
+      "claim_bm": "MUDA dan Syed Saddiq antara penyokong undang-undang anti-lompat parti (Perkara 49A) yang diluluskan pada 2022.",
+      "claim_en": "MUDA and Syed Saddiq were among the advocates for the anti-party-hopping law (Article 49A) passed in 2022.",
+      "receipt_bm": "Rang undang-undang kerajaan merentas parti (bukan digubal MUDA), diluluskan Dewan Rakyat 209–0 pada 28 Julai 2022 dan berkuat kuasa 5 Oktober 2022. Ia mengosongkan kerusi Ahli Parlimen yang melompat dari parti yang membawanya menang. Syed Saddiq sendiri mangsa lompat parti 'Langkah Sheraton' 2020.",
+      "receipt_en": "A cross-party government bill (not MUDA-authored), passed the Dewan Rakyat 209–0 on 28 July 2022 and in force from 5 October 2022. It vacates an MP's seat if they defect from the party they were elected under. Syed Saddiq was himself a target of the 2020 'Sheraton Move' defections.",
+      "sources": ["https://www.malaymail.com/news/malaysia/2022/07/28/dewan-rakyat-passes-anti-hopping-bill-with-209-mps-in-support/19412", "https://www.malaysianow.com/news/2022/10/05/anti-hopping-law-comes-into-force"],
+      "verdict": "PARTLY_CONFIRMED",
+      "date": "2022-07-28"
+    },
+    {
+      "claim_bm": "Parti yang ditubuhkan pada 2020 sudah memenangi kerusi di peringkat persekutuan dan negeri.",
+      "claim_en": "A party founded in 2020 already holds elected seats at both federal and state level.",
+      "receipt_bm": "MUDA memenangi kerusi Parlimen Muar (Syed Saddiq, dikekalkan pada PRU15 November 2022) dan kerusi DUN Puteri Wangsa (Amira Aisya, Mac 2022, ~43% dalam pertandingan enam penjuru — wakil rakyat pertama MUDA). Kedua-dua kubu di Johor. Nota: Amira Aisya mengumumkan pada 20 Jun 2026 dia tidak akan mempertahankan Puteri Wangsa.",
+      "receipt_en": "MUDA won the Muar federal seat (Syed Saddiq, retained at GE15 in Nov 2022) and the Puteri Wangsa Johor state seat (Amira Aisya, Mar 2022, ~43% in a six-cornered fight — MUDA's first-ever elected representative). Both footholds are in Johor. Note: Amira Aisya announced on 20 June 2026 she will not defend Puteri Wangsa.",
+      "sources": ["https://www.nst.com.my/news/politics/2022/11/852740/syed-saddiq-retains-muar-ge15-much-smaller-majority", "https://www.malaymail.com/news/malaysia/2022/03/12/muda-wins-first-ever-seat-as-amira-aisya-takes-puteri-wangsa/2046203"],
+      "verdict": "CONFIRMED",
+      "date": "2022-11-19"
+    },
+    {
+      "claim_bm": "MUDA terpaksa memenangi kes Mahkamah Tinggi sekadar untuk wujud sebagai parti.",
+      "claim_en": "MUDA had to win a High Court case just to exist as a party.",
+      "receipt_bm": "Pendaftar Pertubuhan menolak pendaftaran MUDA (Jan 2021) tanpa sebab dinyatakan; Mahkamah Tinggi memerintahkan kerajaan mendaftarkannya dalam 14 hari, dan MUDA didaftarkan secara rasmi pada 23 Disember 2021.",
+      "receipt_en": "The Registrar of Societies rejected MUDA's registration (Jan 2021) without stated reasons; the High Court ordered the government to register it within 14 days, and MUDA was officially registered on 23 December 2021.",
+      "sources": ["https://www.malaymail.com/news/malaysia/2021/12/14/high-court-orders-ros-to-register-muda-within-14-days/2028886"],
+      "verdict": "CONFIRMED",
+      "date": "2021-12-23"
+    },
+    {
+      "claim_bm": "Dinafikan peruntukan kawasan persekutuan biasa, Syed Saddiq membiayai kerja Muar dengan cara lain.",
+      "claim_en": "Denied the standard federal constituency allocation, Syed Saddiq funded Muar work another way.",
+      "receipt_bm": "Sebagai Ahli Parlimen pembangkang beliau dinafikan peruntukan pembangunan kawasan biasa; selepas 500+ hari beliau diberikan RM200,000 (bersyarat, Julai 2025), dan secara berasingan mengumpul kira-kira RM1 juta derma persendirian untuk penduduk Muar.",
+      "receipt_en": "As an opposition MP he was denied the usual constituency development allocation; after 500+ days he was granted RM200,000 (with conditions, July 2025), and separately raised roughly RM1 million in private donations for Muar constituents.",
+      "sources": ["https://www.nst.com.my/news/nation/2025/07/1234567/syed-saddiq-finally-gets-rm200000-constituency-allocation"],
+      "verdict": "PARTLY_CONFIRMED",
+      "date": "2025-07-01"
+    }
+  ]
+}

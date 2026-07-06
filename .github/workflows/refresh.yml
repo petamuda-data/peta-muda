@@ -1,0 +1,57 @@
+# Data refresh. Runs the pipeline (prices update daily ~12:00 UTC at source)
+# and commits the regenerated site/data. Deployment is handled by Cloudflare
+# Workers Builds, which auto-redeploys the static site/ on every push, so this
+# workflow only needs to refresh the data and push.
+#
+# Triggers: nightly cron, manual dispatch, AND any push to main that changes
+# the pipeline or the hand-curated data (data/manual) — so a merge that edits
+# curated issues/stances goes live without a manual dispatch. The bot's own
+# commit only touches site/data, which is NOT in the paths filter, so it can
+# never re-trigger itself.
+name: refresh-data
+
+on:
+  schedule:
+    - cron: '30 13 * * *' # 13:30 UTC = 21:30 MYT, after PriceCatcher's daily refresh
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/**'
+      - 'data/manual/**'
+      - '.github/workflows/refresh.yml'
+
+permissions:
+  contents: write
+
+# One refresh at a time — a cron run and a merge-triggered run racing each
+# other would fight over the git push.
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Run pipeline
+        run: node pipeline/run.mjs
+        env:
+          PIPELINE_NO_CACHE: '1'
+          # The deployed site is the MUDA-edition build (team/campaign use:
+          # volunteer hub + AI briefings). Remove this env to publish the
+          # neutral public edition instead.
+          EDITION: muda
+      - name: Commit refreshed data
+        run: |
+          git config user.name 'peta-muda-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add site/data data/derived
+          git diff --cached --quiet || git commit -m "data: refresh $(date -u +%F)"
+          git pull --rebase origin main
+          git push
