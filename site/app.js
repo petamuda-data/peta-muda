@@ -658,6 +658,11 @@ function mudaHomeCard(idx) {
 // robust copy: Clipboard API first, then a hidden-textarea execCommand fallback
 // for insecure contexts / older browsers. Returns whether the copy succeeded.
 // (Same chain the shareBtn handler uses.)
+// talking points are built as HTML for the Field tab; this strips them back to
+// WhatsApp-ready plain text (tags out, the five esc() entities decoded)
+const htmlToText = (s) => String(s).replace(/<[^>]+>/g, '')
+  .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+
 async function copyToClipboard(text) {
   if (navigator.clipboard?.writeText) {
     try { await navigator.clipboard.writeText(text); return true } catch { /* denied */ }
@@ -961,9 +966,13 @@ function costTrendCard(idx) {
     <span class="chip">RON97 ${fmtRM(fuel.ron97)}</span>
     <span class="chip">Diesel ${fmtRM(fuel.diesel)}</span>
   </div>` : ''
+  // the "so what" line: how many indicators are above their level a year ago
+  const up12 = ct.series.filter(s => (s.deltas?.['12m'] ?? 0) > 0).length
+  const lead = `<p class="hero-line"><strong>${up12}/${ct.series.length}</strong> ${T('penunjuk lebih tinggi daripada setahun lalu', 'indicators higher than a year ago', '项指标高于一年前')}</p>`
   return `<div class="card">
     <h2>${L('cost_trend_title')}</h2>
     <p class="sub">${L('cost_trend_sub')}</p>
+    ${lead}
     <table class="data">
       <thead><tr><th>${L('col_item')}</th>${ct.windows.map(w => `<th class="num">${winLabel[w]}</th>`).join('')}</tr></thead>
       <tbody>${rows}</tbody>
@@ -973,12 +982,33 @@ function costTrendCard(idx) {
   </div>`
 }
 
+// Task-first entry: the first screen asks "what do you want to do?" instead of
+// opening on a dashboard. Volunteers get a one-tap path to their briefing;
+// everyone else goes straight to seat search. A returning visitor gets a
+// one-tap link back to the seat they last opened.
+function heroFork(idx) {
+  const lastSlug = storage.get('last_seat')
+  const last = lastSlug ? idx.seats.find(s => s.slug === lastSlug) : null
+  const resume = last
+    ? `<a class="resume-chip" href="#/seat/${esc(last.slug)}">↩ ${T('Kerusi anda', 'Your seat', '您的议席')}: <strong>${esc(last.code)} ${esc(last.name)}</strong></a>`
+    : ''
+  const vol = idx.edition === 'muda'
+    ? `<a class="btn" href="#/volunteer">🤖 ${T('Saya sukarelawan — beri saya briefing', 'I’m a volunteer — give me my briefing', '我是志工 — 给我简报')}</a>`
+    : ''
+  return `<div class="card fork">
+    ${resume}
+    ${vol}
+    <button class="btn${vol ? ' secondary' : ''}" id="forkSearch">🔍 ${T('Cari kerusi anda', 'Find your seat', '查找您的议席')}</button>
+  </div>`
+}
+
 async function renderHome() {
   const idx = await loadIndex()
   const featured = idx.seats.filter(s => s.featured)
 
   app.innerHTML = `
     <p class="sub" style="margin:2px 0 12px;color:var(--muted)">${L('tagline')}</p>
+    ${heroFork(idx)}
     ${countdownCard(idx)}
     ${mudaHomeCard(idx)}
 
@@ -1022,6 +1052,11 @@ async function renderHome() {
   }
   renderList()
   document.getElementById('seatSearch').addEventListener('input', (e) => renderList(e.target.value))
+  document.getElementById('forkSearch')?.addEventListener('click', () => {
+    const box = document.getElementById('seatSearch')
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    box.focus({ preventScroll: true })
+  })
   renderFooter(idx)
 }
 
@@ -1068,8 +1103,27 @@ async function renderVolunteer() {
           <span class="name">${esc(s.code)} ${esc(s.name)} ${s.featured ? '★' : ''}</span>
           <span class="meta">${esc(s.parlimen ?? '')}</span>
         </span>
-        <button class="btn" data-slug="${esc(s.slug)}">${L('volunteer_get_btn')}</button>
+        <span class="btn-row" style="margin:0">
+          <button class="btn" data-slug="${esc(s.slug)}">${L('volunteer_get_btn')}</button>
+          <button class="btn secondary" data-tp="${esc(s.slug)}">📋 ${T('Salin isi pintu ke pintu', 'Copy talking points', '复制拜访要点')}</button>
+        </span>
       </div>`).join('') : `<p class="sub">${L('volunteer_none')}</p>`
+    // no-AI fallback: copy the seat's talking points as WhatsApp-ready text
+    listEl.querySelectorAll('button[data-tp]').forEach(btn => btn.addEventListener('click', async () => {
+      const orig = btn.textContent
+      btn.textContent = L('volunteer_loading')
+      btn.disabled = true
+      try {
+        const seat = await loadSeat(btn.dataset.tp)
+        const text = tpText(seat, idx)
+        const copied = await copyToClipboard(text)
+        if (copied) btn.textContent = L('copied')
+        else { window.prompt('Salin / Copy:', text); btn.textContent = orig }
+      } finally {
+        btn.disabled = false
+        if (btn.textContent === L('copied')) setTimeout(() => { btn.textContent = orig }, 2000)
+      }
+    }))
     listEl.querySelectorAll('button[data-slug]').forEach(btn => btn.addEventListener('click', async () => {
       const slug = btn.dataset.slug
       const orig = btn.textContent
@@ -1162,9 +1216,16 @@ function pricesCard(seat, compact = true) {
     </tr>`
   }).join('')
   const anyDistrict = top.some(e => e.hasDistrict)
+  // the "so what" line: the single worst rise, readable without the table
+  const lead0 = top[0]
+  const leadLabel = esc(state.lang === 'bm' ? lead0.it.label_bm : lead0.it.label_en)
+  const lead = lead0.it.since_se15?.perc != null
+    ? `<p class="hero-line"><strong>${leadLabel} ${lead0.it.since_se15.perc > 0 ? '+' : ''}${lead0.it.since_se15.perc}%</strong> ${T('sejak PRN Mac 2022', 'since the Mar 2022 election', '自2022年3月选举以来')}</p>`
+    : `<p class="hero-line"><strong>${leadLabel} ${lead0.ws.perc > 0 ? '+' : ''}${lead0.ws.perc}%</strong> ${T('dalam 12 minggu', 'in 12 weeks', '12周内')}</p>`
   return `<div class="card">
     <h2>${L('prices_here')}</h2>
     <p class="sub">${L('prices_sub', esc(p.district ?? '–'))}${asOfHtml(p.max_date)}</p>
+    ${lead}
     <table class="data">
       <thead><tr><th>${L('col_item')}</th><th class="num">${L('col_price')}</th><th class="num">${L('col_then')}</th><th>${L('trend')}</th><th class="num">${L('col_12w')}</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -1197,9 +1258,17 @@ function ceilingCard(seat) {
   const anySourced = items.some(it => it.ceiling.source)
   const refs = items.filter(it => it.ceiling.source)
     .map((it, i) => `<a href="${esc(it.ceiling.source)}" target="_blank" rel="noopener" style="color:var(--muted)">[${i + 1}]</a>`).join(' ')
+  // the "so what" line: the worst breach of the government's own ceiling, or a
+  // clean bill when everything is within it
+  const breaches = items.filter(it => it.ceiling.observed != null && it.ceiling.exceeds_perc != null && it.ceiling.exceeds_perc > 0.5)
+    .sort((a, b) => b.ceiling.exceeds_perc - a.ceiling.exceeds_perc)
+  const lead = breaches.length
+    ? `<p class="hero-line"><span class="delta-up">▲</span> <strong>${esc(bm ? breaches[0].label_bm : breaches[0].label_en)}</strong> ${L('ceiling_exceeds', breaches[0].ceiling.exceeds_perc.toFixed(1))} ${T('siling rasmi kerajaan', 'the government’s own official ceiling', '政府官方顶价')}</p>`
+    : `<p class="hero-line"><span class="delta-down">✓</span> ${T('Semua barangan terkawal dalam siling rasmi', 'All controlled items within the official ceiling', '所有管制品都在官方顶价内')}</p>`
   return `<div class="card">
     <h2>${L('ceiling_title')}</h2>
     <p class="sub">${L('ceiling_sub')}</p>
+    ${lead}
     <table class="data">
       <thead><tr><th>${L('col_item')}</th><th class="num">${L('ceiling_observed')}</th><th class="num">${L('ceiling_official')}</th><th>${L('ceiling_status')}</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -1281,6 +1350,17 @@ function raceCard(seat, idx) {
   </div>`
 }
 
+// WhatsApp-ready plain-text talking points — one-tap value for volunteers who
+// won't paste anything into an AI chat
+function tpText(seat, idx) {
+  const pts = talkingPoints(seat, idx).map(p => `• ${htmlToText(p)}`)
+  return [
+    `📍 ${seat.code} ${seat.name} — ${T('isi pintu ke pintu', 'door-knocking points', '逐户拜访要点')}`,
+    ...pts,
+    `${location.origin}${location.pathname}#/seat/${seat.slug}`,
+  ].join('\n')
+}
+
 function shareText(seat) {
   const e = seat.election2026
   const inc = seat.socio.income?.at(-1)
@@ -1308,16 +1388,62 @@ function shareText(seat) {
   return lines.join('\n')
 }
 
+// The doorstep hero: this seat's argument in three plain lines, shown before
+// any table. The tables below are the receipts; this is what you say at the
+// door. Every line is guarded — thin-data seats render whatever subset exists.
+function doorstepHero(seat, idx) {
+  const r = seat.prices?.items ? raceStats(seat, idx) : null
+  const lines = []
+  if (r?.medPerc != null) {
+    const pc = `${r.medPerc > 0 ? '+' : ''}${r.medPerc}%`
+    lines.push(T(
+      `Bakul dapur di sini naik <strong>${pc}</strong> sejak PRN Mac 2022.`,
+      `The kitchen basket here is up <strong>${pc}</strong> since the Mar 2022 election.`,
+      `自2022年3月选举以来，这里的厨房篮子上涨了 <strong>${pc}</strong>。`))
+  }
+  if (r?.basketAnnual != null && r.incomeAnnual != null && r.basketAnnual > r.incomeAnnual) {
+    lines.push(T(
+      `Gaji tak kejar — pendapatan naik ${r.incomeAnnual.toFixed(1)}%/thn, harga ${r.basketAnnual.toFixed(1)}%/thn.`,
+      `Pay isn't keeping up — income ${r.incomeAnnual.toFixed(1)}%/yr against prices ${r.basketAnnual.toFixed(1)}%/yr.`,
+      `工资跟不上 — 收入每年 ${r.incomeAnnual.toFixed(1)}%，物价每年 ${r.basketAnnual.toFixed(1)}%。`))
+  } else if (r?.stress != null && r.stress >= 70) {
+    lines.push(`${L('stress_line', r.stress)}.`)
+  }
+  const e = seat.election2026
+  const last = seat.history?.[0]
+  const contest = []
+  if (e?.muda_candidate) {
+    contest.push(T(
+      `<strong>${esc(e.muda_candidate)}</strong> ★ bertanding untuk ${esc(e.bloc_party ?? 'MUDA')} di sini`,
+      `<strong>${esc(e.muda_candidate)}</strong> ★ is standing for ${esc(e.bloc_party ?? 'MUDA')} here`,
+      `<strong>${esc(e.muda_candidate)}</strong> ★ 代表 ${esc(e.bloc_party ?? 'MUDA')} 在此参选`))
+  }
+  if (last?.majority_perc != null && last.majority_perc < 10) {
+    contest.push(T(
+      `majoriti ${last.date.slice(0, 4)} hanya <strong>${fmtPct(last.majority_perc)}</strong> — setiap undi dikira`,
+      `the ${last.date.slice(0, 4)} majority was only <strong>${fmtPct(last.majority_perc)}</strong> — every vote counts`,
+      `${last.date.slice(0, 4)}年多数票仅 <strong>${fmtPct(last.majority_perc)}</strong> — 每一票都关键`))
+  }
+  if (contest.length) lines.push(`${contest.join(' · ')}.`)
+  if (!lines.length) return ''
+  const wa = `https://wa.me/?text=${encodeURIComponent(shareText(seat))}`
+  return `<div class="card" style="border:2px solid var(--accent)">
+    ${lines.map(l => `<p class="hero-line">${l}</p>`).join('')}
+    <div class="btn-row">
+      <button class="btn" id="shareBtn">${L('share')}</button>
+      <a class="btn secondary" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a>
+    </div>
+  </div>`
+}
+
 function renderBrief(seat, idx) {
   return `
+    ${doorstepHero(seat, idx)}
     ${contestCard(seat)}
     ${pricesCard(seat)}
     ${ceilingCard(seat)}
     ${raceCard(seat, idx)}
-    ${incomeCard(seat, idx)}
-    <div class="btn-row">
-      <button class="btn" id="shareBtn">${L('share')}</button>
-    </div>`
+    ${incomeCard(seat, idx)}`
 }
 
 function talkingPoints(seat, idx) {
@@ -1761,6 +1887,7 @@ function renderHq(seat) {
 
 async function renderSeat(slug, tab = 'brief') {
   const [idx, seat] = await Promise.all([loadIndex(), loadSeat(slug)])
+  storage.set('last_seat', slug) // powers the home page's one-tap return chip
   let mapSvg = ''
   try {
     const geo = await loadGeo()

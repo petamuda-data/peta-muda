@@ -194,3 +194,10 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .cta-copied { border: 2px solid var(--down); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; background: #f0faf6; }
 .cta-copied-head { font-weight: 800; color: var(--down); font-size: .95rem; }
 .cta-copied .sub { margin: 4px 0 8px; }
+
+/* task-first entry fork (home) + doorstep hero (seat brief) */
+.fork .btn { display: block; width: 100%; text-align: center; font-size: 1rem; padding: .85rem; box-sizing: border-box; }
+.fork .btn + .btn { margin-top: 8px; }
+.resume-chip { display: inline-block; margin-bottom: 10px; font-size: .85rem; color: var(--muted); text-decoration: none; }
+.resume-chip strong { color: var(--ink); }
+.hero-line { font-size: .98rem; margin: .3rem 0; line-height: 1.45; }
