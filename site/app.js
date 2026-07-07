@@ -40,6 +40,14 @@ const STR = {
     locate_denied: 'Tak dapat akses lokasi — cari kerusi anda di bawah.',
     locate_outside: 'Lokasi anda di luar Johor — cari kerusi anda di bawah.',
     install_btn: 'Pasang aplikasi di telefon anda',
+    gotv_title: 'Jom keluar mengundi',
+    gotv_today: 'Hari ini hari mengundi — keluar sekarang!',
+    gotv_early: (poll) => `Undi awal dah bermula — hari mengundi ${poll}.`,
+    gotv_soon: (d, poll) => `${d} hari lagi — hari mengundi ${poll}.`,
+    gotv_logistics: 'Pastikan anda tahu pusat mengundi dan saluran anda, bawa MyKad, dan ajak keluarga sekali.',
+    gotv_check: 'Semak daftar & saluran anda',
+    gotv_invite: 'Ajak kawan',
+    gotv_wa: (name, poll, url) => `PRN Johor: hari mengundi ${poll}. Jom kita keluar mengundi di ${name}! Semak kerusi dan calon anda: ${url}`,
     voters: 'pengundi',
     youth: 'bawah 30',
     majority: 'majoriti',
@@ -147,6 +155,14 @@ const STR = {
     locate_denied: 'Couldn’t access your location — search for your seat below.',
     locate_outside: 'You seem to be outside Johor — search for your seat below.',
     install_btn: 'Install the app on your phone',
+    gotv_title: 'Get out and vote',
+    gotv_today: 'Polling day is today — go vote now!',
+    gotv_early: (poll) => `Early voting has started — polling day is ${poll}.`,
+    gotv_soon: (d, poll) => `${d} days to go — polling day is ${poll}.`,
+    gotv_logistics: 'Know your polling centre and saluran, bring your MyKad, and bring your family along.',
+    gotv_check: 'Check your voter registration',
+    gotv_invite: 'Invite a friend',
+    gotv_wa: (name, poll, url) => `Johor votes on ${poll}. Let’s go vote in ${name}! Check your seat and candidates: ${url}`,
     voters: 'voters',
     youth: 'under 30',
     majority: 'majority',
@@ -1134,9 +1150,38 @@ function doorstepHero(seat, idx) {
   </div>`
 }
 
+// The conversion step right under the pitch: one tap to check your register
+// entry on MySPR Semak, one tap to bring someone along. Gone once polls close.
+function gotvCard(seat) {
+  const e = seat.election2026
+  if (!e?.polling_date) return ''
+  const today = new Date(); today.setHours(0, 0, 0, 0)
+  const days = Math.round((new Date(`${e.polling_date}T00:00:00`) - today) / 86400e3)
+  if (days < 0) return ''
+  const early = e.early_voting_date ? new Date(`${e.early_voting_date}T00:00:00`) : null
+  const pollStr = new Date(`${e.polling_date}T00:00:00`)
+    .toLocaleDateString(state.lang === 'bm' ? 'ms-MY' : 'en-MY', { weekday: 'long', day: 'numeric', month: 'long' })
+  let head
+  if (days === 0) head = L('gotv_today')
+  else if (early && today >= early) head = L('gotv_early', pollStr)
+  else head = L('gotv_soon', days, pollStr)
+  const waText = L('gotv_wa', seat.name, pollStr,
+    `${location.origin}${location.pathname}#/seat/${seat.slug}`)
+  return `<div class="card accent">
+    <h2>${L('gotv_title')}</h2>
+    <p class="hero-line"><strong>${esc(head)}</strong></p>
+    <p class="sub">${L('gotv_logistics')}</p>
+    <div class="btn-row">
+      <a class="btn" href="https://mysprsemak.spr.gov.my/semakan/daftarPemilih" target="_blank" rel="noopener">${L('gotv_check')}</a>
+      <a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(waText)}" target="_blank" rel="noopener">${L('gotv_invite')}</a>
+    </div>
+  </div>`
+}
+
 function renderBrief(seat, idx) {
   return `
     ${doorstepHero(seat, idx)}
+    ${gotvCard(seat)}
     ${contestCard(seat)}
     ${pricesCard(seat)}
     ${incomeCard(seat, idx)}`
