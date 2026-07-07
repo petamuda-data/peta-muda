@@ -42,7 +42,16 @@
       "Bash(curl -sS -w \"HTTP:%{http_code}\\\\n\" \"https://api.github.com/repos/data-gov-my/datagovmy-meta\" -H \"User-Agent: research\")",
       "WebFetch(domain:fulcrum.sg)",
       "Bash(curl -sS \"https://api.github.com/repos/data-gov-my/datagovmy-meta/contents/\" -H \"User-Agent: research\")",
-      "mcp__Claude_Code_Remote__send_later"
+      "mcp__Claude_Code_Remote__send_later",
+      "Bash(pkill -f \"serve[.]mjs\")",
+      "Bash(node tools/serve.mjs)",
+      "Bash(curl -s http://127.0.0.1:8123/)",
+      "Bash(nohup node tools/serve.mjs)",
+      "Bash(disown)",
+      "Bash(curl -s http://127.0.0.1:8123/ -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(node /tmp/claude-0/-home-user-peta-muda/354a7c7e-fe47-5306-8be6-d3d477f9058a/scratchpad/smoke.mjs)",
+      "Bash(node tools/sim/run.mjs)",
+      "Bash(EDITION=muda node tools/sim/run.mjs)"
     ]
   }
 }
