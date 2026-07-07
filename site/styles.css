@@ -327,8 +327,10 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .card.hero .hero-line strong {
   color: var(--accent-2); font-family: var(--font-display); font-weight: 900;
 }
-.card.hero .hero-line:first-of-type { font-size: 1.2rem; }
-.card.hero .hero-line:first-of-type strong { font-size: 1.9rem; line-height: 1; }
+/* line 1 is the failing (white sentence), line 2 the bright spot — MUDA's
+   answer in cyan, slightly larger; a short money line still reads as a poster */
+.card.hero .hero-line:first-of-type { font-size: 1.2rem; font-weight: 700; }
+.card.hero .hero-line strong { font-size: 1.15em; }
 .card.hero .btn { background: #fff; color: var(--ink); border-color: #fff; box-shadow: 2px 2px 0 var(--accent-2); }
 .card.hero .btn.wa { background: var(--wa); color: #fff; border-color: var(--wa); }
 

@@ -27,12 +27,6 @@ const STR = {
     poll_today: 'HARI MENGUNDI — keluar mengundi!',
     poll_over: 'PRN Johor 2026 telah selesai. Terima kasih kerana mengundi!',
     featured: 'Kerusi Blok Progresif (MUDA–PSM)',
-    as_of: 'Harga setakat',
-    cost_trend_title: 'Kos sara hidup — berbanding dulu',
-    cost_trend_sub: 'Perubahan harga sebenar berbanding 1 bulan hingga 1 tahun lalu — naik (merah) atau turun (hijau) ikut data',
-    cost_trend_note: 'Setiap angka membandingkan harga hari ini dengan harga tempoh lalu. CPI: OpenDOSM (inflasi rasmi Johor). Petrol: harga runcit mingguan KPDN. Bakul makanan: median PriceCatcher barangan bukan kawalan harga. Arah mengikut data — sahkan sebelum menerbitkan.',
-    win_12m: '1 thn',
-    fuel_now: 'Harga petrol kini',
     all_seats: 'Semua 56 kerusi DUN Johor',
     search: 'Cari kerusi, kawasan atau parlimen…',
     locate_btn: 'Guna lokasi saya',
@@ -75,23 +69,13 @@ const STR = {
     volunteer_cta_sub: 'Buka chat BARU, kemudian tampal (Cmd/Ctrl+V):',
     volunteer_open_chatgpt: 'Buka ChatGPT',
     volunteer_open_gemini: 'Buka Gemini',
-    ceiling_exceeds: (p) => `+${p}% melebihi`,
-    stress_line: (r) => `Daripada setiap RM100 pendapatan, RM${r} habis untuk perbelanjaan isi rumah`,
     bloc_candidate: 'Calon Blok Progresif',
-    prices_here: 'Harga barang dapur di kawasan anda',
-    prices_sub: (d) => `Harga median di premis KPDN daerah ${d} — berbanding Mac 2022, PRN lalu`,
-    col_item: 'Barang',
-    col_price: 'Harga',
-    col_then: 'Mac 2022',
-    col_12w: '3 bln',
-    trend: 'Arah',
     income_ctx: 'Konteks pendapatan',
     income_median: 'Pendapatan penengah isi rumah',
     income_mean: 'Pendapatan purata',
     poverty: 'Kadar kemiskinan mutlak',
     gini: 'Ketaksamaan (Gini)',
     u_rate: 'Kadar pengangguran',
-    pp_line: (b, i) => `Sejak PRN Mac 2022: harga barang dapur naik ${b}%/thn, pendapatan hanya ${i}%/thn — kuasa beli keluarga semakin menyusut.`,
     share: 'Kongsi ringkasan',
     copied: 'Disalin!',
     story_title: 'Cerita kempen — 5 langkah',
@@ -130,9 +114,6 @@ const STR = {
     err: 'Maaf, data tidak dapat dimuatkan.',
     candidates: 'calon',
     income_note: (y) => `Anggaran HIES ${y}, DOSM`,
-    price_note: 'Harga ialah median premis yang dipantau KPDN; boleh berbeza di kedai berlainan.',
-    no_price: 'Tiada data harga daerah — median Johor ditunjukkan.',
-    top3_note: (n) => `3 kenaikan paling ketara sejak PRN Mac 2022, daripada ${n} barangan dipantau.`,
   },
   en: {
     tagline: 'Seat Command Center — 2026 Johor Election',
@@ -142,12 +123,6 @@ const STR = {
     poll_today: 'POLLING DAY — get out and vote!',
     poll_over: 'The 2026 Johor election has concluded. Thank you for voting!',
     featured: 'Progressive Bloc seats (MUDA–PSM)',
-    as_of: 'Prices as of',
-    cost_trend_title: 'Cost of living — versus before',
-    cost_trend_sub: 'Real price change versus 1 month to 1 year ago — up (red) or down (green), the direction the data shows',
-    cost_trend_note: 'Each figure compares today’s price with the price then. CPI: OpenDOSM (official Johor inflation). Fuel: KPDN weekly retail. Food basket: median PriceCatcher price of non-price-controlled staples. Direction follows the data — verify before publishing.',
-    win_12m: '1yr',
-    fuel_now: 'Fuel price now',
     all_seats: 'All 56 Johor state seats',
     search: 'Search seat, area or parlimen…',
     locate_btn: 'Use my location',
@@ -190,23 +165,13 @@ const STR = {
     volunteer_cta_sub: 'Open a NEW chat, then paste it in (Cmd/Ctrl+V):',
     volunteer_open_chatgpt: 'Open ChatGPT',
     volunteer_open_gemini: 'Open Gemini',
-    ceiling_exceeds: (p) => `+${p}% over`,
-    stress_line: (r) => `Household spending absorbs RM${r} of every RM100 earned`,
     bloc_candidate: 'Progressive Bloc candidate',
-    prices_here: 'Grocery prices in your area',
-    prices_sub: (d) => `Median prices at KPDN premises in ${d} district — versus Mar 2022, the last election`,
-    col_item: 'Item',
-    col_price: 'Price',
-    col_then: 'Mar 2022',
-    col_12w: '3 mo',
-    trend: 'Trend',
     income_ctx: 'Income context',
     income_median: 'Median household income',
     income_mean: 'Mean income',
     poverty: 'Absolute poverty rate',
     gini: 'Inequality (Gini)',
     u_rate: 'Unemployment rate',
-    pp_line: (b, i) => `Since the Mar 2022 election: the kitchen basket is up ${b}%/yr but income only ${i}%/yr — household purchasing power is shrinking.`,
     share: 'Share summary',
     copied: 'Copied to clipboard!',
     story_title: 'The campaign story — 5 beats',
@@ -245,9 +210,6 @@ const STR = {
     err: 'Sorry, data could not be loaded.',
     candidates: 'candidates',
     income_note: (y) => `HIES ${y} estimate, DOSM`,
-    price_note: 'Prices are medians across KPDN-monitored premises; individual shops vary.',
-    no_price: 'No district price data — Johor median shown.',
-    top3_note: (n) => `Top 3 rises since the Mar 2022 election, out of ${n} monitored items.`,
   },
 }
 const L = (k, ...args) => {
@@ -267,15 +229,7 @@ const pick = (o, base) => o == null ? '' : (o[`${base}_${state.lang}`] ?? o[`${b
 // ---------- utils ----------
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 const fmtNum = (v) => v == null ? '–' : Number(v).toLocaleString(state.lang === 'zh' ? 'zh-MY' : state.lang === 'en' ? 'en-MY' : 'ms-MY')
-const fmtRM = (v) => v == null ? '–' : `RM${Number(v).toFixed(2)}`
 const fmtPct = (v, dp = 1) => v == null ? '–' : `${Number(v).toFixed(dp)}%`
-const deltaHtml = (v) => {
-  if (v == null) return '<span class="delta-flat">–</span>'
-  if (Math.abs(v) < 0.05) return '<span class="delta-flat">0%</span>'
-  const cls = v > 0 ? 'delta-up' : 'delta-down'
-  const arrow = v > 0 ? '▲' : '▼'
-  return `<span class="${cls}">${arrow}${Math.abs(v).toFixed(1)}%</span>`
-}
 // Badge colored by the coalition AT THAT CONTEST when known (BERSATU won 2018
 // as PH, GERAKAN's old wins were BN, MIPP/PEJUANG ride with PN in 2026);
 // falls back to the party's own class when standing alone.
@@ -284,55 +238,9 @@ const partyBadge = (p, coalition) => {
   return `<span class="badge ${cls}">${esc(p)}</span>`
 }
 
-// "as of" label for price data, flagged red if the source feed has stalled
-const asOfHtml = (maxDate) => {
-  if (!maxDate) return ''
-  const days = Math.round((Date.now() - new Date(`${maxDate}T00:00:00`).getTime()) / 86400e3)
-  const stale = days > 7
-  return ` · <span${stale ? ' class="delta-up"' : ''}>${L('as_of')} ${esc(maxDate)}${stale ? ` (${days}d!)` : ''}</span>`
-}
-
 const BLOC_COLORS = { PH: 'var(--ph)', BN: 'var(--bn)', PN: 'var(--pn)', MUDA: 'var(--muda)', LAIN: 'var(--lain)' }
 
 // ---------- charts ----------
-function sparkline(weeks, seriesList, w = 92, h = 32) {
-  const vals = seriesList.flatMap(s => weeks.map(wk => s.data[wk]).filter(v => v != null))
-  if (!vals.length) return ''
-  const min = Math.min(...vals), max = Math.max(...vals)
-  const span = (max - min) || 1
-  const x = (i) => 4 + (i / Math.max(weeks.length - 1, 1)) * (w - 8)
-  const y = (v) => h - 4 - ((v - min) / span) * (h - 8)
-  let out = `<svg class="sparkline" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`
-  for (const s of seriesList) {
-    const valued = weeks.map((wk, i) => [i, s.data[wk]]).filter(([, v]) => v != null)
-    if (valued.length > 1) {
-      const pts = valued.map(([i, v]) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`)
-      out += `<polyline points="${pts.join(' ')}" fill="none" stroke="${s.color}" stroke-width="${s.width ?? 2}" stroke-linejoin="round" ${s.dash ? 'stroke-dasharray="3 3"' : ''}/>`
-    }
-    // mark the exact pair the % compares: hollow dot + dotted baseline at the
-    // first plotted value, solid dot at the last
-    if (s.mark && valued.length > 1) {
-      const [fi, fv] = valued[0]
-      const [li, lv] = valued[valued.length - 1]
-      out += `<line x1="${x(fi).toFixed(1)}" y1="${y(fv).toFixed(1)}" x2="${w - 4}" y2="${y(fv).toFixed(1)}" stroke="${s.color}" stroke-width="1" stroke-dasharray="2 3" opacity="0.4"/>`
-      out += `<circle cx="${x(fi).toFixed(1)}" cy="${y(fv).toFixed(1)}" r="2" fill="var(--card)" stroke="${s.color}" stroke-width="1.3"/>`
-      out += `<circle cx="${x(li).toFixed(1)}" cy="${y(lv).toFixed(1)}" r="3" fill="var(--accent-2)"/>`
-    }
-  }
-  return out + '</svg>'
-}
-
-// First-vs-last of the plotted window — the same pair the sparkline marks,
-// so the displayed % always matches the drawn line by construction.
-function windowStats(series, weeks) {
-  const valued = weeks.filter(w => series[w] != null)
-  if (valued.length < 2) return null
-  const first = series[valued[0]]
-  const last = series[valued[valued.length - 1]]
-  if (!first) return null
-  return { first, last, perc: +(100 * (last - first) / first).toFixed(1) }
-}
-
 function barRow(label, perc, valText, color = 'var(--ink)') {
   return `<div class="bar-row"><span>${esc(label)}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.min(perc, 100)}%;background:${color}"></div></div><span class="bar-val">${esc(valText)}</span></div>`
 }
@@ -511,7 +419,7 @@ function briefingMd(seat, idx) {
   const nf = (v) => v == null ? '–' : Number(v).toLocaleString('en-MY')
 
   lines.push(`# PETA MUDA — AI Field Briefing: ${seat.code} ${seat.name} (PRN Johor 2026)`)
-  lines.push(`Generated ${new Date().toISOString().slice(0, 10)} from official open data (ElectionData.MY CC0; data.gov.my/OpenDOSM & KPDN PriceCatcher CC BY 4.0). Data built: ${idx.built_at?.slice(0, 10) ?? '–'}. Polling day: 11 July 2026 (early voting 7 July).`)
+  lines.push(`Generated ${new Date().toISOString().slice(0, 10)} from official open data (ElectionData.MY CC0; data.gov.my/OpenDOSM CC BY 4.0). Data built: ${idx.built_at?.slice(0, 10) ?? '–'}. Polling day: 11 July 2026 (early voting 7 July).`)
   lines.push('')
   lines.push(`## ${L2('CARA GUNA (untuk petugas lapangan)', 'HOW TO USE (for the field operator)')}`)
   lines.push(L2(
@@ -575,14 +483,9 @@ Confirm setup now by replying with: a 3-line summary of this seat, the ledger (e
     lines.push(`- 2022 bloc shares here: ${tot} (${sal.dms.length} polling districts — low-turnout young areas are the known lever)`)
   }
 
-  // cost of living
-  const movers = (seat.prices?.items ?? []).filter(i => i.change_12w_perc != null).sort((a, b) => b.change_12w_perc - a.change_12w_perc).slice(0, 3)
-  if (movers.length || seat.socio?.income?.length) {
-    lines.push('', '### Cost of living here')
-    if (movers.length) lines.push(`- Top price rises (12 weeks, ${seat.prices.district ?? 'Johor'} district medians): ` + movers.map(i => `${i.label_en} +${i.change_12w_perc}%`).join(', '))
-    const sinceMovers = (seat.prices?.items ?? []).filter(i => i.since_se15?.perc != null)
-      .sort((a, b) => b.since_se15.perc - a.since_se15.perc).slice(0, 3)
-    if (sinceMovers.length) lines.push(`- Since the Mar 2022 state election (district medians): ` + sinceMovers.map(i => `${i.label_en} ${i.since_se15.perc > 0 ? '+' : ''}${i.since_se15.perc}%`).join(', '))
+  // household context (no price data — the campaign message is MUDA's answers)
+  if (seat.socio?.income?.length || seat.socio?.labour?.length) {
+    lines.push('', '### Household context')
     const inc = seat.socio?.income?.at(-1)
     if (inc) lines.push(`- Median household income: RM${nf(inc.income_median)} (${'' + (seat.socio.income.at(-1).date ?? '').slice(0, 4)})`)
     const lab = seat.socio?.labour?.at(-1)
@@ -626,75 +529,19 @@ Confirm setup now by replying with: a 3-line summary of this seat, the ledger (e
 
   // johor context
   const jc = idx.johor_context
-  if (jc?.undi18 || jc?.crime) {
+  if (jc?.undi18) {
     lines.push('', '### Johor context')
-    if (jc.undi18) lines.push(`- Undi18 footprint: ${nf(jc.undi18.total_18_20)} voters aged 18-20 statewide on the 2026 roll${demo ? `; this seat: ${nf(demo.age.age_18_20)}` : ''}`)
-    if (jc.crime) lines.push(`- Crime (${jc.crime.latest_year}, police districts ≠ constituencies): ${nf(jc.crime.total_latest)} index crimes statewide, ${jc.crime.change_yoy_perc > 0 ? '+' : ''}${jc.crime.change_yoy_perc ?? '–'}% YoY; top type: ${jc.crime.by_type_latest?.[0]?.type ?? '–'}`)
-    const fuel = idx.fuel?.at(-1)
-    if (fuel) lines.push(`- Fuel: RON95 BUDI95 RM${fuel.ron95_budi95 ?? '–'} / unsubsidised RM${fuel.ron95 ?? '–'} / diesel RM${fuel.diesel ?? '–'}`)
-    const cpi = idx.cpi?.at(-1)
-    if (cpi) lines.push(`- Official Johor inflation: ${px(cpi.inflation_yoy)} YoY (${cpi.date?.slice(0, 7)})`)
-  }
-
-  // cost-of-living trend versus before (direction per window — use the real sign)
-  const ct = idx.cost_trend
-  if (ct?.series?.length) {
-    lines.push('', '### Cost of living versus before (% change vs 1/3/6/12 months ago; + = up, − = down; verify before publishing)')
-    const wl = ct.windows.join(' / ')
-    for (const s of ct.series) {
-      const vals = ct.windows.map(w => s.deltas[w] == null ? '–' : `${s.deltas[w] > 0 ? '+' : ''}${s.deltas[w]}%`).join(' / ')
-      lines.push(`- ${s.label_en} (${wl}): ${vals}`)
-    }
+    lines.push(`- Undi18 footprint: ${nf(jc.undi18.total_18_20)} voters aged 18-20 statewide on the 2026 roll${demo ? `; this seat: ${nf(demo.age.age_18_20)}` : ''}`)
   }
 
   lines.push('', '## DATA CAVEATS (assistant must respect these)')
-  lines.push(`- Prices are KPDN premise medians by market district — a catchment approximation, not exact to the constituency.
-- Crime data is by POLICE district and statewide context only — never present it as this constituency's figure.
-- Data snapshot is as of the build date above; the operator's ground reports are newer. Treat accordingly.
+  lines.push(`- Data snapshot is as of the build date above; the operator's ground reports are newer. Treat accordingly.
+- MESSAGE DISCIPLINE: lead with MUDA's verified positions and commitments (the bright spot), with the local issue as context — never let the pitch become a list of national problems.
 - Verify all facts before publishing campaign material. Quotes above are only usable verbatim with their source cited.`)
 
   return lines.join('\n')
 }
 
-
-// Cost-of-living direction versus before: one compact table, rows = series
-// (official inflation, fuel, food basket), columns = 1/3/6/12-month % change.
-// deltaHtml colours rising prices red / falling green (house convention).
-// Labels come from this UI map (keyed on series.key) so all three languages
-// render properly; unknown future keys fall back to the JSON's own labels.
-const COST_TREND_LABELS = {
-  cpi: { bm: 'Inflasi rasmi (CPI Johor)', en: 'Official inflation (Johor CPI)', zh: '官方通胀（柔佛CPI）' },
-  fuel_ron95: { bm: 'Petrol RON95 (tanpa subsidi)', en: 'Petrol RON95 (unsubsidised)', zh: 'RON95汽油（无补贴）' },
-  fuel_diesel: { bm: 'Diesel (tanpa subsidi)', en: 'Diesel (unsubsidised)', zh: '柴油（无补贴）' },
-  food_basket: { bm: 'Bakul makanan (bukan kawalan harga)', en: 'Food basket (non-price-controlled)', zh: '食品篮子（非管制品）' },
-}
-function costTrendCard(idx) {
-  const ct = idx.cost_trend
-  const fuel = idx.fuel?.at(-1)
-  if (!ct?.series?.length) return ''
-  // one chip per indicator, its 12-month change — the full matrix lives in briefingMd
-  const seriesChips = ct.series.map(s => {
-    const label = COST_TREND_LABELS[s.key]?.[state.lang] ?? pick(s, 'label')
-    return `<span class="chip">${esc(label)} ${deltaHtml(s.deltas?.['12m'])} <span style="color:var(--muted)">/ ${L('win_12m')}</span></span>`
-  }).join('')
-  const fuelNow = fuel ? `<h3>${L('fuel_now')}</h3><div class="chips">
-    ${fuel.ron95_budi95 != null ? `<span class="chip">RON95 BUDI95 ${fmtRM(fuel.ron95_budi95)}</span>` : ''}
-    <span class="chip">RON95 ${T('tanpa subsidi', 'unsub.')} ${fmtRM(fuel.ron95)}</span>
-    <span class="chip">RON97 ${fmtRM(fuel.ron97)}</span>
-    <span class="chip">Diesel ${fmtRM(fuel.diesel)}</span>
-  </div>` : ''
-  // the "so what" line: how many indicators are above their level a year ago
-  const up12 = ct.series.filter(s => (s.deltas?.['12m'] ?? 0) > 0).length
-  const lead = `<p class="hero-line"><strong>${up12}/${ct.series.length}</strong> ${T('penunjuk lebih tinggi daripada setahun lalu', 'indicators higher than a year ago')}</p>`
-  return `<div class="card">
-    <h2>${L('cost_trend_title')}</h2>
-    <p class="sub">${L('cost_trend_sub')}</p>
-    ${lead}
-    <div class="chips">${seriesChips}</div>
-    ${fuelNow}
-    <div class="notice" style="font-size:.72rem;margin-top:.5rem">${L('cost_trend_note')}</div>
-  </div>`
-}
 
 // Task-first entry: the first screen asks "what do you want to do?" instead of
 // opening on a dashboard. Volunteers get a one-tap path to their briefing;
@@ -742,8 +589,6 @@ async function renderHome() {
           </a>`).join('')}
       </div>
     </div>
-
-    ${costTrendCard(idx)}
 
     <div class="card">
       <h2>${L('all_seats')}</h2>
@@ -941,72 +786,6 @@ function contestCard(seat) {
   </div>`
 }
 
-function pricesCard(seat, compact = true) {
-  const p = seat.prices
-  if (!p?.items?.length) return ''
-  // signal over noise: only the 3 items that got most expensive since the
-  // Mar 2022 election (items with no 2022 anchor fall back to the 12-week
-  // change). The sparkline still shows the recent 12-week direction.
-  const top = p.items.map(it => {
-    const hasDistrict = it.latest_district != null
-    const series = hasDistrict ? it.series.district : it.series.johor
-    return { it, hasDistrict, series, ws: windowStats(series, p.weeks) }
-  }).filter(e => e.ws)
-    .sort((a, b) => (b.it.since_se15?.perc ?? b.ws.perc) - (a.it.since_se15?.perc ?? a.ws.perc))
-    .slice(0, 3)
-  if (!top.length) return ''
-  const rows = top.map(({ it, hasDistrict, series, ws }) => {
-    const spark = sparkline(p.weeks, [
-      { data: series, color: 'var(--ink)', width: 2, mark: true },
-    ])
-    const then = it.since_se15
-      ? `${fmtRM(it.since_se15.then)}<br>${deltaHtml(it.since_se15.perc)}`
-      : '–'
-    return `<tr>
-      <td><strong>${esc(state.lang === 'bm' ? it.label_bm : it.label_en)}</strong><br><span style="color:var(--muted);font-size:.72rem">${esc(it.unit)}</span></td>
-      <td class="num"><strong>${fmtRM(ws.last)}</strong></td>
-      <td class="num">${then}</td>
-      <td>${spark}</td>
-      <td class="num">${deltaHtml(ws.perc)}</td>
-    </tr>`
-  }).join('')
-  const anyDistrict = top.some(e => e.hasDistrict)
-  // the "so what" line: the single worst rise, readable without the table
-  const lead0 = top[0]
-  const leadLabel = esc(state.lang === 'bm' ? lead0.it.label_bm : lead0.it.label_en)
-  const lead = lead0.it.since_se15?.perc != null
-    ? `<p class="hero-line"><strong>${leadLabel} ${lead0.it.since_se15.perc > 0 ? '+' : ''}${lead0.it.since_se15.perc}%</strong> ${T('sejak PRN Mac 2022', 'since the Mar 2022 election', '自2022年3月选举以来')}</p>`
-    : `<p class="hero-line"><strong>${leadLabel} ${lead0.ws.perc > 0 ? '+' : ''}${lead0.ws.perc}%</strong> ${T('dalam 12 minggu', 'in 12 weeks', '12周内')}</p>`
-  return `<div class="card">
-    <h2>${L('prices_here')}</h2>
-    <p class="sub">${L('prices_sub', esc(p.district ?? '–'))}${asOfHtml(p.max_date)}</p>
-    ${lead}
-    <table class="data">
-      <thead><tr><th>${L('col_item')}</th><th class="num">${L('col_price')}</th><th class="num">${L('col_then')}</th><th>${L('trend')}</th><th class="num">${L('col_12w')}</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-    ${ceilingStatus(seat)}
-    <div class="notice">${L('top3_note', p.items.length)} ${anyDistrict ? L('price_note') : L('no_price')}</div>
-  </div>`
-}
-
-// government price-ceiling compliance, folded into the prices card as one
-// status line: the worst breach of the government's own ceiling, or the clean
-// bill — with the manual-verification receipt links
-function ceilingStatus(seat) {
-  const items = (seat.prices?.items ?? []).filter(i => i.ceiling)
-  if (!items.length) return ''
-  const bm = state.lang === 'bm'
-  const refs = items.filter(it => it.ceiling.source)
-    .map((it, i) => `<a href="${esc(it.ceiling.source)}" target="_blank" rel="noopener" style="color:var(--muted)">[${i + 1}]</a>`).join(' ')
-  const breaches = items.filter(it => it.ceiling.observed != null && it.ceiling.exceeds_perc != null && it.ceiling.exceeds_perc > 0.5)
-    .sort((a, b) => b.ceiling.exceeds_perc - a.ceiling.exceeds_perc)
-  const line = breaches.length
-    ? `<span class="delta-up">▲</span> <strong>${esc(bm ? breaches[0].label_bm : breaches[0].label_en)}</strong> ${L('ceiling_exceeds', breaches[0].ceiling.exceeds_perc.toFixed(1))} ${T('siling rasmi kerajaan', 'the government’s own official ceiling')}`
-    : `<span class="delta-down">✓</span> ${T('Semua barangan terkawal dalam siling rasmi kerajaan', 'All controlled items within the government’s official ceiling')}`
-  return `<div class="notice" style="margin-top:.5rem">${line}${refs ? ` ${refs}` : ''}</div>`
-}
-
 function incomeCard(seat, idx) {
   const inc = seat.socio.income?.at(-1)
   const pov = seat.socio.poverty?.at(-1)
@@ -1016,12 +795,6 @@ function incomeCard(seat, idx) {
   const labPrev = labArr.length >= 2 ? labArr.at(-2) : null
   if (!inc && !lab) return ''
   const year = inc?.date?.slice(0, 4)
-  // purchasing-power squeeze: only shown when the basket is genuinely
-  // outrunning income — never present nominal income growth as the story
-  const r = seat.prices?.items ? raceStats(seat, idx) : null
-  const squeeze = r?.basketAnnual != null && r.incomeAnnual != null && r.basketAnnual > r.incomeAnnual
-    ? `<div class="notice" style="margin-top:.5rem"><span class="delta-up">▲</span> ${L('pp_line', r.basketAnnual.toFixed(1), r.incomeAnnual.toFixed(1))}</div>`
-    : ''
   return `<div class="card">
     <h2>${L('income_ctx')}</h2>
     ${inc ? `<p class="sub">${L('income_note', year)}</p>` : ''}
@@ -1032,34 +805,7 @@ function incomeCard(seat, idx) {
       ${gin ? `<tr><td>${L('gini')}</td><td class="num">${(gin.gini ?? '–')}</td><td></td></tr>` : ''}
       ${lab ? `<tr><td>${L('u_rate')} (${lab.date?.slice(0, 4)})</td><td class="num">${fmtPct(lab.u_rate)}</td><td class="num" style="color:var(--muted)">${labPrev ? `${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)}` : ''}</td></tr>` : ''}
     </tbody></table>
-    ${squeeze}
   </div>`
-}
-
-// Annualized rates: basket since the Mar 2022 election vs HIES income growth
-// vs official CPI — the cross-source comparison no single dataset can make.
-function raceStats(seat, idx) {
-  const p = seat.prices
-  const items = p.items.filter(i => i.since_se15?.perc != null)
-  if (items.length < 3 || !p.anchor_month) return null
-  const percs = items.map(i => i.since_se15.perc).sort((a, b) => a - b)
-  const medPerc = percs[percs.length >> 1]
-  const years = (new Date(`${p.max_date}T00:00:00`) - new Date(`${p.anchor_month}-15T00:00:00`)) / (365.25 * 86400e3)
-  const basketAnnual = years > 0 ? ((1 + medPerc / 100) ** (1 / years) - 1) * 100 : null
-  const inc = seat.socio.income ?? []
-  let incomeAnnual = null
-  if (inc.length >= 2) {
-    const a = inc[0], b = inc.at(-1)
-    const yrs = Number(b.date.slice(0, 4)) - Number(a.date.slice(0, 4))
-    if (yrs > 0 && a.income_median > 0) incomeAnnual = ((b.income_median / a.income_median) ** (1 / yrs) - 1) * 100
-  }
-  const cpiYoy = (idx?.cpi ?? []).at(-1)?.inflation_yoy ?? null
-  const top = [...items].sort((a, b) => b.since_se15.perc - a.since_se15.perc).slice(0, 3)
-  const exp = seat.socio.expenditure?.at(-1)
-  const expVal = exp?.expenditure_mean ?? exp?.expenditure ?? null
-  const incMean = inc.at(-1)?.income_mean ?? null
-  const stress = expVal && incMean ? Math.round(100 * expVal / incMean) : null
-  return { items, medPerc, years, basketAnnual, incomeAnnual, cpiYoy, top, stress }
 }
 
 // WhatsApp-ready plain-text talking points — one-tap value for volunteers who
@@ -1077,51 +823,53 @@ function tpText(seat, idx) {
 
 function shareText(seat) {
   const e = seat.election2026
-  const inc = seat.socio.income?.at(-1)
-  // lead with the biggest rise since the Mar 2022 election; fall back to the
-  // 12-week mover when no item carries a 2022 anchor
-  const scored = seat.prices.items.map(it => {
-    const series = it.latest_district != null ? it.series.district : it.series.johor
-    return { it, ws: windowStats(series, seat.prices.weeks) }
-  }).filter(x => x.ws)
-  const since = scored.filter(x => x.it.since_se15?.perc != null)
-    .sort((a, b) => b.it.since_se15.perc - a.it.since_se15.perc)[0]
-  const worst = scored.sort((a, b) => b.ws.perc - a.ws.perc)[0]
-  const basketLine = since
-    ? `🧺 ${since.it.label_bm}: ${fmtRM(since.ws.last)} (${since.it.since_se15.perc > 0 ? '+' : ''}${since.it.since_se15.perc}% sejak PRN Mac 2022)`
-    : worst
-      ? `🧺 ${worst.it.label_bm}: ${fmtRM(worst.ws.last)} (${worst.ws.perc > 0 ? '+' : ''}${worst.ws.perc}% / 3 bln)`
-      : null
+  const bm = state.lang === 'bm'
+  // lead with the seat's curated issue and MUDA's attributed answer — the
+  // bright-spot contrast, never a data complaint
+  const issue = seat.local_issues?.seat?.[0] ?? seat.local_issues?.statewide?.[0] ?? null
+  const issueLine = issue ? leadClause(bm ? (issue.issue_bm ?? issue.issue_en) : (issue.issue_en ?? issue.issue_bm)) : null
+  const t = issue ? (seat.muda_stances ?? []).find(s => s.key === issue.theme) : null
+  const stanceLine = t && t.verdict !== 'NO_VERIFIED_POSITION' ? leadClause(pick(t, 'stance')) : null
+  const last = seat.history?.[0]
+  const marginLine = last?.majority_perc != null && last.majority_perc < 10
+    ? (bm
+      ? `Majoriti ${last.date.slice(0, 4)} hanya ${fmtNum(last.majority)} undi — undi anda penentu.`
+      : `The ${last.date.slice(0, 4)} majority was just ${fmtNum(last.majority)} votes — your vote decides.`)
+    : null
   const lines = [
     `📍 ${seat.code} ${seat.name} — PRN Johor ${e.polling_date === '2026-07-11' ? '11 Julai 2026' : e.polling_date}`,
     e.muda_candidate ? `★ ${L('bloc_candidate')}: ${e.muda_candidate}${e.bloc_party ? ` (${e.bloc_party})` : ''}` : null,
-    basketLine,
-    inc ? `💰 ${L('income_median')}: RM${fmtNum(inc.income_median)}` : null,
+    issueLine ? `❗ ${issueLine}` : null,
+    stanceLine ? `✅ MUDA: ${stanceLine}` : null,
+    marginLine,
     `Data terbuka rasmi · ${location.origin}${location.pathname}#/seat/${seat.slug}`,
   ].filter(Boolean)
   return lines.join('\n')
 }
 
 // The doorstep hero: this seat's argument in three plain lines, shown before
-// any table. The tables below are the receipts; this is what you say at the
-// door. Every line is guarded — thin-data seats render whatever subset exists.
+// any table. Contrast structure — line 1 names what the current administration
+// is failing at HERE (curated, receipted), line 2 is the bright spot: MUDA's
+// attributed answer. Every line is guarded — thin-data seats render a subset.
 function doorstepHero(seat, idx) {
-  const r = seat.prices?.items ? raceStats(seat, idx) : null
+  const bm = state.lang === 'bm'
   const lines = []
-  if (r?.medPerc != null) {
-    const pc = `${r.medPerc > 0 ? '+' : ''}${r.medPerc}%`
-    lines.push(T(
-      `Harga barang dapur di sini naik <strong>${pc}</strong> sejak PRN Mac 2022.`,
-      `The kitchen basket here is up <strong>${pc}</strong> since the Mar 2022 election.`,
-      `自2022年3月选举以来，这里的厨房篮子上涨了 <strong>${pc}</strong>。`))
+  // prefer the first issue that HAS a verified MUDA answer — the hero is the
+  // contrast pair, not a lone complaint; fall back to the top issue alone
+  const pool = [...(seat.local_issues?.seat ?? []), ...(seat.local_issues?.statewide ?? [])]
+  const stanceFor = (it) => {
+    const t = (seat.muda_stances ?? []).find(s => s.key === it.theme)
+    return t && t.verdict !== 'NO_VERIFIED_POSITION' ? t : null
   }
-  if (r?.basketAnnual != null && r.incomeAnnual != null && r.basketAnnual > r.incomeAnnual) {
-    lines.push(T(
-      `Gaji tak kejar — pendapatan naik ${r.incomeAnnual.toFixed(1)}%/thn, harga ${r.basketAnnual.toFixed(1)}%/thn.`,
-      `Pay isn't keeping up — income ${r.incomeAnnual.toFixed(1)}%/yr against prices ${r.basketAnnual.toFixed(1)}%/yr.`,
-      `工资跟不上 — 收入每年 ${r.incomeAnnual.toFixed(1)}%，物价每年 ${r.basketAnnual.toFixed(1)}%。`))
-  } else if (r?.stress != null && r.stress >= 70) {
-    lines.push(`${L('stress_line', r.stress)}.`)
+  const issue = pool.find(it => stanceFor(it)) ?? pool[0] ?? null
+  if (issue) {
+    const lead = leadClause(bm ? (issue.issue_bm ?? issue.issue_en) : (issue.issue_en ?? issue.issue_bm))
+    if (lead) lines.push(esc(lead))
+    const t = stanceFor(issue)
+    if (t) {
+      const stanceLead = leadClause(pick(t, 'stance'))
+      if (stanceLead) lines.push(`<strong>MUDA:</strong> <strong>${esc(stanceLead)}</strong>`)
+    }
   }
   const e = seat.election2026
   const last = seat.history?.[0]
@@ -1183,7 +931,6 @@ function renderBrief(seat, idx) {
     ${doorstepHero(seat, idx)}
     ${gotvCard(seat)}
     ${contestCard(seat)}
-    ${pricesCard(seat)}
     ${incomeCard(seat, idx)}`
 }
 
@@ -1200,11 +947,15 @@ function issueAnswers(seat, idx) {
     ...(li.statewide ?? []).slice(0, 2).map(it => ({ it, scope: 'state' })),
     ...((idx?.national_issues ?? []).slice(0, 2)).map(it => ({ it, scope: 'national' })),
   ]
+  // each MUDA stance is attached only to the FIRST issue carrying its theme —
+  // two flood stories must not repeat the identical answer word for word
+  const usedThemes = new Set()
   return entries.map(({ it, scope }) => {
     const lead = leadClause(bm ? (it.issue_bm ?? it.issue_en) : (it.issue_en ?? it.issue_bm))
     const t = (seat.muda_stances ?? []).find(s => s.key === it.theme)
     let stance = null
-    if (t && t.verdict !== 'NO_VERIFIED_POSITION') {
+    if (t && t.verdict !== 'NO_VERIFIED_POSITION' && !usedThemes.has(t.key)) {
+      usedThemes.add(t.key)
       const qs = t.quotes ?? []
       const q = qs.find(x => x.lang === state.lang) ?? qs[0]
       stance = {
@@ -1220,84 +971,46 @@ const GROUND_LABEL = () => T('Laporan lapangan', 'Field report', '现场报告')
 
 const SOL_LABEL = () => T('Penyelesaian MUDA', 'MUDA’s answer', 'MUDA 的方案')
 
+// MUDA-first rendering: the point IS what MUDA is saying (attributed); the
+// local issue is the context underneath it, not the headline. Issues with no
+// verified MUDA position keep the old issue-led shape and sort last.
 function issuePointHtml(e) {
   const q = e.stance?.quote
   const quoteHtml = q
     ? `<br>“${esc(q.text)}” — <strong>${esc(q.who)}</strong>, ${esc(q.role)} (${esc(q.year)})${q.source ? ` <a href="${esc(q.source)}" target="_blank" rel="noopener" style="color:var(--muted)">[${T('sumber', 'source', '来源')}]</a>` : ''}`
     : ''
-  const sol = e.stance
-    ? `<br><span style="color:var(--muted);font-size:.82rem"><strong>${SOL_LABEL()}:</strong> ${esc(e.stance.lead)}${quoteHtml}</span>`
-    : ''
   const tag = e.ground ? `<span class="badge" style="background:var(--lain);font-size:.6rem">${GROUND_LABEL()}</span> ` : ''
-  return `${tag}${esc(e.lead)}${sol}`
+  if (e.stance) {
+    return `${tag}<strong>MUDA:</strong> ${esc(e.stance.lead)}` +
+      `<br><span style="color:var(--muted);font-size:.82rem">${T('Isu di sini', 'The issue here', '本地问题')}: ${esc(e.lead)}${quoteHtml}</span>`
+  }
+  return `${tag}${esc(e.lead)}`
 }
 
 function issuePointText(e) {
   const q = e.stance?.quote
-  let s = e.ground ? `[${GROUND_LABEL()}] ${e.lead}` : e.lead
-  if (e.stance) {
-    s += `\n  ${SOL_LABEL()}: ${e.stance.lead}`
-    if (q) s += `\n  “${q.text}” — ${q.who}, ${q.role} (${q.year})${q.source ? `\n  ${q.source}` : ''}`
-  }
+  if (!e.stance) return e.ground ? `[${GROUND_LABEL()}] ${e.lead}` : e.lead
+  let s = `MUDA: ${e.stance.lead}`
+  s += `\n  ${T('Isu di sini', 'The issue here', '本地问题')}: ${e.ground ? `[${GROUND_LABEL()}] ` : ''}${e.lead}`
+  if (q) s += `\n  “${q.text}” — ${q.who}, ${q.role} (${q.year})${q.source ? `\n  ${q.source}` : ''}`
   return s
 }
 
-// Door-knocking points, grouped and prioritized: grounded LOCAL issues first
-// (each with MUDA's attributed answer), the local data evidence beneath them,
-// NATIONAL issues second, and campaign targeting facts last. Each point is
-// { html, text } so the Field card and the WhatsApp copy stay in lockstep.
+// Door-knocking points, grouped and prioritized: what MUDA is saying about
+// this seat's grounded LOCAL issues first, its NATIONAL commitments second,
+// campaign targeting facts last. Points with a verified MUDA answer sort
+// before issue-only points — the script sells the solution, not the problem.
+// Each point is { html, text } so the Field card and WhatsApp copy stay in
+// lockstep.
 function talkingPoints(seat, idx) {
-  const p = seat.prices
   const bm = state.lang === 'bm'
   const pt = (html, text) => ({ html, text: text ?? htmlToText(html) })
   const issues = issueAnswers(seat, idx)
+  const withAnswerFirst = (a, b) => (b.stance ? 1 : 0) - (a.stance ? 1 : 0)
   const issuePt = (e) => pt(issuePointHtml(e), issuePointText(e))
 
-  const local = issues.filter(e => e.scope !== 'national').map(issuePt)
-  // cross-source data evidence: pasar vs official CPI, prices vs wages
-  const r = raceStats(seat, idx)
-  if (r?.basketAnnual != null && r.cpiYoy != null && r.basketAnnual > r.cpiYoy + 1) {
-    local.push(pt(bm
-      ? `Inflasi rasmi Johor hanya <strong>${r.cpiYoy.toFixed(1)}%</strong> setahun — tetapi harga barang dapur di sini naik <strong>${r.basketAnnual.toFixed(1)}%</strong> setahun sejak PRN Mac 2022.`
-      : `Official Johor inflation is just <strong>${r.cpiYoy.toFixed(1)}%</strong> a year — but the kitchen basket here is up <strong>${r.basketAnnual.toFixed(1)}%</strong> a year since the Mar 2022 election.`))
-  }
-  if (r?.basketAnnual != null && r.incomeAnnual != null && r.basketAnnual > r.incomeAnnual) {
-    local.push(pt(bm
-      ? `Harga dapur naik <strong>${r.basketAnnual.toFixed(1)}%/thn</strong> tetapi pendapatan penengah hanya <strong>${r.incomeAnnual.toFixed(1)}%/thn</strong> — gaji kalah dalam perlumbaan harga.`
-      : `Kitchen prices are rising <strong>${r.basketAnnual.toFixed(1)}%/yr</strong> but median income only <strong>${r.incomeAnnual.toFixed(1)}%/yr</strong> — wages are losing the race.`))
-  }
-  if (r?.stress != null && r.stress >= 70) {
-    local.push(pt(`${L('stress_line', r.stress)}.`))
-  }
-  const topRisers = p.items.map(it => {
-    const series = it.latest_district != null ? it.series.district : it.series.johor
-    return { it, ws: windowStats(series, p.weeks) }
-  }).filter(e => e.ws && e.ws.perc >= 3)
-    .sort((a, b) => b.ws.perc - a.ws.perc)
-    .slice(0, 2)
-  for (const { it, ws } of topRisers) {
-    local.push(pt(bm
-      ? `Harga <strong>${esc(it.label_bm.toLowerCase())}</strong> naik <strong>${ws.perc}%</strong> dalam 3 bulan di daerah ${esc(p.district)} (kini ${fmtRM(ws.last)}/${esc(it.unit)}).`
-      : `<strong>${esc(it.label_en)}</strong> price up <strong>${ws.perc}%</strong> in 3 months in ${esc(p.district)} district (now ${fmtRM(ws.last)}/${esc(it.unit)}).`))
-  }
-  const incArr = seat.socio.income ?? []
-  const inc0 = incArr[0]
-  const incN = incArr.at(-1)
-  if (inc0 && incN && incN !== inc0 && incN.income_median < inc0.income_median) {
-    local.push(pt(bm
-      ? `Pendapatan penengah isi rumah di sini <strong>RM${fmtNum(incN.income_median)}</strong> — masih belum pulih ke paras ${inc0.date.slice(0, 4)} (RM${fmtNum(inc0.income_median)}). Harga naik, gaji tidak.`
-      : `Median household income here is <strong>RM${fmtNum(incN.income_median)}</strong> — still below its ${inc0.date.slice(0, 4)} level (RM${fmtNum(inc0.income_median)}). Prices went up; pay didn't.`))
-  }
-  const labArr = seat.socio.labour ?? []
-  const labN = labArr.at(-1)
-  const labPrev = labArr.length >= 2 ? labArr.at(-2) : null
-  if (labN && labPrev && labN.u_rate != null && labPrev.u_rate != null && labN.u_rate > labPrev.u_rate) {
-    local.push(pt(bm
-      ? `Kadar pengangguran naik ke <strong>${fmtPct(labN.u_rate)}</strong> (${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)}).`
-      : `Unemployment has risen to <strong>${fmtPct(labN.u_rate)}</strong> (${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)}).`))
-  }
-
-  const national = issues.filter(e => e.scope === 'national').map(issuePt)
+  const local = issues.filter(e => e.scope !== 'national').sort(withAnswerFirst).map(issuePt)
+  const national = issues.filter(e => e.scope === 'national').sort(withAnswerFirst).map(issuePt)
 
   const kempen = []
   const demo = seat.demographics.find(d => d.election === 'JHR-SE-16')
@@ -1397,28 +1110,6 @@ function leadClause(text) {
   return sent.length <= 140 ? sent : head.slice(0, 137).trimEnd() + '…'
 }
 
-// MUDA's official line for an issue theme (muda edition only — neutral builds
-// carry no seat.muda_stances, so this renders nothing there). Returns a small
-// appended HTML fragment: the stance lead + the top sourced leader quote with
-// attribution. NO_VERIFIED_POSITION themes get their honest stance line and
-// never a quotation; quotes[] entries are verified exact words by contract.
-function mudaAngleFor(theme, seat) {
-  if (!theme) return ''
-  const t = (seat.muda_stances ?? []).find(s => s.key === theme)
-  // no verified position = say nothing at the door (the honest note lives in
-  // the issues card receipts, never in the doorstep message)
-  if (!t || t.verdict === 'NO_VERIFIED_POSITION') return ''
-  const stanceLead = leadClause(pick(t, 'stance'))
-  // prefer a quote captured in the current UI language (a real Chinese-source
-  // quote once one is added), else the first verbatim quote in any language
-  const qs = t.quotes ?? []
-  const q = qs.find(x => x.lang === state.lang) ?? qs[0]
-  const quoteHtml = q
-    ? `<br>“${esc(q.text)}” — <strong>${esc(q.who)}</strong>, ${esc(pick(q, 'role'))} (${esc((q.date ?? '').slice(0, 4))})${q.source ? ` <a href="${esc(q.source)}" target="_blank" rel="noopener" style="color:var(--muted)">[${T('sumber', 'source', '来源')}]</a>` : ''}`
-    : ''
-  return `<br><span style="color:var(--muted);font-size:.82rem"><strong>MUDA:</strong> ${esc(stanceLead)}${quoteHtml}</span>`
-}
-
 function storyFor(seat, idx) {
   const bm = state.lang === 'bm'
   const beats = []
@@ -1455,17 +1146,26 @@ function storyFor(seat, idx) {
     })
   }
 
-  // 3 — the doorstep message: one local issue + one national issue (full
-  // receipts + sources live in issuesCard below; muda edition overlays MUDA's
-  // stance + a sourced leader quote so it lands as the party's official line)
+  // 3 — the doorstep message, MUDA-first: lead with the party's attributed
+  // answer, the issue as its context. Local before national. Issues with no
+  // verified position fall back to the issue line alone (never a non-position).
   const localIssue = seat.local_issues?.seat?.[0] ?? seat.local_issues?.statewide?.[0] ?? null
   const nationalIssue = idx.national_issues?.[0] ?? null
   if (localIssue || nationalIssue) {
     const section = (label, issue) => {
       if (!issue) return ''
       const lead = leadClause(bm ? (issue.issue_bm ?? issue.issue_en) : (issue.issue_en ?? issue.issue_bm))
-      const angle = mudaAngleFor(issue.theme, seat)
-      return `<strong>${label}:</strong> ${esc(lead)}${angle}`
+      const t = (seat.muda_stances ?? []).find(s => s.key === issue.theme)
+      if (t && t.verdict !== 'NO_VERIFIED_POSITION') {
+        const stanceLead = leadClause(pick(t, 'stance'))
+        const qs = t.quotes ?? []
+        const q = qs.find(x => x.lang === state.lang) ?? qs[0]
+        const quoteHtml = q
+          ? `<br><span style="color:var(--muted);font-size:.82rem">“${esc(q.text)}” — <strong>${esc(q.who)}</strong>, ${esc(pick(q, 'role'))} (${esc((q.date ?? '').slice(0, 4))})${q.source ? ` <a href="${esc(q.source)}" target="_blank" rel="noopener" style="color:var(--muted)">[${T('sumber', 'source', '来源')}]</a>` : ''}</span>`
+          : ''
+        return `<strong>${label} — MUDA:</strong> ${esc(stanceLead)}<br><span style="color:var(--muted);font-size:.82rem">${T('Isu di sini', 'The issue here', '本地问题')}: ${esc(lead)}</span>${quoteHtml}`
+      }
+      return `<strong>${label}:</strong> ${esc(lead)}`
     }
     const parts = [section(L('beat_local'), localIssue), section(L('beat_national'), nationalIssue)].filter(Boolean)
     beats.push({ title: L('beat_message'), text: parts.join('<br>') })
@@ -1663,7 +1363,7 @@ async function renderSeat(slug, tab = 'brief') {
       <div>
         <div class="crumbs"><a href="#/">← Johor</a> · ${esc(seat.parlimen ?? '')}</div>
         <h1><span class="monogram">${esc(seat.code)}</span> ${esc(seat.name)}</h1>
-        <div class="crumbs">${esc(seat.prices.district ?? '')} · ${fmtNum(seat.election2026?.voters_total)} ${L('voters')}</div>
+        <div class="crumbs">${fmtNum(seat.election2026?.voters_total)} ${L('voters')}</div>
       </div>
     </div>
     <div class="tabs">
