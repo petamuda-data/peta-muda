@@ -100,7 +100,7 @@ const sukarelawan = page('sukarelawan', [
   { dur: 8, html: `
     ${brand(78)}
     <h1 class="head in">Skrip rumah<br>ke rumah anda.</h1>
-    <p class="sub in">Dua ketikan. Enam puluh saat.</p>` },
+    <p class="sub in">Dua klik. 60 saat.</p>` },
   { dur: 9, html: `
     <p class="kicker in">Ketuk pintu malam ini?</p>
     <h1 class="head in">Apa nak<br>cakap?</h1>` },
@@ -109,14 +109,14 @@ const sukarelawan = page('sukarelawan', [
     <h1 class="head in">Harga naik.<br>Gaji tak kejar.</h1>
     <p class="sub in">Harga barang dapur naik <span class="hot">sejak PRN Mac 2022</span> — kuasa beli keluarga makin menyusut.</p>` },
   { dur: 12, html: `
-    <p class="kicker in">Dua ketikan sahaja</p>
+    <p class="kicker in">Dua klik sahaja</p>
     <div class="step in"><div class="stepn">1</div><p class="stept">Cari kawasan anda</p></div>
     <div class="step in"><div class="stepn">2</div><p class="stept">Salin skrip<br>rumah ke rumah</p></div>
-    <p class="sub in">Siap untuk WhatsApp — tanpa latihan.</p>` },
+    <p class="sub in">Siap untuk WhatsApp — tak perlu latihan.</p>` },
   { dur: 11, html: `
     <p class="kicker in">Anda dapat</p>
     <div class="card in">
-      <h3>Isi rumah ke rumah</h3>
+      <h3>Skrip rumah ke rumah</h3>
       <ul style="margin:0;padding:0">
         <li>Harga barang dapur — naik sejak PRN lalu</li>
         <li>Kerusi majoriti tipis — setiap undi penting</li>
@@ -126,7 +126,7 @@ const sukarelawan = page('sukarelawan', [
   { dur: 8, html: `
     <p class="kicker in">Sebar terus</p>
     <h1 class="head sm in">Kongsi ke<br>WhatsApp.</h1>
-    <p class="sub in">Satu ketikan — terus ke kumpulan anda.</p>` },
+    <p class="sub in">Sekali klik — terus ke kumpulan anda.</p>` },
   { dur: 8, bg: INK, html: `
     <div class="in" style="align-self:flex-start"><div class="brand" style="font-size:78px"><b style="background:#fff;color:${INK}">PETA</b><i style="background:transparent;color:#fff;border-color:#fff">MUDA</i></div></div>
     <p class="cap in" style="color:#fff">Percuma. Data rasmi.<br>Mula malam ini.</p>

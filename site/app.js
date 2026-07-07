@@ -67,11 +67,11 @@ const STR = {
     stances_sub: 'Pendirian bersumber — sahkan sebelum menerbitkan bahan kempen',
     volunteer_nav: '🤖 Briefing AI untuk sukarelawan →',
     volunteer_title: 'Briefing AI untuk sukarelawan',
-    volunteer_sub: 'Cari kerusi anda, dapatkan briefing AI dalam satu ketikan — sedia untuk ditampal terus ke ChatGPT/Gemini.',
+    volunteer_sub: 'Cari kerusi anda, dapatkan briefing AI dengan satu klik — sedia untuk tampal terus ke ChatGPT/Gemini.',
     volunteer_get_btn: '🤖 Dapatkan briefing AI',
     volunteer_loading: 'Menjana…',
     volunteer_none: 'Tiada kerusi sepadan.',
-    volunteer_copied: (seat) => `✓ Briefing ${seat} disalin ke papan keratan`,
+    volunteer_copied: (seat) => `✓ Briefing ${seat} telah disalin — sedia untuk tampal`,
     volunteer_cta_sub: 'Buka chat BARU, kemudian tampal (Cmd/Ctrl+V):',
     volunteer_open_chatgpt: 'Buka ChatGPT',
     volunteer_open_gemini: 'Buka Gemini',
@@ -93,8 +93,8 @@ const STR = {
     income_rate: 'Pendapatan penengah',
     cpi_official: 'Inflasi rasmi (CPI Johor)',
     since_se15: 'Sejak PRN Mac 2022',
-    stress_line: (r) => `Perbelanjaan isi rumah menyerap RM${r} daripada setiap RM100 pendapatan`,
-    race_note: 'Kadar harga dikira daripada median bakul KPDN; pendapatan daripada HIES (anggaran DOSM); barangan yang kod KPDN-nya berubah selepas 2022 dikecualikan.',
+    stress_line: (r) => `Daripada setiap RM100 pendapatan, RM${r} habis untuk perbelanjaan isi rumah`,
+    race_note: 'Kadar harga dikira daripada median harga barang KPDN; pendapatan daripada HIES (anggaran DOSM); barangan yang kod KPDN-nya berubah selepas 2022 dikecualikan.',
     bloc_candidate: 'Calon Blok Progresif',
     prices_here: 'Harga barang dapur di kawasan anda',
     prices_sub: (d) => `Harga median di premis KPDN daerah ${d} — berbanding Mac 2022, PRN lalu`,
@@ -112,7 +112,7 @@ const STR = {
     u_rate: 'Kadar pengangguran',
     pp_line: (b, i) => `Sejak PRN Mac 2022: harga barang dapur naik ${b}%/thn, pendapatan hanya ${i}%/thn — kuasa beli keluarga semakin menyusut.`,
     share: 'Kongsi ringkasan',
-    copied: 'Disalin ke papan keratan!',
+    copied: 'Disalin!',
     story_title: 'Cerita kempen — 5 langkah',
     story_sub: 'Satu naratif tersusun; butiran penuh di bahagian bawah',
     beat_path: 'Jalan kemenangan',
@@ -1105,7 +1105,7 @@ async function renderVolunteer() {
         </span>
         <span class="btn-row" style="margin:0">
           <button class="btn" data-slug="${esc(s.slug)}">${L('volunteer_get_btn')}</button>
-          <button class="btn secondary" data-tp="${esc(s.slug)}">📋 ${T('Salin isi rumah ke rumah', 'Copy talking points', '复制拜访要点')}</button>
+          <button class="btn secondary" data-tp="${esc(s.slug)}">📋 ${T('Salin skrip rumah ke rumah', 'Copy talking points', '复制拜访要点')}</button>
         </span>
       </div>`).join('') : `<p class="sub">${L('volunteer_none')}</p>`
     // no-AI fallback: copy the seat's talking points as WhatsApp-ready text
@@ -1355,7 +1355,7 @@ function raceCard(seat, idx) {
 function tpText(seat, idx) {
   const pts = talkingPoints(seat, idx).map(p => `• ${htmlToText(p)}`)
   return [
-    `📍 ${seat.code} ${seat.name} — ${T('isi rumah ke rumah', 'door-knocking points', '逐户拜访要点')}`,
+    `📍 ${seat.code} ${seat.name} — ${T('skrip rumah ke rumah', 'door-knocking points', '逐户拜访要点')}`,
     ...pts,
     `${location.origin}${location.pathname}#/seat/${seat.slug}`,
   ].join('\n')
@@ -1420,7 +1420,7 @@ function doorstepHero(seat, idx) {
   }
   if (last?.majority_perc != null && last.majority_perc < 10) {
     contest.push(T(
-      `majoriti ${last.date.slice(0, 4)} hanya <strong>${fmtPct(last.majority_perc)}</strong> — setiap undi dikira`,
+      `majoriti ${last.date.slice(0, 4)} hanya <strong>${fmtPct(last.majority_perc)}</strong> — setiap undi penting`,
       `the ${last.date.slice(0, 4)} majority was only <strong>${fmtPct(last.majority_perc)}</strong> — every vote counts`,
       `${last.date.slice(0, 4)}年多数票仅 <strong>${fmtPct(last.majority_perc)}</strong> — 每一票都关键`))
   }
@@ -1510,7 +1510,7 @@ function talkingPoints(seat, idx) {
   if (last?.majority_perc != null && last.majority_perc < 10) {
     const yr = last.date?.slice(0, 4) ?? ''
     pts.push(bm
-      ? `Kerusi marginal: majoriti ${yr} (${esc(last.election)}) hanya <strong>${fmtPct(last.majority_perc)}</strong> (${fmtNum(last.majority)} undi).`
+      ? `Kerusi majoriti tipis: majoriti ${yr} (${esc(last.election)}) hanya <strong>${fmtPct(last.majority_perc)}</strong> (${fmtNum(last.majority)} undi).`
       : `Marginal seat: the ${yr} (${esc(last.election)}) majority was only <strong>${fmtPct(last.majority_perc)}</strong> (${fmtNum(last.majority)} votes).`)
   }
   return pts
@@ -1567,7 +1567,7 @@ function storyFor(seat, idx) {
     beats.push({
       title: L('beat_path'),
       text: bm
-        ? `${esc(w?.party ?? '?')} menang pada ${last.date.slice(0, 4)} dengan majoriti <strong>${fmtPct(last.majority_perc)}</strong>${t != null ? `, tetapi hanya <strong>${fmtPct(t, 0)}</strong> keluar mengundi${turnoutCollapsed ? ` (${prev.date.slice(0, 4)}: ${fmtPct(tp, 0)})` : ''}` : ''}. ${turnoutCollapsed ? 'Kerusi ini diputuskan oleh siapa yang KELUAR, bukan siapa yang bertukar parti.' : 'Setiap undi dikira.'}`
+        ? `${esc(w?.party ?? '?')} menang pada ${last.date.slice(0, 4)} dengan majoriti <strong>${fmtPct(last.majority_perc)}</strong>${t != null ? `, tetapi hanya <strong>${fmtPct(t, 0)}</strong> keluar mengundi${turnoutCollapsed ? ` (${prev.date.slice(0, 4)}: ${fmtPct(tp, 0)})` : ''}` : ''}. ${turnoutCollapsed ? 'Kerusi ini diputuskan oleh siapa yang KELUAR, bukan siapa yang bertukar parti.' : 'Setiap undi penting.'}`
         : `${esc(w?.party ?? '?')} won in ${last.date.slice(0, 4)} with a <strong>${fmtPct(last.majority_perc)}</strong> majority${t != null ? `, but only <strong>${fmtPct(t, 0)}</strong> turned out${turnoutCollapsed ? ` (${prev.date.slice(0, 4)}: ${fmtPct(tp, 0)})` : ''}` : ''}. ${turnoutCollapsed ? 'This seat is decided by who SHOWS UP, not who switches sides.' : 'Every vote counts.'}`,
     })
   }
@@ -1615,7 +1615,7 @@ function storyFor(seat, idx) {
       beats.push({
         title: L('beat_ground'),
         text: bm
-          ? `Kubu 2022 dengan keluar mengundi rendah = undi tersedia menunggu dikutip: ${list}.`
+          ? `Kubu 2022 tapi ramai tak keluar mengundi — sokongan sedia ada, mula di sini: ${list}.`
           : `2022 strongholds with low turnout = votes waiting to be collected: ${list}.`,
       })
     } else if (dms.length) {
