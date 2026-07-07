@@ -1351,14 +1351,16 @@ function raceCard(seat, idx) {
 }
 
 // WhatsApp-ready plain-text talking points — one-tap value for volunteers who
-// won't paste anything into an AI chat
+// won't paste anything into an AI chat. Mirrors the Field card's groups and
+// keeps every MUDA answer's attribution (who, role, year, source URL).
 function tpText(seat, idx) {
-  const pts = talkingPoints(seat, idx).map(p => `• ${htmlToText(p)}`)
-  return [
-    `📍 ${seat.code} ${seat.name} — ${T('skrip rumah ke rumah', 'door-knocking points', '逐户拜访要点')}`,
-    ...pts,
-    `${location.origin}${location.pathname}#/seat/${seat.slug}`,
-  ].join('\n')
+  const lines = [`📍 ${seat.code} ${seat.name} — ${T('skrip rumah ke rumah', 'door-knocking script', '逐户拜访要点')}`]
+  for (const g of talkingPoints(seat, idx)) {
+    lines.push('', `— ${g.title.toUpperCase()} —`)
+    lines.push(...g.pts.map(p => `• ${p.text}`))
+  }
+  lines.push('', `${location.origin}${location.pathname}#/seat/${seat.slug}`)
+  return lines.join('\n')
 }
 
 function shareText(seat) {
@@ -1446,74 +1448,141 @@ function renderBrief(seat, idx) {
     ${incomeCard(seat, idx)}`
 }
 
+// Curated issue → the change MUDA commits to, structured once and rendered
+// twice (HTML card + WhatsApp plain text). Attribution is mandatory: stance
+// lead + verified quote with who/role/year/source. NO_VERIFIED_POSITION
+// stances are skipped entirely — at the door a volunteer leads with the issue,
+// never with a non-position (the honest note stays in the stances card).
+function issueAnswers(seat, idx) {
+  const bm = state.lang === 'bm'
+  const li = seat.local_issues ?? {}
+  const entries = [
+    ...(li.seat ?? []).map(it => ({ it, scope: 'seat' })),
+    ...(li.statewide ?? []).slice(0, 2).map(it => ({ it, scope: 'state' })),
+    ...((idx?.national_issues ?? []).slice(0, 2)).map(it => ({ it, scope: 'national' })),
+  ]
+  return entries.map(({ it, scope }) => {
+    const lead = leadClause(bm ? (it.issue_bm ?? it.issue_en) : (it.issue_en ?? it.issue_bm))
+    const t = (seat.muda_stances ?? []).find(s => s.key === it.theme)
+    let stance = null
+    if (t && t.verdict !== 'NO_VERIFIED_POSITION') {
+      const qs = t.quotes ?? []
+      const q = qs.find(x => x.lang === state.lang) ?? qs[0]
+      stance = {
+        lead: leadClause(pick(t, 'stance')),
+        quote: q ? { text: q.text, who: q.who, role: pick(q, 'role'), year: (q.date ?? '').slice(0, 4), source: q.source ?? null } : null,
+      }
+    }
+    return { lead, stance, scope }
+  }).filter(e => e.lead)
+}
+
+const SOL_LABEL = () => T('Penyelesaian MUDA', 'MUDA’s answer', 'MUDA 的方案')
+
+function issuePointHtml(e) {
+  const q = e.stance?.quote
+  const quoteHtml = q
+    ? `<br>“${esc(q.text)}” — <strong>${esc(q.who)}</strong>, ${esc(q.role)} (${esc(q.year)})${q.source ? ` <a href="${esc(q.source)}" target="_blank" rel="noopener" style="color:var(--muted)">[${T('sumber', 'source', '来源')}]</a>` : ''}`
+    : ''
+  const sol = e.stance
+    ? `<br><span style="color:var(--muted);font-size:.82rem"><strong>${SOL_LABEL()}:</strong> ${esc(e.stance.lead)}${quoteHtml}</span>`
+    : ''
+  return `${esc(e.lead)}${sol}`
+}
+
+function issuePointText(e) {
+  const q = e.stance?.quote
+  let s = e.lead
+  if (e.stance) {
+    s += `\n  ${SOL_LABEL()}: ${e.stance.lead}`
+    if (q) s += `\n  “${q.text}” — ${q.who}, ${q.role} (${q.year})${q.source ? `\n  ${q.source}` : ''}`
+  }
+  return s
+}
+
+// Door-knocking points, grouped and prioritized: grounded LOCAL issues first
+// (each with MUDA's attributed answer), the local data evidence beneath them,
+// NATIONAL issues second, and campaign targeting facts last. Each point is
+// { html, text } so the Field card and the WhatsApp copy stay in lockstep.
 function talkingPoints(seat, idx) {
-  const pts = []
   const p = seat.prices
   const bm = state.lang === 'bm'
-  // cross-source headliners: pasar vs official CPI, prices vs wages
+  const pt = (html, text) => ({ html, text: text ?? htmlToText(html) })
+  const issues = issueAnswers(seat, idx)
+  const issuePt = (e) => pt(issuePointHtml(e), issuePointText(e))
+
+  const local = issues.filter(e => e.scope !== 'national').map(issuePt)
+  // cross-source data evidence: pasar vs official CPI, prices vs wages
   const r = raceStats(seat, idx)
   if (r?.basketAnnual != null && r.cpiYoy != null && r.basketAnnual > r.cpiYoy + 1) {
-    pts.push(bm
+    local.push(pt(bm
       ? `Inflasi rasmi Johor hanya <strong>${r.cpiYoy.toFixed(1)}%</strong> setahun — tetapi harga barang dapur di sini naik <strong>${r.basketAnnual.toFixed(1)}%</strong> setahun sejak PRN Mac 2022.`
-      : `Official Johor inflation is just <strong>${r.cpiYoy.toFixed(1)}%</strong> a year — but the kitchen basket here is up <strong>${r.basketAnnual.toFixed(1)}%</strong> a year since the Mar 2022 election.`)
+      : `Official Johor inflation is just <strong>${r.cpiYoy.toFixed(1)}%</strong> a year — but the kitchen basket here is up <strong>${r.basketAnnual.toFixed(1)}%</strong> a year since the Mar 2022 election.`))
   }
   if (r?.basketAnnual != null && r.incomeAnnual != null && r.basketAnnual > r.incomeAnnual) {
-    pts.push(bm
+    local.push(pt(bm
       ? `Harga dapur naik <strong>${r.basketAnnual.toFixed(1)}%/thn</strong> tetapi pendapatan penengah hanya <strong>${r.incomeAnnual.toFixed(1)}%/thn</strong> — gaji kalah dalam perlumbaan harga.`
-      : `Kitchen prices are rising <strong>${r.basketAnnual.toFixed(1)}%/yr</strong> but median income only <strong>${r.incomeAnnual.toFixed(1)}%/yr</strong> — wages are losing the race.`)
+      : `Kitchen prices are rising <strong>${r.basketAnnual.toFixed(1)}%/yr</strong> but median income only <strong>${r.incomeAnnual.toFixed(1)}%/yr</strong> — wages are losing the race.`))
   }
   if (r?.stress != null && r.stress >= 70) {
-    pts.push(bm ? `${L('stress_line', r.stress)}.` : `${L('stress_line', r.stress)}.`)
+    local.push(pt(`${L('stress_line', r.stress)}.`))
   }
   const topRisers = p.items.map(it => {
     const series = it.latest_district != null ? it.series.district : it.series.johor
     return { it, ws: windowStats(series, p.weeks) }
   }).filter(e => e.ws && e.ws.perc >= 3)
     .sort((a, b) => b.ws.perc - a.ws.perc)
-    .slice(0, 3)
+    .slice(0, 2)
   for (const { it, ws } of topRisers) {
-    pts.push(bm
+    local.push(pt(bm
       ? `Harga <strong>${esc(it.label_bm.toLowerCase())}</strong> naik <strong>${ws.perc}%</strong> dalam 3 bulan di daerah ${esc(p.district)} (kini ${fmtRM(ws.last)}/${esc(it.unit)}).`
-      : `<strong>${esc(it.label_en)}</strong> price up <strong>${ws.perc}%</strong> in 3 months in ${esc(p.district)} district (now ${fmtRM(ws.last)}/${esc(it.unit)}).`)
+      : `<strong>${esc(it.label_en)}</strong> price up <strong>${ws.perc}%</strong> in 3 months in ${esc(p.district)} district (now ${fmtRM(ws.last)}/${esc(it.unit)}).`))
   }
   const incArr = seat.socio.income ?? []
   const inc0 = incArr[0]
   const incN = incArr.at(-1)
   if (inc0 && incN && incN !== inc0 && incN.income_median < inc0.income_median) {
-    pts.push(bm
+    local.push(pt(bm
       ? `Pendapatan penengah isi rumah di sini <strong>RM${fmtNum(incN.income_median)}</strong> — masih belum pulih ke paras ${inc0.date.slice(0, 4)} (RM${fmtNum(inc0.income_median)}). Harga naik, gaji tidak.`
-      : `Median household income here is <strong>RM${fmtNum(incN.income_median)}</strong> — still below its ${inc0.date.slice(0, 4)} level (RM${fmtNum(inc0.income_median)}). Prices went up; pay didn't.`)
+      : `Median household income here is <strong>RM${fmtNum(incN.income_median)}</strong> — still below its ${inc0.date.slice(0, 4)} level (RM${fmtNum(inc0.income_median)}). Prices went up; pay didn't.`))
   }
   const labArr = seat.socio.labour ?? []
   const labN = labArr.at(-1)
   const labPrev = labArr.length >= 2 ? labArr.at(-2) : null
   if (labN && labPrev && labN.u_rate != null && labPrev.u_rate != null && labN.u_rate > labPrev.u_rate) {
-    pts.push(bm
+    local.push(pt(bm
       ? `Kadar pengangguran naik ke <strong>${fmtPct(labN.u_rate)}</strong> (${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)}).`
-      : `Unemployment has risen to <strong>${fmtPct(labN.u_rate)}</strong> (${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)}).`)
+      : `Unemployment has risen to <strong>${fmtPct(labN.u_rate)}</strong> (${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)}).`))
   }
+
+  const national = issues.filter(e => e.scope === 'national').map(issuePt)
+
+  const kempen = []
   const demo = seat.demographics.find(d => d.election === 'JHR-SE-16')
   const ge15 = seat.demographics.find(d => d.election === 'GE-15')
   if (demo) {
     const youthN = demo.age.age_18_20 + demo.age.age_21_29
     const youthP = (100 * youthN / demo.voters_total).toFixed(0)
-    pts.push(bm
+    kempen.push(pt(bm
       ? `<strong>${fmtNum(youthN)}</strong> pengundi bawah 30 tahun (${youthP}% daftar pemilih) — fokus Undi18.`
-      : `<strong>${fmtNum(youthN)}</strong> voters under 30 (${youthP}% of the roll) — the Undi18 focus.`)
+      : `<strong>${fmtNum(youthN)}</strong> voters under 30 (${youthP}% of the roll) — the Undi18 focus.`))
     if (ge15 && demo.voters_total > ge15.voters_total) {
-      pts.push(bm
-        ? `<strong>+${fmtNum(demo.voters_total - ge15.voters_total)}</strong> ${L('new_voters')}.`
-        : `<strong>+${fmtNum(demo.voters_total - ge15.voters_total)}</strong> ${L('new_voters')}.`)
+      kempen.push(pt(`<strong>+${fmtNum(demo.voters_total - ge15.voters_total)}</strong> ${L('new_voters')}.`))
     }
   }
   const last = seat.history[0]
   if (last?.majority_perc != null && last.majority_perc < 10) {
     const yr = last.date?.slice(0, 4) ?? ''
-    pts.push(bm
+    kempen.push(pt(bm
       ? `Kerusi majoriti tipis: majoriti ${yr} (${esc(last.election)}) hanya <strong>${fmtPct(last.majority_perc)}</strong> (${fmtNum(last.majority)} undi).`
-      : `Marginal seat: the ${yr} (${esc(last.election)}) majority was only <strong>${fmtPct(last.majority_perc)}</strong> (${fmtNum(last.majority)} votes).`)
+      : `Marginal seat: the ${yr} (${esc(last.election)}) majority was only <strong>${fmtPct(last.majority_perc)}</strong> (${fmtNum(last.majority)} votes).`))
   }
-  return pts
+
+  return [
+    { title: T('Tempatan', 'Local', '本地'), pts: local },
+    { title: T('Nasional', 'National', '全国'), pts: national },
+    { title: T('Fakta kempen', 'Campaign facts', '竞选数据'), pts: kempen },
+  ].filter(g => g.pts.length)
 }
 
 // The prioritized 5-beat narrative: one story a candidate can carry, ordered
@@ -1546,7 +1615,7 @@ function mudaAngleFor(theme, seat) {
   const qs = t.quotes ?? []
   const q = qs.find(x => x.lang === state.lang) ?? qs[0]
   const quoteHtml = q
-    ? `<br>“${esc(q.text)}” — <strong>${esc(q.who)}</strong>, ${esc(pick(q, 'role'))} (${esc((q.date ?? '').slice(0, 4))})`
+    ? `<br>“${esc(q.text)}” — <strong>${esc(q.who)}</strong>, ${esc(pick(q, 'role'))} (${esc((q.date ?? '').slice(0, 4))})${q.source ? ` <a href="${esc(q.source)}" target="_blank" rel="noopener" style="color:var(--muted)">[${T('sumber', 'source', '来源')}]</a>` : ''}`
     : ''
   return `<br><span style="color:var(--muted);font-size:.82rem"><strong>MUDA:</strong> ${esc(stanceLead)}${quoteHtml}</span>`
 }
@@ -1784,7 +1853,7 @@ function renderField(seat, idx) {
     <div class="card">
       <h2>${L('talking_points')}</h2>
       <p class="sub">${L('tp_sub')}</p>
-      <ul class="points">${pts.map(p => `<li>${p}</li>`).join('')}</ul>
+      ${pts.map(g => `<h3>${esc(g.title)}</h3><ul class="points">${g.pts.map(p => `<li>${p.html}</li>`).join('')}</ul>`).join('')}
     </div>
     ${recordCard(seat)}
     ${idx.edition === 'muda' ? `<div class="btn-row"><button class="btn" id="briefBtn">${L('brief_btn')}</button></div>` : ''}
