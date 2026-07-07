@@ -11,9 +11,15 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#/">
-      <span class="brand-mark">PETA</span><span class="brand-mark brand-invert">MUDA</span>
-    </a>
+    <div class="brand-group">
+      <a class="brand" href="#/">
+        <span class="brand-mark">PETA</span><span class="brand-mark brand-invert">MUDA</span>
+      </a>
+      <div class="state-toggle" id="stateToggle" role="group" aria-label="Negeri">
+        <button type="button" class="active" data-state="johor" aria-pressed="true">JHR</button>
+        <button type="button" data-state="melaka" aria-pressed="false" disabled title="Data Melaka akan datang selepas PRN Johor">MLK</button>
+      </div>
+    </div>
     <div class="topbar-right">
       <button id="langToggle" class="lang-toggle" aria-label="Tukar bahasa / Language / 语言">BM</button>
     </div>
