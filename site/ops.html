@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Peta MUDA — Ops</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* small ops-only additions on top of the app stylesheet */
+    .ops-wrap { max-width: 680px; margin: 0 auto; padding: 16px; }
+    .ops-tabs { display: flex; gap: 8px; margin: 12px 0; }
+    .ops-tabs button { flex: 1; }
+    textarea { width: 100%; box-sizing: border-box; min-height: 120px; font: inherit; padding: 10px 12px; border: 1.5px solid var(--line, #ddd); border-radius: 10px; }
+    select, input[type=text], input[type=password] { width: 100%; box-sizing: border-box; font: inherit; padding: 10px 12px; border: 1.5px solid var(--line, #ddd); border-radius: 10px; }
+    label { font-size: .8rem; font-weight: 700; color: var(--muted, #6b7280); display: block; margin: 12px 0 4px; }
+    .item-text { font-size: .9rem; line-height: 1.4; }
+    .kind-news { background: #0c7c59; } .kind-ground { background: #b45309; }
+    .ok { color: #0c7c59; font-weight: 700; } .err { color: #c81e3a; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="ops-wrap" id="ops">Memuatkan…</div>
+  <script src="ops-config.js"></script>
+  <script type="module" src="ops.js"></script>
+</body>
+</html>

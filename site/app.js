@@ -1473,9 +1473,11 @@ function issueAnswers(seat, idx) {
         quote: q ? { text: q.text, who: q.who, role: pick(q, 'role'), year: (q.date ?? '').slice(0, 4), source: q.source ?? null } : null,
       }
     }
-    return { lead, stance, scope }
+    return { lead, stance, scope, ground: it.verdict === 'GROUND_REPORT' }
   }).filter(e => e.lead)
 }
+
+const GROUND_LABEL = () => T('Laporan lapangan', 'Field report', '现场报告')
 
 const SOL_LABEL = () => T('Penyelesaian MUDA', 'MUDA’s answer', 'MUDA 的方案')
 
@@ -1487,12 +1489,13 @@ function issuePointHtml(e) {
   const sol = e.stance
     ? `<br><span style="color:var(--muted);font-size:.82rem"><strong>${SOL_LABEL()}:</strong> ${esc(e.stance.lead)}${quoteHtml}</span>`
     : ''
-  return `${esc(e.lead)}${sol}`
+  const tag = e.ground ? `<span class="badge" style="background:var(--lain);font-size:.6rem">${GROUND_LABEL()}</span> ` : ''
+  return `${tag}${esc(e.lead)}${sol}`
 }
 
 function issuePointText(e) {
   const q = e.stance?.quote
-  let s = e.lead
+  let s = e.ground ? `[${GROUND_LABEL()}] ${e.lead}` : e.lead
   if (e.stance) {
     s += `\n  ${SOL_LABEL()}: ${e.stance.lead}`
     if (q) s += `\n  “${q.text}” — ${q.who}, ${q.role} (${q.year})${q.source ? `\n  ${q.source}` : ''}`
@@ -1738,7 +1741,8 @@ function issuesCard(seat, idx) {
     const receipt = bm ? (it.receipt_bm ?? it.receipt_en) : (it.receipt_en ?? it.receipt_bm)
     const refs = (it.sources ?? []).map((u, i) =>
       ` <a href="${esc(u)}" target="_blank" rel="noopener" style="color:var(--muted)">[${i + 1}]</a>`).join('')
-    return `<li>${tag ? `<span class="badge" style="background:var(--lain)">${esc(tag)}</span> ` : ''}${esc(text ?? '')}${receipt ? `<br><span style="color:var(--muted);font-size:.78rem">${esc(receipt)}</span>` : ''}${refs}</li>`
+    const groundTag = it.verdict === 'GROUND_REPORT' ? `<span class="badge" style="background:var(--lain)">${GROUND_LABEL()}</span> ` : ''
+    return `<li>${tag ? `<span class="badge" style="background:var(--lain)">${esc(tag)}</span> ` : ''}${groundTag}${esc(text ?? '')}${receipt ? `<br><span style="color:var(--muted);font-size:.78rem">${esc(receipt)}</span>` : ''}${refs}</li>`
   }).join('')
   const seatItems = li.seat ?? []
   const stateItems = li.statewide ?? []

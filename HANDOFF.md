@@ -91,6 +91,33 @@ there is no wrangler file in the repo).
   for 60 days the refresh cron silently pauses until someone pushes or re-enables
   it in the Actions tab.
 
+## Intake queue (ground stories + news crawler → admin approval)
+
+Two feeds, one private queue, one human gate:
+
+- **Ground stories**: volunteers WhatsApp what they hear to an admin; the admin
+  pastes it at **`/ops.html`** (hidden page, not linked from the app; shared
+  passphrase). Theme + seats are auto-suggested (`site/ops-match.mjs`).
+- **News**: `.github/workflows/intake.yml` runs `pipeline/news.mjs` every 4h —
+  RSS sweep, kept only if Johor-relevant AND hitting a MUDA-stance theme —
+  and inserts DRAFTS into the same queue. It never publishes.
+- **Approval**: admins tap "Lulus" in /ops.html. Approved items are pulled at
+  build time (`pipeline/steps/intake.mjs`), appended to `seat.local_issues`
+  (cap 2/seat + 2 statewide), auto-paired with MUDA's stance via `theme`, and
+  labelled: ground items carry `verdict: GROUND_REPORT` → shown as
+  **"Laporan lapangan"** (never dressed as verified news); news items carry
+  `REPORTED` with the article URL as receipt.
+- **Determinism**: CI writes `data/derived/intake_snapshot.json` (bot-committed);
+  offline builds/sims read the snapshot — same pattern as `price_history.json`.
+- **Setup** (one-time): apply `tools/intake/schema.sql` in the Supabase SQL
+  editor (set a real passphrase at the bottom); fill `site/ops-config.js` with
+  the project URL + publishable (anon) key; add repo Actions secrets
+  `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `INTAKE_PASS`. The anon key only exposes
+  the passphrase-guarded `intake_*` RPCs (RLS, no table policies). Rotate the
+  passphrase by re-running the final `insert` in schema.sql.
+- The refresh cron now runs **every 4 hours** during the campaign (approved
+  items go live within ~4h; "Lulus" in /ops.html tells the admin this).
+
 ## Languages (BM / EN / 中文)
 
 The UI is trilingual via `STR = { bm, en, zh }` + a 3-way toggle (`site/app.js`).

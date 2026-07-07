@@ -16,6 +16,7 @@ import { loadPrices, mergeDistrict } from './steps/prices.mjs'
 import { updatePriceHistory, buildCostTrend } from './steps/cost_of_living.mjs'
 import { loadGeo } from './steps/geo.mjs'
 import { loadCrime } from './steps/crime.mjs'
+import { loadIntake } from './steps/intake.mjs'
 
 const OUT = path.join('site', 'data')
 const t0 = Date.now()
@@ -79,6 +80,10 @@ let issuesManual = { seats: {}, statewide: [] }
 try {
   issuesManual = JSON.parse(await readFile(path.join('data', 'manual', 'issues.json'), 'utf8'))
 } catch { log('no manual issues.json, skipping local issues') }
+
+// ---- intake queue: admin-approved ground reports + news (Supabase in CI,
+// committed snapshot offline — see steps/intake.mjs) ----
+const intake = await loadIntake(log)
 
 // ---- curated national issues (research-verified, hand-maintained; neutral,
 // both editions — sourced facts like issues.json, surfaced app-wide) ----
@@ -247,8 +252,8 @@ for (const seat of seats) {
     kawasanku: kawasanku.get(seat.code) ?? null,
     prices: priceBlock,
     local_issues: {
-      seat: issuesManual.seats?.[seat.code] ?? [],
-      statewide: issuesManual.statewide ?? [],
+      seat: [...(issuesManual.seats?.[seat.code] ?? []), ...intake.forSeat(seat.code)],
+      statewide: [...(issuesManual.statewide ?? []), ...intake.statewide],
       updated: issuesManual.updated ?? null,
     },
     // pro-MUDA edition only: MUDA's stance on this seat's doorstep themes
