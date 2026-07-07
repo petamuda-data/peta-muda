@@ -7,13 +7,16 @@
   "scripts": {
     "pipeline": "node pipeline/run.mjs",
     "serve": "node tools/serve.mjs",
-    "sim": "node tools/sim/run.mjs"
+    "sim": "node tools/sim/run.mjs",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "dependencies": {
     "hyparquet": "^1.8.0",
     "hyparquet-compressors": "^1.1.1"
   },
   "devDependencies": {
-    "hyparquet-writer": "^0.16.1"
+    "hyparquet-writer": "^0.16.1",
+    "wrangler": "^4.107.1"
   }
 }
