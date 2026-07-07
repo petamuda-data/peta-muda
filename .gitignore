@@ -3,3 +3,10 @@ node_modules/
 .sim/
 tools/video/sukarelawan/
 tools/video/hq/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
