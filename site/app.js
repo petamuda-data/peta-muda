@@ -8,8 +8,8 @@ const storage = {
   get(k) { try { return localStorage.getItem(k) } catch { return null } },
   set(k, v) { try { localStorage.setItem(k, v) } catch { /* blocked */ } },
 }
-const LANGS = ['bm', 'en', 'zh']
-const LANG_LABEL = { bm: 'BM', en: 'EN', zh: '中' }
+const LANGS = ['bm', 'en']
+const LANG_LABEL = { bm: 'BM', en: 'EN' }
 const state = {
   lang: LANGS.includes(storage.get('lang')) ? storage.get('lang') : 'bm',
   index: null,
@@ -28,19 +28,15 @@ const STR = {
     poll_over: 'PRN Johor 2026 telah selesai. Terima kasih kerana mengundi!',
     featured: 'Kerusi Blok Progresif (MUDA–PSM)',
     as_of: 'Harga setakat',
-    cost_headline: 'Harga dapur di Johor — 12 minggu terkini',
-    cost_sub: 'Perubahan harga median barangan asas di premis Johor (data PriceCatcher KPDN, dikemas kini harian)',
     cost_trend_title: 'Kos sara hidup — berbanding dulu',
     cost_trend_sub: 'Perubahan harga sebenar berbanding 1 bulan hingga 1 tahun lalu — naik (merah) atau turun (hijau) ikut data',
     cost_trend_note: 'Setiap angka membandingkan harga hari ini dengan harga tempoh lalu. CPI: OpenDOSM (inflasi rasmi Johor). Petrol: harga runcit mingguan KPDN. Bakul makanan: median PriceCatcher barangan bukan kawalan harga. Arah mengikut data — sahkan sebelum menerbitkan.',
-    win_1m: '1 bln', win_3m: '3 bln', win_6m: '6 bln', win_12m: '1 thn',
+    win_12m: '1 thn',
     fuel_now: 'Harga petrol kini',
-    fuel: 'Harga runcit petrol minggu ini (seluruh negara)',
     all_seats: 'Semua 56 kerusi DUN Johor',
     search: 'Cari kerusi, kawasan atau parlimen…',
     voters: 'pengundi',
     youth: 'bawah 30',
-    last_result: 'Keputusan 2022',
     majority: 'majoriti',
     turnout: 'keluar mengundi',
     tab_brief: 'Ringkas',
@@ -52,57 +48,28 @@ const STR = {
     results_sub: 'Keputusan rasmi — data ElectionData.MY',
     first_time: 'Calon kali pertama',
     career_line: (c, w, el, yr) => `Rekod: ${c} tandingan, ${w} menang · terakhir ${el} (${yr})`,
-    record_title: 'Rekod calon',
-    record_sub: 'Rekod pilihan raya rasmi setiap calon di kerusi ini — sumber ElectionData.MY (semak sebelum guna)',
-    record_summary: (c, w) => `${c} tandingan · ${w} menang`,
-    record_firsttimer: 'Muka baharu — tiada rekod pilihan raya terdahulu',
     record_hop: (n) => `Bertukar parti ${n} kali`,
     record_switchedin: (p) => `Bertanding atas tiket ${p} buat kali pertama tahun ini`,
-    record_now: 'kini',
     muda_title: 'MUDA — parti kecil, kesan besar',
-    muda_record_title: 'Rekod kebangsaan (bersumber)',
-    muda_seat_title: 'Kesan MUDA di kerusi ini',
-    stances_title: 'Jawapan MUDA untuk isu tempatan',
-    brief_btn: '🤖 Briefing AI (untuk ChatGPT/Gemini)',
+    brief_btn: 'Briefing AI (untuk ChatGPT/Gemini)',
     brief_saved: 'Fail .md dimuat turun!',
-    stances_sub: 'Pendirian bersumber — sahkan sebelum menerbitkan bahan kempen',
-    volunteer_nav: '🤖 Briefing AI untuk sukarelawan →',
     volunteer_title: 'Briefing AI untuk sukarelawan',
     volunteer_sub: 'Cari kerusi anda, dapatkan briefing AI dengan satu klik — sedia untuk tampal terus ke ChatGPT/Gemini.',
-    volunteer_get_btn: '🤖 Dapatkan briefing AI',
+    volunteer_get_btn: 'Dapatkan briefing AI',
     volunteer_loading: 'Menjana…',
     volunteer_none: 'Tiada kerusi sepadan.',
     volunteer_copied: (seat) => `✓ Briefing ${seat} telah disalin — sedia untuk tampal`,
     volunteer_cta_sub: 'Buka chat BARU, kemudian tampal (Cmd/Ctrl+V):',
     volunteer_open_chatgpt: 'Buka ChatGPT',
     volunteer_open_gemini: 'Buka Gemini',
-    ceiling_title: 'Pematuhan harga siling kerajaan',
-    ceiling_sub: 'Harga sebenar berbanding harga siling rasmi bagi 3 barangan terkawal',
-    ceiling_observed: 'Harga tempatan',
-    ceiling_official: 'Siling rasmi',
-    ceiling_status: 'Status',
-    ceiling_ok: 'Dalam siling',
-    ceiling_no_data: 'Tiada data',
     ceiling_exceeds: (p) => `+${p}% melebihi`,
-    ceiling_note: 'Harga siling ditetapkan kerajaan (bukan data KPDN PriceCatcher) — disahkan secara manual, sahkan sebelum menerbitkan.',
-    crime_title: 'Jenayah di Johor',
-    crime_sub: 'Jenayah indeks berdaftar mengikut daerah polis',
-    crime_note: 'Data PDRM peringkat daerah polis (bukan kerusi). Sahkan sebelum menerbitkan.',
-    race_title: 'Harga vs pendapatan vs inflasi rasmi',
-    race_sub: 'Kadar perubahan setahun — harga dapur diukur sejak PRN lalu (Mac 2022)',
-    basket_rate: 'Barang dapur',
-    income_rate: 'Pendapatan penengah',
-    cpi_official: 'Inflasi rasmi (CPI Johor)',
-    since_se15: 'Sejak PRN Mac 2022',
     stress_line: (r) => `Daripada setiap RM100 pendapatan, RM${r} habis untuk perbelanjaan isi rumah`,
-    race_note: 'Kadar harga dikira daripada median harga barang KPDN; pendapatan daripada HIES (anggaran DOSM); barangan yang kod KPDN-nya berubah selepas 2022 dikecualikan.',
     bloc_candidate: 'Calon Blok Progresif',
     prices_here: 'Harga barang dapur di kawasan anda',
     prices_sub: (d) => `Harga median di premis KPDN daerah ${d} — berbanding Mac 2022, PRN lalu`,
     col_item: 'Barang',
     col_price: 'Harga',
     col_then: 'Mac 2022',
-    col_4w: '4 mgu',
     col_12w: '3 bln',
     trend: 'Arah',
     income_ctx: 'Konteks pendapatan',
@@ -135,33 +102,24 @@ const STR = {
     ethnic_dist: 'Etnik pengundi',
     new_voters: 'pengundi baharu sejak PRU15 (Nov 2022)',
     women: 'wanita',
-    nearby: 'Premis harga terdekat (KPDN)',
-    nearby_sub: 'Harga terkini di pasar & kedai yang dipantau di daerah ini',
     history: 'Sejarah keputusan',
     saluran: 'Analisis daerah mengundi (PRN 2022)',
     saluran_sub: 'Undian mengikut daerah mengundi — kenal pasti kubu & medan rebutan',
     dm: 'Daerah mengundi',
-    kaw_title: 'Penunjuk kawasan (Kawasanku DOSM)',
-    kaw_sub: 'Kemudahan & sosioekonomi per kapita kawasan',
-    socio_series: 'Siri sosioekonomi (HIES/LFS)',
     export: 'Muat turun data',
     export_json: 'JSON penuh kerusi',
     export_csv: 'CSV daerah mengundi',
     winner: 'Pemenang',
-    party: 'Parti',
     election: 'Pilihan raya',
     sources: 'Sumber data',
     built: 'Data dibina',
     disclaimer: 'Alat maklumat tidak rasmi berasaskan 100% data terbuka kerajaan/awam. Bukan ramalan. Sahkan fakta sebelum penerbitan kempen.',
     err: 'Maaf, data tidak dapat dimuatkan.',
     candidates: 'calon',
-    postal: 'Undi pos',
-    early: 'Undi awal',
     income_note: (y) => `Anggaran HIES ${y}, DOSM`,
     price_note: 'Harga ialah median premis yang dipantau KPDN; boleh berbeza di kedai berlainan.',
     no_price: 'Tiada data harga daerah — median Johor ditunjukkan.',
     top3_note: (n) => `3 kenaikan paling ketara sejak PRN Mac 2022, daripada ${n} barangan dipantau.`,
-    clinics: 'Klinik', schools: 'Sekolah', hospitals: 'Hospital', grocery: 'Kedai runcit', atm: 'ATM', petrol: 'Stesen minyak', police_fire: 'Polis/Bomba', water: 'Akses air', electricity: 'Akses elektrik', expenditure: 'Perbelanjaan purata',
   },
   en: {
     tagline: 'Seat Command Center — 2026 Johor Election',
@@ -172,19 +130,15 @@ const STR = {
     poll_over: 'The 2026 Johor election has concluded. Thank you for voting!',
     featured: 'Progressive Bloc seats (MUDA–PSM)',
     as_of: 'Prices as of',
-    cost_headline: 'Kitchen prices in Johor — last 12 weeks',
-    cost_sub: 'Median price change for staples at Johor premises (KPDN PriceCatcher, updated daily)',
     cost_trend_title: 'Cost of living — versus before',
     cost_trend_sub: 'Real price change versus 1 month to 1 year ago — up (red) or down (green), the direction the data shows',
     cost_trend_note: 'Each figure compares today’s price with the price then. CPI: OpenDOSM (official Johor inflation). Fuel: KPDN weekly retail. Food basket: median PriceCatcher price of non-price-controlled staples. Direction follows the data — verify before publishing.',
-    win_1m: '1mo', win_3m: '3mo', win_6m: '6mo', win_12m: '1yr',
+    win_12m: '1yr',
     fuel_now: 'Fuel price now',
-    fuel: 'This week’s retail fuel prices (nationwide)',
     all_seats: 'All 56 Johor state seats',
     search: 'Search seat, area or parlimen…',
     voters: 'voters',
     youth: 'under 30',
-    last_result: '2022 result',
     majority: 'majority',
     turnout: 'turnout',
     tab_brief: 'Brief',
@@ -196,57 +150,28 @@ const STR = {
     results_sub: 'Official result — ElectionData.MY',
     first_time: 'First-time candidate',
     career_line: (c, w, el, yr) => `Record: ${c} contests, ${w} won · last ${el} (${yr})`,
-    record_title: 'Candidate record',
-    record_sub: 'Each candidate’s official electoral record for this seat — source ElectionData.MY (verify before use)',
-    record_summary: (c, w) => `${c} contests · ${w} won`,
-    record_firsttimer: 'New face — no prior electoral record',
     record_hop: (n) => `Switched party ${n} times`,
     record_switchedin: (p) => `Standing on the ${p} ticket for the first time this year`,
-    record_now: 'now',
     muda_title: 'MUDA — small party, big bite',
-    muda_record_title: 'National record (sourced)',
-    muda_seat_title: "MUDA's footprint in this seat",
-    stances_title: "MUDA's answer to the local issues",
-    brief_btn: '🤖 AI briefing (for ChatGPT/Gemini)',
+    brief_btn: 'AI briefing (for ChatGPT/Gemini)',
     brief_saved: '.md file downloaded!',
-    stances_sub: 'Sourced positions — verify before publishing campaign material',
-    volunteer_nav: '🤖 Volunteer AI briefings →',
     volunteer_title: 'Volunteer AI briefings',
     volunteer_sub: 'Find your seat, get an AI briefing in one tap — ready to paste straight into ChatGPT/Gemini.',
-    volunteer_get_btn: '🤖 Get my AI briefing',
+    volunteer_get_btn: 'Get my AI briefing',
     volunteer_loading: 'Generating…',
     volunteer_none: 'No matching seats.',
     volunteer_copied: (seat) => `✓ ${seat} briefing copied to clipboard`,
     volunteer_cta_sub: 'Open a NEW chat, then paste it in (Cmd/Ctrl+V):',
     volunteer_open_chatgpt: 'Open ChatGPT',
     volunteer_open_gemini: 'Open Gemini',
-    ceiling_title: 'Government price-ceiling compliance',
-    ceiling_sub: 'Local observed price vs. the official ceiling for the 3 controlled items',
-    ceiling_observed: 'Local price',
-    ceiling_official: 'Official ceiling',
-    ceiling_status: 'Status',
-    ceiling_ok: 'Within ceiling',
-    ceiling_no_data: 'No data',
     ceiling_exceeds: (p) => `+${p}% over`,
-    ceiling_note: 'Ceiling prices are government-set (not KPDN PriceCatcher data) — manually verified, verify before publishing.',
-    crime_title: 'Crime in Johor',
-    crime_sub: 'Registered index crime by police district',
-    crime_note: 'PDRM data at police-district level (not per seat). Verify before publishing.',
-    race_title: 'Prices vs income vs official inflation',
-    race_sub: 'Annual rates of change — kitchen prices measured since the last election (Mar 2022)',
-    basket_rate: 'Kitchen basket',
-    income_rate: 'Median income',
-    cpi_official: 'Official inflation (Johor CPI)',
-    since_se15: 'Since the Mar 2022 election',
     stress_line: (r) => `Household spending absorbs RM${r} of every RM100 earned`,
-    race_note: 'Price rate computed from KPDN basket medians; income from HIES (DOSM estimates); items whose KPDN codes changed after 2022 are excluded.',
     bloc_candidate: 'Progressive Bloc candidate',
     prices_here: 'Grocery prices in your area',
     prices_sub: (d) => `Median prices at KPDN premises in ${d} district — versus Mar 2022, the last election`,
     col_item: 'Item',
     col_price: 'Price',
     col_then: 'Mar 2022',
-    col_4w: '4 wk',
     col_12w: '3 mo',
     trend: 'Trend',
     income_ctx: 'Income context',
@@ -279,180 +204,24 @@ const STR = {
     ethnic_dist: 'Voter ethnicity',
     new_voters: 'new voters since GE15 (Nov 2022)',
     women: 'women',
-    nearby: 'Nearby monitored premises (KPDN)',
-    nearby_sub: 'Latest prices at monitored markets & shops in this district',
     history: 'Result history',
     saluran: 'Polling-district analysis (2022 election)',
     saluran_sub: 'Votes by polling district — find strongholds & battlegrounds',
     dm: 'Polling district',
-    kaw_title: 'Area indicators (DOSM Kawasanku)',
-    kaw_sub: 'Amenities & socioeconomics for this area',
-    socio_series: 'Socioeconomic series (HIES/LFS)',
     export: 'Download data',
     export_json: 'Full seat JSON',
     export_csv: 'Polling-district CSV',
     winner: 'Winner',
-    party: 'Party',
     election: 'Election',
     sources: 'Data sources',
     built: 'Data built',
     disclaimer: 'Unofficial information tool built 100% on open government/public data. Not a prediction. Verify facts before campaign publication.',
     err: 'Sorry, data could not be loaded.',
     candidates: 'candidates',
-    postal: 'Postal votes',
-    early: 'Early votes',
     income_note: (y) => `HIES ${y} estimate, DOSM`,
     price_note: 'Prices are medians across KPDN-monitored premises; individual shops vary.',
     no_price: 'No district price data — Johor median shown.',
     top3_note: (n) => `Top 3 rises since the Mar 2022 election, out of ${n} monitored items.`,
-    clinics: 'Clinics', schools: 'Schools', hospitals: 'Hospitals', grocery: 'Grocery stores', atm: 'ATMs', petrol: 'Petrol stations', police_fire: 'Police/Fire', water: 'Water access', electricity: 'Electricity access', expenditure: 'Mean expenditure',
-  },
-  // Simplified Chinese. UI chrome only — curated content (issues/stances) falls
-  // back to English via pick(); verbatim quotes stay in their source language.
-  // Machine-translated; flag for a native Malaysian-Chinese review before use.
-  zh: {
-    tagline: '选区数据中心 — 2026 柔佛州选举',
-    days_to_poll: '天后投票',
-    poll_day: '投票日：2026年7月11日',
-    early_vote: '提前投票：2026年7月7日',
-    poll_today: '投票日 — 快去投票！',
-    poll_over: '2026 柔佛州选举已结束。感谢您的投票！',
-    featured: '进步阵线席位（MUDA–PSM）',
-    as_of: '物价截至',
-    cost_headline: '柔佛厨房物价 — 最近12周',
-    cost_sub: '柔佛零售点基本食品中位价格变动（KPDN PriceCatcher，每日更新）',
-    cost_trend_title: '生活成本 — 与过去相比',
-    cost_trend_sub: '与1个月至1年前相比的实际价格变动 — 上涨（红）或下跌（绿），依数据显示',
-    cost_trend_note: '每个数字都是今天价格与当时价格的对比。CPI：OpenDOSM（柔佛官方通胀）。汽油：KPDN 每周零售价。食物篮子：PriceCatcher 非管制食品中位价。走势依数据 — 发布前请核实。',
-    win_1m: '1个月', win_3m: '3个月', win_6m: '6个月', win_12m: '1年',
-    fuel_now: '当前汽油价',
-    fuel: '本周零售汽油价格（全国）',
-    all_seats: '柔佛全部56个州议席',
-    search: '搜索议席、地区或国会选区…',
-    voters: '选民',
-    youth: '30岁以下',
-    last_result: '2022年成绩',
-    majority: '多数票',
-    turnout: '投票率',
-    tab_brief: '简报',
-    tab_field: '战地',
-    tab_hq: '分析',
-    contest_2026: '2026年7月11日竞选',
-    contest_sub: '正式候选人名单（6月27日提名）— ElectionData.MY 数据',
-    results_2026: '2026年7月11日成绩',
-    results_sub: '正式成绩 — ElectionData.MY 数据',
-    first_time: '首次参选',
-    career_line: (c, w, el, yr) => `记录：${c} 次竞选，${w} 次胜出 · 最近 ${el}（${yr}）`,
-    record_title: '候选人记录',
-    record_sub: '本议席每位候选人的正式选举记录 — 来源 ElectionData.MY（使用前请核实）',
-    record_summary: (c, w) => `${c} 次竞选 · ${w} 次胜出`,
-    record_firsttimer: '新面孔 — 无过往选举记录',
-    record_hop: (n) => `转换政党 ${n} 次`,
-    record_switchedin: (p) => `今年首次以 ${p} 旗帜参选`,
-    record_now: '现今',
-    muda_title: 'MUDA — 小党，大能量',
-    muda_record_title: '全国记录（有出处）',
-    muda_seat_title: 'MUDA 在本议席的足迹',
-    stances_title: 'MUDA 对本地课题的回应',
-    brief_btn: '🤖 AI 简报（供 ChatGPT/Gemini）',
-    brief_saved: '.md 文件已下载！',
-    stances_sub: '有出处的立场 — 发布竞选材料前请核实',
-    volunteer_nav: '🤖 志工 AI 简报 →',
-    volunteer_title: '志工 AI 简报',
-    volunteer_sub: '找到你的议席，一键获取 AI 简报 — 可直接粘贴到 ChatGPT/Gemini。',
-    volunteer_get_btn: '🤖 获取我的 AI 简报',
-    volunteer_loading: '生成中…',
-    volunteer_none: '无匹配议席。',
-    volunteer_copied: (seat) => `✓ ${seat} 简报已复制到剪贴板`,
-    volunteer_cta_sub: '打开一个新对话，然后粘贴（Cmd/Ctrl+V）：',
-    volunteer_open_chatgpt: '打开 ChatGPT',
-    volunteer_open_gemini: '打开 Gemini',
-    ceiling_title: '政府顶价合规',
-    ceiling_sub: '3种管制品的实际价格 vs 官方顶价',
-    ceiling_observed: '本地价格',
-    ceiling_official: '官方顶价',
-    ceiling_status: '状态',
-    ceiling_ok: '顶价内',
-    ceiling_no_data: '无数据',
-    ceiling_exceeds: (p) => `+${p}% 超出`,
-    ceiling_note: '顶价由政府设定（非 KPDN PriceCatcher 数据）— 人工核实，发布前请核实。',
-    crime_title: '柔佛罪案',
-    crime_sub: '按警区划分的注册指数罪案',
-    crime_note: 'PDRM 数据为警区层级（非议席）。发布前请核实。',
-    race_title: '物价 vs 收入 vs 官方通胀',
-    race_sub: '年度变动率 — 厨房物价自上届选举（2022年3月）起计算',
-    basket_rate: '厨房篮子',
-    income_rate: '收入中位数',
-    cpi_official: '官方通胀（柔佛 CPI）',
-    since_se15: '自2022年3月选举以来',
-    stress_line: (r) => `家庭开支占每 RM100 收入中的 RM${r}`,
-    race_note: '物价率依 KPDN 篮子中位数计算；收入取自 HIES（DOSM 估算）；2022年后 KPDN 编码变更的品项已剔除。',
-    bloc_candidate: '进步阵线候选人',
-    prices_here: '你所在地区的厨房物价',
-    prices_sub: (d) => `${d} 县 KPDN 零售点中位价格 — 对比2022年3月（上届选举）`,
-    col_item: '品项',
-    col_price: '价格',
-    col_then: '2022年3月',
-    col_4w: '4周',
-    col_12w: '3个月',
-    trend: '走势',
-    income_ctx: '收入背景',
-    income_median: '家庭收入中位数',
-    income_mean: '平均收入',
-    poverty: '绝对贫穷率',
-    gini: '不平等（基尼系数）',
-    u_rate: '失业率',
-    pp_line: (b, i) => `自2022年3月选举以来：厨房篮子每年上涨 ${b}%，收入每年仅 ${i}% — 家庭购买力不断缩水。`,
-    share: '分享摘要',
-    copied: '已复制到剪贴板！',
-    story_title: '竞选故事 — 5步',
-    story_sub: '一条有序叙事；完整细节见下方',
-    beat_path: '致胜之路',
-    beat_voters: '关键选民',
-    beat_message: '门前讯息',
-    beat_ground: '战地地图',
-    beat_ask: '行动呼吁',
-    beat_local: '本地',
-    beat_national: '全国',
-    issues_national: '全国',
-    issues_title: '本地课题（来源核实）',
-    issues_sub: '本区专属课题，已对照新闻报道核实 — 参考编号可点击',
-    issues_statewide: '全柔佛',
-    talking_points: '逐户拜访要点',
-    tp_sub: '依官方数据自动生成 — 使用前请核实',
-    demo_title: '选民概况（2026 选民册）',
-    demo_sub: 'JHR-SE-16 选民册 — ElectionData.MY',
-    age_dist: '选民年龄',
-    ethnic_dist: '选民族群',
-    new_voters: '自第15届大选（2022年11月）以来的新选民',
-    women: '女性',
-    nearby: '附近受监测零售点（KPDN）',
-    nearby_sub: '本县受监测市场与商店的最新价格',
-    history: '成绩历史',
-    saluran: '投票区分析（2022年选举）',
-    saluran_sub: '按投票区划分的选票 — 找出堡垒区与争夺区',
-    dm: '投票区',
-    kaw_title: '地区指标（DOSM Kawasanku）',
-    kaw_sub: '本区设施与社会经济（人均）',
-    socio_series: '社会经济序列（HIES/LFS）',
-    export: '下载数据',
-    export_json: '完整议席 JSON',
-    export_csv: '投票区 CSV',
-    winner: '胜出者',
-    party: '政党',
-    election: '选举',
-    sources: '数据来源',
-    built: '数据构建于',
-    disclaimer: '非官方信息工具，100% 基于开放的政府/公共数据。非预测。发布竞选材料前请核实事实。',
-    err: '抱歉，无法加载数据。',
-    candidates: '候选人',
-    postal: '邮寄票',
-    early: '提前票',
-    income_note: (y) => `HIES ${y} 估算，DOSM`,
-    price_note: '价格为 KPDN 受监测零售点的中位数；各别商店会有差异。',
-    no_price: '无县级价格数据 — 显示柔佛州中位数。',
-    top3_note: (n) => `自2022年3月选举以来，${n} 项受监测品项中涨幅最大的3项。`,
-    clinics: '诊所', schools: '学校', hospitals: '医院', grocery: '杂货店', atm: 'ATM', petrol: '油站', police_fire: '警察/消防', water: '供水', electricity: '供电', expenditure: '平均开支',
   },
 }
 const L = (k, ...args) => {
@@ -488,8 +257,6 @@ const partyBadge = (p, coalition) => {
   const cls = ['PH', 'BN', 'PN'].includes(coalition) ? coalition : esc(p)
   return `<span class="badge ${cls}">${esc(p)}</span>`
 }
-// Kawasanku amenity indicators are rates per 1,000 residents.
-const perK = (v) => `${Number(v).toFixed(2)}/1k`
 
 // "as of" label for price data, flagged red if the source feed has stalled
 const asOfHtml = (maxDate) => {
@@ -502,7 +269,7 @@ const asOfHtml = (maxDate) => {
 const BLOC_COLORS = { PH: 'var(--ph)', BN: 'var(--bn)', PN: 'var(--pn)', MUDA: 'var(--muda)', LAIN: 'var(--lain)' }
 
 // ---------- charts ----------
-function sparkline(weeks, seriesList, w = 130, h = 34) {
+function sparkline(weeks, seriesList, w = 92, h = 32) {
   const vals = seriesList.flatMap(s => weeks.map(wk => s.data[wk]).filter(v => v != null))
   if (!vals.length) return ''
   const min = Math.min(...vals), max = Math.max(...vals)
@@ -523,7 +290,7 @@ function sparkline(weeks, seriesList, w = 130, h = 34) {
       const [li, lv] = valued[valued.length - 1]
       out += `<line x1="${x(fi).toFixed(1)}" y1="${y(fv).toFixed(1)}" x2="${w - 4}" y2="${y(fv).toFixed(1)}" stroke="${s.color}" stroke-width="1" stroke-dasharray="2 3" opacity="0.4"/>`
       out += `<circle cx="${x(fi).toFixed(1)}" cy="${y(fv).toFixed(1)}" r="2" fill="var(--card)" stroke="${s.color}" stroke-width="1.3"/>`
-      out += `<circle cx="${x(li).toFixed(1)}" cy="${y(lv).toFixed(1)}" r="2.6" fill="${s.color}"/>`
+      out += `<circle cx="${x(li).toFixed(1)}" cy="${y(lv).toFixed(1)}" r="3" fill="var(--accent-2)"/>`
     }
   }
   return out + '</svg>'
@@ -605,7 +372,7 @@ function countdownCard(idx) {
   const days = Math.round((poll - today) / 86400e3)
   let inner
   if (days > 0) {
-    inner = `<div class="days">${days}</div>
+    inner = `<div class="days" style="--dleft:${Math.max(0, Math.min(1, days / 14)).toFixed(2)}">${days}</div>
       <div><div class="label">${L('days_to_poll')}</div>
       <div class="sublabel">${L('poll_day')} · ${L('early_vote')}</div></div>`
   } else if (days === 0) {
@@ -617,17 +384,6 @@ function countdownCard(idx) {
 }
 
 // ---- pro-MUDA edition (EDITION=muda) advocacy layer, gated on idx.edition ----
-function mudaRecordList(rec) {
-  return (rec?.national ?? []).map(it => {
-    const claim = pick(it, 'claim')
-    const receipt = pick(it, 'receipt')
-    const refs = (it.sources ?? []).map((u, i) =>
-      ` <a href="${esc(u)}" target="_blank" rel="noopener" style="color:var(--muted)">[${i + 1}]</a>`).join('')
-    const v = it.verdict ? `<span class="badge" style="background:var(--lain);font-size:.62rem">${esc(it.verdict)}</span> ` : ''
-    return `<li>${v}<strong>${esc(claim ?? '')}</strong>${receipt ? `<br><span style="color:var(--muted);font-size:.78rem">${esc(receipt)}</span>` : ''}${refs}</li>`
-  }).join('')
-}
-
 function mudaHomeCard(idx) {
   if (idx.edition !== 'muda') return ''
   const u = idx.johor_context?.undi18
@@ -638,12 +394,10 @@ function mudaHomeCard(idx) {
   const stats = []
   if (u) stats.push(`<div style="min-width:130px"><div style="font-size:1.7rem;font-weight:800;color:var(--accent)">${fmtNum(u.total_18_20)}</div><div style="color:var(--muted);font-size:.72rem">${T('pengundi 18–20 tahun di daftar Johor 2026 — kohort yang dibuka oleh reformasi Undi18 2019', "voters aged 18–20 on Johor's 2026 roll — the cohort the 2019 Undi18 reform opened up", '2026年柔佛选民册上18–20岁的选民 — 2019年 Undi18 改革所开放的群体')}</div></div>`)
   if (m) stats.push(`<div style="min-width:130px"><div style="font-size:1.7rem;font-weight:800;color:var(--accent)">${m.won}/${m.seats_contested}</div><div style="color:var(--muted);font-size:.72rem">${T(`kerusi Johor dimenangi MUDA pada 2022 (purata ${m.avg_perc}% undi)`, `Johor seats MUDA won in 2022 (avg ${m.avg_perc}% of the vote)`, `2022年 MUDA 胜出的柔佛议席（平均 ${m.avg_perc}% 选票）`)}</div></div>`)
-  return `<div class="card" style="border:2px solid var(--accent)">
+  return `<div class="card accent">
     <h2>${esc(headline)}</h2>
     ${sub ? `<p class="sub">${esc(sub)}</p>` : ''}
     ${stats.length ? `<div style="display:flex;gap:1.2rem;flex-wrap:wrap;margin:.6rem 0 .2rem">${stats.join('')}</div>` : ''}
-    ${rec ? `<h3>${L('muda_record_title')}</h3><ul class="points">${mudaRecordList(rec)}</ul>` : ''}
-    <div class="btn-row"><a class="btn secondary" href="#/volunteer">${L('volunteer_nav')}</a></div>
   </div>`
 }
 
@@ -854,90 +608,6 @@ Confirm setup now by replying with: a 3-line summary of this seat, the ledger (e
   return lines.join('\n')
 }
 
-function mudaStancesCard(seat) {
-  const themes = seat.muda_stances
-  if (!themes?.length) return ''
-  const items = themes.map(t => {
-    const label = pick(t, 'label')
-    const stance = pick(t, 'stance')
-    const refs = (t.sources ?? []).map((u, i) =>
-      ` <a href="${esc(u)}" target="_blank" rel="noopener" style="color:var(--muted)">[${i + 1}]</a>`).join('')
-    const quotes = (t.quotes ?? []).map(q => {
-      const role = pick(q, 'role')
-      return `<blockquote style="margin:.45rem 0 0;padding:.4rem .6rem;border-left:3px solid var(--accent);background:var(--bg2,rgba(0,0,0,.03));font-size:.8rem">
-        “${esc(q.text)}”
-        <br><span style="color:var(--muted);font-size:.72rem">— ${esc(q.who)}${role ? `, ${esc(role)}` : ''}${q.date ? ` (${esc(q.date.slice(0, 7))})` : ''}${q.source ? ` <a href="${esc(q.source)}" target="_blank" rel="noopener" style="color:var(--muted)">[sumber]</a>` : ''}</span>
-      </blockquote>`
-    }).join('')
-    return `<div style="padding:.55rem 0;border-top:1px solid var(--line)">
-      <div><strong>${esc(label ?? '')}</strong>${t.verdict ? ` <span class="badge" style="background:var(--lain);font-size:.6rem">${esc(t.verdict)}</span>` : ''}</div>
-      <div style="margin-top:.25rem;font-size:.82rem">${esc(stance ?? '')}${refs}</div>
-      ${quotes}
-    </div>`
-  }).join('')
-  return `<div class="card" style="border:2px solid var(--accent)">
-    <h2>${L('stances_title')}</h2>
-    <p class="sub">${L('stances_sub')}</p>
-    ${items}
-  </div>`
-}
-
-function mudaSeatCard(seat, idx) {
-  if (idx.edition !== 'muda') return ''
-  const demo = seat.demographics.find(d => d.election === 'JHR-SE-16') ?? seat.demographics[0]
-  const n = demo?.age?.age_18_20 ?? null
-  const perc = n != null && demo?.voters_total ? (100 * n / demo.voters_total).toFixed(1) : null
-  const mc = (idx.johor_context?.muda?.contests ?? []).find(c => c.code === seat.code)
-  if (n == null && !mc) return ''
-  return `<div class="card" style="border:2px solid var(--accent)">
-    <h2>${L('muda_seat_title')}</h2>
-    <ul class="points">
-      ${n != null ? `<li><strong>${fmtNum(n)}</strong> ${T('pengundi 18–20 tahun', 'voters aged 18–20', '18–20岁选民')}${perc ? ` (${perc}%)` : ''} ${T('di kerusi ini — dibuka oleh Undi18 (Syed Saddiq, 2019)', 'in this seat — opened up by Undi18 (Syed Saddiq, 2019)', '在本议席 — 由 Undi18 开放（赛沙迪，2019）')}</li>` : ''}
-      ${mc ? `<li>${T('MUDA bertanding di sini pada 2022', 'MUDA contested here in 2022', 'MUDA 于2022年在此参选')}: <strong>${mc.perc}%</strong>${mc.won ? ` — <strong style="color:var(--accent)">${T('MENANG', 'WON', '胜出')}</strong>` : ''}</li>` : ''}
-    </ul>
-  </div>`
-}
-
-
-// ---- Johor crime context (johor_context.crime; neutral, both editions) ----
-const CRIME_TYPE_LABELS = {
-  causing_injury: { bm: 'Mencederakan', en: 'Causing injury' },
-  murder: { bm: 'Bunuh', en: 'Murder' },
-  rape: { bm: 'Rogol', en: 'Rape' },
-  robbery_gang_armed: { bm: 'Rompakan berkumpulan (bersenjata)', en: 'Gang robbery (armed)' },
-  robbery_gang_unarmed: { bm: 'Rompakan berkumpulan', en: 'Gang robbery' },
-  robbery_solo_armed: { bm: 'Rompakan (bersenjata)', en: 'Robbery (armed)' },
-  robbery_solo_unarmed: { bm: 'Rompakan', en: 'Robbery' },
-  break_in: { bm: 'Pecah rumah', en: 'Break-in' },
-  theft_other: { bm: 'Curi lain-lain', en: 'Other theft' },
-  theft_vehicle_lorry: { bm: 'Curi lori', en: 'Lorry theft' },
-  theft_vehicle_motorcar: { bm: 'Curi kereta', en: 'Car theft' },
-  theft_vehicle_motorcycle: { bm: 'Curi motosikal', en: 'Motorcycle theft' },
-}
-const crimeLabel = (t) => {
-  const l = CRIME_TYPE_LABELS[t]
-  return l ? (l[state.lang] ?? l.en) : String(t).replace(/_/g, ' ')
-}
-
-function crimeCard(idx) {
-  const c = idx.johor_context?.crime
-  if (!c || !c.total_latest) return ''
-  const types = (c.by_type_latest ?? []).slice(0, 6)
-  const maxT = Math.max(...types.map(t => t.value), 1)
-  const dists = (c.by_district_latest ?? []).slice(0, 6)
-  const maxD = Math.max(...dists.map(d => d.value), 1)
-  return `<div class="card">
-    <h2>${L('crime_title')}</h2>
-    <p class="sub">${L('crime_sub')} · ${esc(String(c.latest_year))}${c.source ? ` · ${esc(c.source)}` : ''}</p>
-    <div style="margin:.3rem 0 .5rem"><span style="font-size:1.6rem;font-weight:800">${fmtNum(c.total_latest)}</span>
-      <span style="color:var(--muted)"> ${T('jenayah indeks dilaporkan', 'index crimes reported', '宗注册指数罪案')} ${esc(String(c.latest_year))}${c.change_yoy_perc != null ? ` · ${deltaHtml(c.change_yoy_perc)} ${T('vs tahun sebelum', 'vs prior year', 'vs 前一年')}` : ''}</span></div>
-    <h3>${T('Jenis teratas', 'Top crime types', '主要罪案类型')}</h3>
-    ${types.map(t => barRow(crimeLabel(t.type), 100 * t.value / maxT, fmtNum(t.value))).join('')}
-    <h3>${T('Daerah polis teratas', 'Top police districts', '主要警区')}</h3>
-    ${dists.map(d => barRow(esc(d.district), 100 * d.value / maxD, fmtNum(d.value))).join('')}
-    <div class="notice" style="font-size:.72rem;margin-top:.5rem">${L('crime_note')}</div>
-  </div>`
-}
 
 // Cost-of-living direction versus before: one compact table, rows = series
 // (official inflation, fuel, food basket), columns = 1/3/6/12-month % change.
@@ -952,32 +622,27 @@ const COST_TREND_LABELS = {
 }
 function costTrendCard(idx) {
   const ct = idx.cost_trend
-  const winLabel = { '1m': L('win_1m'), '3m': L('win_3m'), '6m': L('win_6m'), '12m': L('win_12m') }
   const fuel = idx.fuel?.at(-1)
   if (!ct?.series?.length) return ''
-  const rows = ct.series.map(s => {
-    const cells = ct.windows.map(w => `<td class="num">${deltaHtml(s.deltas[w])}</td>`).join('')
+  // one chip per indicator, its 12-month change — the full matrix lives in briefingMd
+  const seriesChips = ct.series.map(s => {
     const label = COST_TREND_LABELS[s.key]?.[state.lang] ?? pick(s, 'label')
-    const yoy = s.yoy != null ? `<br><span style="color:var(--muted);font-size:.7rem">${T('tahunan', 'YoY', '年比')} ${fmtPct(s.yoy, 1)}</span>` : ''
-    return `<tr><td><strong>${esc(label)}</strong>${yoy}</td>${cells}</tr>`
+    return `<span class="chip">${esc(label)} ${deltaHtml(s.deltas?.['12m'])} <span style="color:var(--muted)">/ ${L('win_12m')}</span></span>`
   }).join('')
   const fuelNow = fuel ? `<h3>${L('fuel_now')}</h3><div class="chips">
     ${fuel.ron95_budi95 != null ? `<span class="chip">RON95 BUDI95 ${fmtRM(fuel.ron95_budi95)}</span>` : ''}
-    <span class="chip">RON95 ${T('tanpa subsidi', 'unsub.', '无补贴')} ${fmtRM(fuel.ron95)}</span>
+    <span class="chip">RON95 ${T('tanpa subsidi', 'unsub.')} ${fmtRM(fuel.ron95)}</span>
     <span class="chip">RON97 ${fmtRM(fuel.ron97)}</span>
     <span class="chip">Diesel ${fmtRM(fuel.diesel)}</span>
   </div>` : ''
   // the "so what" line: how many indicators are above their level a year ago
   const up12 = ct.series.filter(s => (s.deltas?.['12m'] ?? 0) > 0).length
-  const lead = `<p class="hero-line"><strong>${up12}/${ct.series.length}</strong> ${T('penunjuk lebih tinggi daripada setahun lalu', 'indicators higher than a year ago', '项指标高于一年前')}</p>`
+  const lead = `<p class="hero-line"><strong>${up12}/${ct.series.length}</strong> ${T('penunjuk lebih tinggi daripada setahun lalu', 'indicators higher than a year ago')}</p>`
   return `<div class="card">
     <h2>${L('cost_trend_title')}</h2>
     <p class="sub">${L('cost_trend_sub')}</p>
     ${lead}
-    <table class="data">
-      <thead><tr><th>${L('col_item')}</th>${ct.windows.map(w => `<th class="num">${winLabel[w]}</th>`).join('')}</tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
+    <div class="chips">${seriesChips}</div>
     ${fuelNow}
     <div class="notice" style="font-size:.72rem;margin-top:.5rem">${L('cost_trend_note')}</div>
   </div>`
@@ -994,12 +659,12 @@ function heroFork(idx) {
     ? `<a class="resume-chip" href="#/seat/${esc(last.slug)}">↩ ${T('Kerusi anda', 'Your seat', '您的议席')}: <strong>${esc(last.code)} ${esc(last.name)}</strong></a>`
     : ''
   const vol = idx.edition === 'muda'
-    ? `<a class="btn" href="#/volunteer">🤖 ${T('Saya sukarelawan — beri saya briefing', 'I’m a volunteer — give me my briefing', '我是志工 — 给我简报')}</a>`
+    ? `<a class="btn" href="#/volunteer">${T('Saya sukarelawan — beri saya briefing', 'I’m a volunteer — give me my briefing')}</a>`
     : ''
   return `<div class="card fork">
     ${resume}
     ${vol}
-    <button class="btn${vol ? ' secondary' : ''}" id="forkSearch">🔍 ${T('Cari kerusi anda', 'Find your seat', '查找您的议席')}</button>
+    <button class="btn${vol ? ' secondary' : ''}" id="forkSearch">${T('Cari kerusi anda', 'Find your seat')}</button>
   </div>`
 }
 
@@ -1008,7 +673,7 @@ async function renderHome() {
   const featured = idx.seats.filter(s => s.featured)
 
   app.innerHTML = `
-    <p class="sub" style="margin:2px 0 12px;color:var(--muted)">${L('tagline')}</p>
+    <p class="kicker">${L('tagline')}</p>
     ${heroFork(idx)}
     ${countdownCard(idx)}
     ${mudaHomeCard(idx)}
@@ -1028,8 +693,6 @@ async function renderHome() {
     </div>
 
     ${costTrendCard(idx)}
-
-    ${crimeCard(idx)}
 
     <div class="card">
       <h2>${L('all_seats')}</h2>
@@ -1099,14 +762,14 @@ async function renderVolunteer() {
     const rows = idx.seats.filter(s =>
       !needle || `${s.code} ${s.name} ${s.parlimen} ${s.kpdn_district}`.toLowerCase().includes(needle))
     listEl.innerHTML = rows.length ? rows.map(s => `
-      <div class="seat-row">
+      <div class="seat-row vol-row">
         <span class="left">
           <span class="name">${esc(s.code)} ${esc(s.name)} ${s.featured ? '★' : ''}</span>
           <span class="meta">${esc(s.parlimen ?? '')}</span>
         </span>
-        <span class="btn-row" style="margin:0">
+        <span class="btn-row vol-actions">
           <button class="btn" data-slug="${esc(s.slug)}">${L('volunteer_get_btn')}</button>
-          <button class="btn secondary" data-tp="${esc(s.slug)}">📋 ${T('Salin skrip rumah ke rumah', 'Copy talking points', '复制拜访要点')}</button>
+          <button class="btn secondary" data-tp="${esc(s.slug)}">${T('Salin skrip', 'Copy script')}</button>
         </span>
       </div>`).join('') : `<p class="sub">${L('volunteer_none')}</p>`
     // no-AI fallback: copy the seat's talking points as WhatsApp-ready text
@@ -1176,9 +839,18 @@ function contestCard(seat) {
         const career = !resultsIn ? (b.career
           ? L('career_line', b.career.contested, b.career.won, `${b.career.last.election} ${b.career.last.seat}`, b.career.last.date.slice(0, 4))
           : L('first_time')) : null
+        // party-switch callout (absorbed from the old record card): switches
+        // across the historical timeline, or a fresh-ticket flag for 2026
+        const tl = b.career?.party_timeline ?? []
+        let switches = 0
+        for (let i = 1; i < tl.length; i++) if (tl[i].party !== tl[i - 1].party) switches++
+        const histTail = tl[tl.length - 1]
+        const switchedIn = histTail && histTail.party !== b.party
+        const callout = !resultsIn ? (switchedIn ? L('record_switchedin', b.party) : switches > 0 ? L('record_hop', switches) : null) : null
         return `<tr${isBloc || won ? ' style="font-weight:800"' : ''}>
           <td>${won ? '✓ ' : ''}${esc(b.name)}${isBloc ? ` <span title="${L('bloc_candidate')}">★</span>` : ''}
-            ${career ? `<br><span style="color:var(--muted);font-size:.72rem;font-weight:400">${esc(career)}</span>` : ''}</td>
+            ${career ? `<br><span style="color:var(--muted);font-size:.72rem;font-weight:400">${esc(career)}</span>` : ''}
+            ${callout ? `<br><span style="color:var(--warn,#b45309);font-size:.72rem;font-weight:600">⚑ ${esc(callout)}</span>` : ''}</td>
           ${resultsIn ? `<td class="num">${fmtNum(b.votes)}${b.votes_perc != null ? ` <span style="color:var(--muted)">(${fmtPct(b.votes_perc)})</span>` : ''}</td>` : ''}
           <td class="num">${partyBadge(b.party, b.coalition)}</td></tr>`
       }).join('')}
@@ -1231,51 +903,26 @@ function pricesCard(seat, compact = true) {
       <thead><tr><th>${L('col_item')}</th><th class="num">${L('col_price')}</th><th class="num">${L('col_then')}</th><th>${L('trend')}</th><th class="num">${L('col_12w')}</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
+    ${ceilingStatus(seat)}
     <div class="notice">${L('top3_note', p.items.length)} ${anyDistrict ? L('price_note') : L('no_price')}</div>
   </div>`
 }
 
-// ---- government price-ceiling compliance (3 items: chicken/oil/rice) ----
-function ceilingCard(seat) {
+// government price-ceiling compliance, folded into the prices card as one
+// status line: the worst breach of the government's own ceiling, or the clean
+// bill — with the manual-verification receipt links
+function ceilingStatus(seat) {
   const items = (seat.prices?.items ?? []).filter(i => i.ceiling)
   if (!items.length) return ''
   const bm = state.lang === 'bm'
-  const rows = items.map(it => {
-    const c = it.ceiling
-    const label = bm ? (c.label_bm ?? it.label_bm) : (c.label_en ?? it.label_en)
-    const exceeds = c.exceeds_perc != null && c.exceeds_perc > 0.5
-    const badge = c.observed == null
-      ? `<span class="delta-flat">${L('ceiling_no_data')}</span>`
-      : exceeds
-        ? `<span class="delta-up">${L('ceiling_exceeds', c.exceeds_perc.toFixed(1))}</span>`
-        : `<span class="delta-down">${L('ceiling_ok')}</span>`
-    return `<tr>
-      <td><strong>${esc(state.lang === 'bm' ? it.label_bm : it.label_en)}</strong><br><span style="color:var(--muted);font-size:.72rem">${esc(label)}</span></td>
-      <td class="num">${c.observed != null ? fmtRM(c.observed) : '–'}</td>
-      <td class="num">${fmtRM(c.price)}</td>
-      <td>${badge}</td>
-    </tr>`
-  }).join('')
-  const anySourced = items.some(it => it.ceiling.source)
   const refs = items.filter(it => it.ceiling.source)
     .map((it, i) => `<a href="${esc(it.ceiling.source)}" target="_blank" rel="noopener" style="color:var(--muted)">[${i + 1}]</a>`).join(' ')
-  // the "so what" line: the worst breach of the government's own ceiling, or a
-  // clean bill when everything is within it
   const breaches = items.filter(it => it.ceiling.observed != null && it.ceiling.exceeds_perc != null && it.ceiling.exceeds_perc > 0.5)
     .sort((a, b) => b.ceiling.exceeds_perc - a.ceiling.exceeds_perc)
-  const lead = breaches.length
-    ? `<p class="hero-line"><span class="delta-up">▲</span> <strong>${esc(bm ? breaches[0].label_bm : breaches[0].label_en)}</strong> ${L('ceiling_exceeds', breaches[0].ceiling.exceeds_perc.toFixed(1))} ${T('siling rasmi kerajaan', 'the government’s own official ceiling', '政府官方顶价')}</p>`
-    : `<p class="hero-line"><span class="delta-down">✓</span> ${T('Semua barangan terkawal dalam siling rasmi', 'All controlled items within the official ceiling', '所有管制品都在官方顶价内')}</p>`
-  return `<div class="card">
-    <h2>${L('ceiling_title')}</h2>
-    <p class="sub">${L('ceiling_sub')}</p>
-    ${lead}
-    <table class="data">
-      <thead><tr><th>${L('col_item')}</th><th class="num">${L('ceiling_observed')}</th><th class="num">${L('ceiling_official')}</th><th>${L('ceiling_status')}</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-    <div class="notice">${L('ceiling_note')}${anySourced ? ` ${refs}` : ''}</div>
-  </div>`
+  const line = breaches.length
+    ? `<span class="delta-up">▲</span> <strong>${esc(bm ? breaches[0].label_bm : breaches[0].label_en)}</strong> ${L('ceiling_exceeds', breaches[0].ceiling.exceeds_perc.toFixed(1))} ${T('siling rasmi kerajaan', 'the government’s own official ceiling')}`
+    : `<span class="delta-down">✓</span> ${T('Semua barangan terkawal dalam siling rasmi kerajaan', 'All controlled items within the government’s official ceiling')}`
+  return `<div class="notice" style="margin-top:.5rem">${line}${refs ? ` ${refs}` : ''}</div>`
 }
 
 function incomeCard(seat, idx) {
@@ -1331,24 +978,6 @@ function raceStats(seat, idx) {
   const incMean = inc.at(-1)?.income_mean ?? null
   const stress = expVal && incMean ? Math.round(100 * expVal / incMean) : null
   return { items, medPerc, years, basketAnnual, incomeAnnual, cpiYoy, top, stress }
-}
-
-function raceCard(seat, idx) {
-  const r = raceStats(seat, idx)
-  if (!r || r.basketAnnual == null) return ''
-  const bm = state.lang === 'bm'
-  const maxRate = Math.max(r.basketAnnual, r.incomeAnnual ?? 0, r.cpiYoy ?? 0, 0.1)
-  const topText = r.top.map(i => `${esc((bm ? i.label_bm : i.label_en).toLowerCase())} ${i.since_se15.perc > 0 ? '+' : ''}${i.since_se15.perc}%`).join(' · ')
-  return `<div class="card">
-    <h2>${L('race_title')}</h2>
-    <p class="sub">${L('race_sub')}</p>
-    ${barRow(L('basket_rate'), 100 * r.basketAnnual / maxRate, `+${r.basketAnnual.toFixed(1)}%/${bm ? 'thn' : 'yr'}`, 'var(--up)')}
-    ${r.incomeAnnual != null ? barRow(L('income_rate'), 100 * r.incomeAnnual / maxRate, `+${r.incomeAnnual.toFixed(1)}%/${bm ? 'thn' : 'yr'}`, 'var(--ink)') : ''}
-    ${r.cpiYoy != null ? barRow(L('cpi_official'), 100 * r.cpiYoy / maxRate, `+${r.cpiYoy.toFixed(1)}%/${bm ? 'thn' : 'yr'}`, 'var(--lain)') : ''}
-    <p class="sub" style="margin-top:10px">${L('since_se15')}: ${topText}</p>
-    ${r.stress != null ? `<p class="sub">${L('stress_line', r.stress)}</p>` : ''}
-    <div class="notice">${L('race_note')}</div>
-  </div>`
 }
 
 // WhatsApp-ready plain-text talking points — one-tap value for volunteers who
@@ -1430,11 +1059,11 @@ function doorstepHero(seat, idx) {
   if (contest.length) lines.push(`${contest.join(' · ')}.`)
   if (!lines.length) return ''
   const wa = `https://wa.me/?text=${encodeURIComponent(shareText(seat))}`
-  return `<div class="card" style="border:2px solid var(--accent)">
+  return `<div class="card hero">
     ${lines.map(l => `<p class="hero-line">${l}</p>`).join('')}
     <div class="btn-row">
       <button class="btn" id="shareBtn">${L('share')}</button>
-      <a class="btn secondary" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <a class="btn wa" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
     </div>
   </div>`
 }
@@ -1444,8 +1073,6 @@ function renderBrief(seat, idx) {
     ${doorstepHero(seat, idx)}
     ${contestCard(seat)}
     ${pricesCard(seat)}
-    ${ceilingCard(seat)}
-    ${raceCard(seat, idx)}
     ${incomeCard(seat, idx)}`
 }
 
@@ -1612,8 +1239,7 @@ function groundNotesCard(seat) {
     <textarea id="noteText" style="width:100%;box-sizing:border-box;min-height:90px;font:inherit;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px" placeholder="${T('Contoh: Penduduk Taman X kata bekalan air putus 3 hari…', 'e.g. Taman X residents say the water has been out 3 days…', '例如：Taman X 居民说停水三天了…')}"></textarea>
     <div class="btn-row">
       <button class="btn" id="noteSave">${T('Simpan nota', 'Save note', '保存笔记')}</button>
-      ${notes.length ? `<button class="btn secondary" id="notesCopy">📋 ${T('Salin semua', 'Copy all', '复制全部')} (${notes.length})</button>
-      <button class="btn secondary" id="notesJson">⬇ JSON</button>` : ''}
+      ${notes.length ? `<button class="btn secondary" id="notesCopy">${T('Salin semua', 'Copy all')} (${notes.length})</button>` : ''}
     </div>
     ${mine.length ? rows : `<p class="sub" style="margin-top:.6rem">${T('Belum ada nota untuk kerusi ini di telefon ini.', 'No notes for this seat on this phone yet.', '本手机上还没有此议席的笔记。')}</p>`}
   </div>`
@@ -1643,20 +1269,6 @@ function bindGroundNotes(seat, rerender) {
     copyBtn.textContent = L('copied')
     setTimeout(() => { copyBtn.textContent = orig }, 2000)
   })
-  const jsonBtn = document.getElementById('notesJson')
-  if (jsonBtn) jsonBtn.addEventListener('click', () => {
-    // intake-queue shape: the phase-2 admin queue imports this file unchanged
-    const items = loadNotes().map(n => ({
-      kind: 'ground', status: 'draft', text_bm: n.text,
-      seat_codes: [n.code], theme: n.theme ?? null, created_at: n.ts,
-    }))
-    const blob = new Blob([JSON.stringify({ exported: new Date().toISOString(), items }, null, 1)], { type: 'application/json' })
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(blob)
-    a.download = `petamuda-nota-${new Date().toISOString().slice(0, 10)}.json`
-    a.click()
-    URL.revokeObjectURL(a.href)
-  })
 }
 
 // The prioritized 5-beat narrative: one story a candidate can carry, ordered
@@ -1682,7 +1294,9 @@ function leadClause(text) {
 function mudaAngleFor(theme, seat) {
   if (!theme) return ''
   const t = (seat.muda_stances ?? []).find(s => s.key === theme)
-  if (!t) return ''
+  // no verified position = say nothing at the door (the honest note lives in
+  // the issues card receipts, never in the doorstep message)
+  if (!t || t.verdict === 'NO_VERIFIED_POSITION') return ''
   const stanceLead = leadClause(pick(t, 'stance'))
   // prefer a quote captured in the current UI language (a real Chinese-source
   // quote once one is added), else the first verbatim quote in any language
@@ -1830,111 +1444,36 @@ function issuesCard(seat, idx) {
   </div>`
 }
 
-// The party path a candidate has stood under, oldest→now: the pipeline's
-// historical stints plus this year's ticket. Consecutive same-party stints are
-// already merged upstream; here we just graft on 2026.
-function partyPath(b) {
-  const stints = (b.career?.party_timeline ?? []).map(s => ({ ...s }))
-  const tail = stints[stints.length - 1]
-  if (tail && tail.party === b.party) tail.to = L('record_now')
-  else stints.push({ party: b.party, from: '2026', to: L('record_now') })
-  return stints
-}
-
-// One candidate's electoral record: CV summary + party path + a party-switch
-// callout. The facts are the attack line — presented identically for every
-// candidate so it stays sourced and defensible, bloc candidate just starred.
-function recordRow(b) {
-  const isBloc = b.party === 'MUDA' || b.party === 'PSM'
-  const c = b.career
-  const stints = partyPath(b)
-  let switches = 0
-  for (let i = 1; i < stints.length; i++) if (stints[i].party !== stints[i - 1].party) switches++
-  const histTail = (b.career?.party_timeline ?? []).slice(-1)[0]
-  const switchedIn = histTail && histTail.party !== b.party
-  const pathHtml = stints.map(s => {
-    const yr = s.from === s.to ? esc(s.from) : `${esc(s.from)}–${esc(s.to)}`
-    return `${partyBadge(s.party)}<span style="color:var(--muted);font-size:.7rem;margin-left:.2rem">${yr}</span>`
-  }).join('<span style="color:var(--muted);margin:0 .3rem">→</span>')
-  const callout = switchedIn ? L('record_switchedin', b.party) : switches > 0 ? L('record_hop', switches) : null
-  return `<div style="padding:.55rem 0;border-top:1px solid var(--line)">
-    <div><strong>${esc(b.name)}</strong>${isBloc ? ' <span title="Blok Progresif" style="color:var(--accent)">★</span>' : ''}
-      <span style="color:var(--muted);font-size:.75rem">· ${c ? esc(L('record_summary', c.contested, c.won)) : esc(L('record_firsttimer'))}</span></div>
-    <div style="margin-top:.3rem;display:flex;flex-wrap:wrap;align-items:center;gap:.15rem">${pathHtml}</div>
-    ${callout ? `<div style="margin-top:.3rem;font-size:.76rem;color:var(--warn,#b45309)">⚑ ${esc(callout)}</div>` : ''}
-  </div>`
-}
-
-// Candidate-record card (campaign-time attack layer). Only renders while the
-// 2026 ballot is live — careers are fetched for pending candidates only, and
-// once results are in the record is moot. Bloc candidate first, then by
-// experience so the sharpest contrasts sit together.
-function recordCard(seat) {
-  const ballot = seat.election2026?.ballot
-  if (!ballot?.length) return ''
-  const ordered = [...ballot].sort((a, b) => {
-    const aBloc = a.party === 'MUDA' || a.party === 'PSM'
-    const bBloc = b.party === 'MUDA' || b.party === 'PSM'
-    if (aBloc !== bBloc) return aBloc ? -1 : 1
-    return (b.career?.contested ?? 0) - (a.career?.contested ?? 0)
-  })
-  return `<div class="card">
-    <h2>${L('record_title')}</h2>
-    <p class="sub">${L('record_sub')}</p>
-    ${ordered.map(recordRow).join('')}
-  </div>`
-}
-
 function renderField(seat, idx) {
-  const demo = seat.demographics.find(d => d.election === 'JHR-SE-16') ?? seat.demographics[0]
   const pts = talkingPoints(seat, idx)
-  let demoHtml = ''
-  if (demo) {
-    const ageBands = [['18–20', demo.age.age_18_20], ['21–29', demo.age.age_21_29], ['30–39', demo.age.age_30_39], ['40–49', demo.age.age_40_49], ['50–59', demo.age.age_50_59], ['60–69', demo.age.age_60_69], ['70+', demo.age.age_70_79 + demo.age.age_80_89 + demo.age['age_90+']]]
-    const eth = [[T('Melayu', 'Malay', '马来'), demo.ethnic.ethnic_malay], [T('Cina', 'Chinese', '华裔'), demo.ethnic.ethnic_chinese], [T('India', 'Indian', '印裔'), demo.ethnic.ethnic_indian], [T('Lain-lain', 'Others', '其他'), demo.ethnic.ethnic_bumi_sabah + demo.ethnic.ethnic_bumi_sarawak + demo.ethnic.ethnic_orang_asli + demo.ethnic.ethnic_other]]
-    const maxAge = Math.max(...ageBands.map(a => a[1]))
-    const maxEth = Math.max(...eth.map(a => a[1]))
-    demoHtml = `<div class="card">
-      <h2>${L('demo_title')}</h2>
-      <p class="sub">${L('demo_sub')} · ${fmtNum(demo.voters_total)} ${L('voters')} · ${fmtPct(100 * demo.sex_female / demo.voters_total, 0)} ${L('women')}</p>
-      <h3>${L('age_dist')}</h3>
-      ${ageBands.map(([lbl, v]) => barRow(lbl, 100 * v / maxAge, fmtPct(100 * v / demo.voters_total, 0))).join('')}
-      <h3>${L('ethnic_dist')}</h3>
-      ${eth.map(([lbl, v]) => barRow(lbl, 100 * v / maxEth, fmtPct(100 * v / demo.voters_total, 0))).join('')}
-    </div>`
-  }
-  const premises = seat.prices.premises.slice(0, 8)
-  const itemLabel = new Map(seat.prices.items.map(i => [i.code, i]))
-  const premHtml = premises.length ? `<div class="card">
-    <h2>${L('nearby')}</h2>
-    <p class="sub">${L('nearby_sub')}</p>
-    <table class="data"><tbody>
-      ${premises.map(pr => {
-        const sample = Object.entries(pr.prices).slice(0, 3)
-          .map(([code, v]) => {
-            const it = itemLabel.get(Number(code))
-            return it ? `${esc((state.lang === 'bm' ? it.label_bm : it.label_en).toLowerCase())} ${fmtRM(v.price)}` : null
-          }).filter(Boolean).join(' · ')
-        return `<tr><td><strong>${esc(pr.premise)}</strong><br><span style="color:var(--muted);font-size:.72rem">${esc(pr.type)}</span></td><td style="font-size:.78rem">${sample}</td></tr>`
-      }).join('')}
-    </tbody></table>
-  </div>` : ''
-
   return `
     ${storyCard(seat, idx)}
     ${issuesCard(seat, idx)}
-    ${mudaStancesCard(seat)}
-    ${mudaSeatCard(seat, idx)}
     <div class="card">
       <h2>${L('talking_points')}</h2>
       <p class="sub">${L('tp_sub')}</p>
       ${pts.map(g => `<h3>${esc(g.title)}</h3><ul class="points">${g.pts.map(p => `<li>${p.html}</li>`).join('')}</ul>`).join('')}
     </div>
     ${groundNotesCard(seat)}
-    ${recordCard(seat)}
-    ${idx.edition === 'muda' ? `<div class="btn-row"><button class="btn" id="briefBtn">${L('brief_btn')}</button></div>` : ''}
-    ${demoHtml}
-    ${premHtml}`
+    ${idx.edition === 'muda' ? `<div class="btn-row"><button class="btn" id="briefBtn">${L('brief_btn')}</button></div>` : ''}`
+}
+
+// voter demographics (analyst form factor — lives on the Analisis tab)
+function demoCard(seat) {
+  const demo = seat.demographics.find(d => d.election === 'JHR-SE-16') ?? seat.demographics[0]
+  if (!demo) return ''
+  const ageBands = [['18–20', demo.age.age_18_20], ['21–29', demo.age.age_21_29], ['30–39', demo.age.age_30_39], ['40–49', demo.age.age_40_49], ['50–59', demo.age.age_50_59], ['60–69', demo.age.age_60_69], ['70+', demo.age.age_70_79 + demo.age.age_80_89 + demo.age['age_90+']]]
+  const eth = [[T('Melayu', 'Malay'), demo.ethnic.ethnic_malay], [T('Cina', 'Chinese'), demo.ethnic.ethnic_chinese], [T('India', 'Indian'), demo.ethnic.ethnic_indian], [T('Lain-lain', 'Others'), demo.ethnic.ethnic_bumi_sabah + demo.ethnic.ethnic_bumi_sarawak + demo.ethnic.ethnic_orang_asli + demo.ethnic.ethnic_other]]
+  const maxAge = Math.max(...ageBands.map(a => a[1]))
+  const maxEth = Math.max(...eth.map(a => a[1]))
+  return `<div class="card">
+    <h2>${L('demo_title')}</h2>
+    <p class="sub">${L('demo_sub')} · ${fmtNum(demo.voters_total)} ${L('voters')} · ${fmtPct(100 * demo.sex_female / demo.voters_total, 0)} ${L('women')}</p>
+    <h3>${L('age_dist')}</h3>
+    ${ageBands.map(([lbl, v]) => barRow(lbl, 100 * v / maxAge, fmtPct(100 * v / demo.voters_total, 0))).join('')}
+    <h3>${L('ethnic_dist')}</h3>
+    ${eth.map(([lbl, v]) => barRow(lbl, 100 * v / maxEth, fmtPct(100 * v / demo.voters_total, 0))).join('')}
+  </div>`
 }
 
 function renderHq(seat) {
@@ -1987,40 +1526,7 @@ function renderHq(seat) {
     </div>`
   }
 
-  const k = seat.kawasanku
-  const kawHtml = k ? `<div class="card">
-    <h2>${L('kaw_title')}</h2>
-    <p class="sub">${L('kaw_sub')}</p>
-    <div class="chips">
-      ${k.income_mean != null ? `<span class="chip">${L('income_mean')} RM${fmtNum(k.income_mean)}</span>` : ''}
-      ${k.expenditure_mean != null ? `<span class="chip">${L('expenditure')} RM${fmtNum(k.expenditure_mean)}</span>` : ''}
-      ${k.gini != null ? `<span class="chip">Gini ${k.gini}</span>` : ''}
-      ${k.poverty != null ? `<span class="chip">${L('poverty')} ${fmtPct(k.poverty)}</span>` : ''}
-      ${k.labour_urate != null ? `<span class="chip">${L('u_rate')} ${fmtPct(k.labour_urate)}</span>` : ''}
-      ${k.electricity != null ? `<span class="chip">${L('electricity')} ${fmtPct(k.electricity, 0)}</span>` : ''}
-      ${k.water != null ? `<span class="chip">${L('water')} ${fmtPct(k.water, 0)}</span>` : ''}
-      ${k.hospital != null ? `<span class="chip">${L('hospitals')} ${perK(k.hospital)}</span>` : ''}
-      ${k.clinic != null ? `<span class="chip">${L('clinics')} ${perK(k.clinic)}</span>` : ''}
-      ${k.school != null ? `<span class="chip">${L('schools')} ${perK(k.school)}</span>` : ''}
-      ${k.grocery != null ? `<span class="chip">${L('grocery')} ${perK(k.grocery)}</span>` : ''}
-      ${k.atm != null ? `<span class="chip">${L('atm')} ${perK(k.atm)}</span>` : ''}
-      ${k.petrol != null ? `<span class="chip">${L('petrol')} ${perK(k.petrol)}</span>` : ''}
-    </div>
-  </div>` : ''
-
-  const inc = seat.socio.income ?? []
-  const lab = seat.socio.labour ?? []
-  const socioHtml = (inc.length || lab.length) ? `<div class="card">
-    <h2>${L('socio_series')}</h2>
-    ${inc.length ? `<h3>${L('income_median')}</h3><table class="data"><tbody>
-      <tr>${inc.map(r => `<td class="num"><span style="color:var(--muted);font-size:.72rem">${r.date.slice(0, 4)}</span><br>RM${fmtNum(r.income_median)}</td>`).join('')}</tr>
-    </tbody></table>` : ''}
-    ${lab.length ? `<h3>${L('u_rate')}</h3><table class="data"><tbody>
-      <tr>${lab.map(r => `<td class="num"><span style="color:var(--muted);font-size:.72rem">${r.date.slice(0, 4)}</span><br>${fmtPct(r.u_rate)}</td>`).join('')}</tr>
-    </tbody></table>` : ''}
-  </div>` : ''
-
-  return `${histHtml}${salHtml}${kawHtml}${socioHtml}
+  return `${histHtml}${salHtml}${demoCard(seat)}
     <div class="card">
       <h2>${L('export')}</h2>
       <div class="btn-row">
@@ -2045,7 +1551,7 @@ async function renderSeat(slug, tab = 'brief') {
       ${mapSvg}
       <div>
         <div class="crumbs"><a href="#/">← Johor</a> · ${esc(seat.parlimen ?? '')}</div>
-        <h1>${esc(seat.code)} ${esc(seat.name)}</h1>
+        <h1><span class="monogram">${esc(seat.code)}</span> ${esc(seat.name)}</h1>
         <div class="crumbs">${esc(seat.prices.district ?? '')} · ${fmtNum(seat.election2026?.voters_total)} ${L('voters')}</div>
       </div>
     </div>
