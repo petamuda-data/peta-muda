@@ -304,6 +304,7 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .fork .btn + .btn { margin-top: 10px; }
 .resume-chip { display: inline-block; margin-bottom: 10px; font-size: .85rem; color: var(--muted); text-decoration: none; }
 .resume-chip strong { color: var(--ink); }
+.locate-hint { margin-top: 10px; font-size: .82rem; color: var(--up); font-weight: 600; }
 
 /* ---- doorstep hero: the hand-held poster ---- */
 .card.hero {

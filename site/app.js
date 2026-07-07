@@ -35,6 +35,10 @@ const STR = {
     fuel_now: 'Harga petrol kini',
     all_seats: 'Semua 56 kerusi DUN Johor',
     search: 'Cari kerusi, kawasan atau parlimen…',
+    locate_btn: 'Guna lokasi saya',
+    locate_finding: 'Mencari kawasan anda…',
+    locate_denied: 'Tak dapat akses lokasi — cari kerusi anda di bawah.',
+    locate_outside: 'Lokasi anda di luar Johor — cari kerusi anda di bawah.',
     voters: 'pengundi',
     youth: 'bawah 30',
     majority: 'majoriti',
@@ -137,6 +141,10 @@ const STR = {
     fuel_now: 'Fuel price now',
     all_seats: 'All 56 Johor state seats',
     search: 'Search seat, area or parlimen…',
+    locate_btn: 'Use my location',
+    locate_finding: 'Finding your area…',
+    locate_denied: 'Couldn’t access your location — search for your seat below.',
+    locate_outside: 'You seem to be outside Johor — search for your seat below.',
     voters: 'voters',
     youth: 'under 30',
     majority: 'majority',
@@ -348,6 +356,28 @@ async function loadSeat(slug) {
 async function loadGeo() {
   if (!state.geo) state.geo = await (await fetch('data/johor_dun.geojson')).json()
   return state.geo
+}
+
+// Which seat contains this WGS84 point? Even-odd ray casting across every
+// ring of every polygon, so holes count correctly. Returns a slug or null.
+function seatAtPoint(geo, lng, lat) {
+  const inRing = (ring) => {
+    let inside = false
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const [xi, yi] = ring[i], [xj, yj] = ring[j]
+      if ((yi > lat) !== (yj > lat) && lng < (xj - xi) * (lat - yi) / (yj - yi) + xi) inside = !inside
+    }
+    return inside
+  }
+  for (const f of geo.features) {
+    const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates
+    for (const rings of polys) {
+      let inside = false
+      for (const ring of rings) if (inRing(ring)) inside = !inside
+      if (inside) return f.properties.slug
+    }
+  }
+  return null
 }
 
 // ---------- views ----------
@@ -664,7 +694,9 @@ function heroFork(idx) {
   return `<div class="card fork">
     ${resume}
     ${vol}
-    <button class="btn${vol ? ' secondary' : ''}" id="forkSearch">${T('Cari kerusi anda', 'Find your seat')}</button>
+    <button class="btn${vol ? ' secondary' : ''}" id="forkLocate">${L('locate_btn')}</button>
+    <button class="btn secondary" id="forkSearch">${T('Cari kerusi anda', 'Find your seat')}</button>
+    <div class="locate-hint" id="locateHint" hidden></div>
   </div>`
 }
 
@@ -716,10 +748,34 @@ async function renderHome() {
   }
   renderList()
   document.getElementById('seatSearch').addEventListener('input', (e) => renderList(e.target.value))
-  document.getElementById('forkSearch')?.addEventListener('click', () => {
+  const focusSearch = () => {
     const box = document.getElementById('seatSearch')
     box.scrollIntoView({ behavior: 'smooth', block: 'center' })
     box.focus({ preventScroll: true })
+  }
+  document.getElementById('forkSearch')?.addEventListener('click', focusSearch)
+  const locateBtn = document.getElementById('forkLocate')
+  locateBtn?.addEventListener('click', () => {
+    const hint = document.getElementById('locateHint')
+    const fail = (msg) => {
+      locateBtn.textContent = L('locate_btn'); locateBtn.disabled = false
+      hint.textContent = msg; hint.hidden = false
+      focusSearch()
+    }
+    if (!navigator.geolocation) { fail(L('locate_denied')); return }
+    locateBtn.textContent = L('locate_finding'); locateBtn.disabled = true
+    // An ignored permission prompt fires neither callback — the geolocation
+    // timeout option only counts after permission is granted.
+    let done = false
+    const settle = (fn) => { if (!done) { done = true; fn() } }
+    setTimeout(() => settle(() => fail(L('locate_denied'))), 12000)
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      try {
+        const geo = await loadGeo()
+        const slug = seatAtPoint(geo, pos.coords.longitude, pos.coords.latitude)
+        settle(() => { if (slug) { location.hash = `#/seat/${slug}` } else { fail(L('locate_outside')) } })
+      } catch { settle(() => fail(L('locate_denied'))) }
+    }, () => settle(() => fail(L('locate_denied'))), { timeout: 8000, maximumAge: 60000 })
   })
   renderFooter(idx)
 }
