@@ -1,5 +1,6 @@
 // Peta MUDA — Seat Command Center (static, no build step).
 // Data: electiondata.my (CC0) + data.gov.my/OpenDOSM (CC BY 4.0) + KPDN PriceCatcher.
+import { suggestTheme } from './ops-match.mjs'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -1588,6 +1589,76 @@ function talkingPoints(seat, idx) {
   ].filter(g => g.pts.length)
 }
 
+// ---- ground notes: device-local field reports (phase 1 — no cloud sync).
+// Volunteers jot what they hear at the doors; notes live in localStorage only
+// and can be exported: WhatsApp-ready text, or JSON in the intake-queue shape
+// so the phase-2 admin queue can import them unchanged.
+const NOTES_KEY = 'ground_notes'
+const loadNotes = () => { try { return JSON.parse(storage.get(NOTES_KEY) ?? '[]') } catch { return [] } }
+const saveNotes = (n) => storage.set(NOTES_KEY, JSON.stringify(n))
+
+function groundNotesCard(seat) {
+  const notes = loadNotes()
+  const mine = notes.filter(n => n.code === seat.code)
+  const rows = mine.map(n => `
+    <div style="padding:.5rem 0;border-top:1px solid var(--line)">
+      <div style="font-size:.72rem;color:var(--muted)">${esc(n.ts.slice(0, 16).replace('T', ' '))}${n.theme ? ` · ${esc(n.theme)}` : ''}</div>
+      <div style="font-size:.85rem">${esc(n.text)}</div>
+      <button class="btn secondary" data-delnote="${esc(n.ts)}" style="margin-top:.3rem;font-size:.7rem;padding:4px 10px">${T('Padam', 'Delete', '删除')}</button>
+    </div>`).join('')
+  return `<div class="card" id="notesCard">
+    <h2>${T('Nota lapangan', 'Field notes', '现场笔记')}</h2>
+    <p class="sub">${T('Catat apa yang anda dengar di pintu. Disimpan dalam telefon ini sahaja — tidak dihantar ke mana-mana. Eksport dan hantar kepada admin bila siap.', 'Jot what you hear at the doors. Stored on this phone only — sent nowhere. Export and send to your admin when ready.', '记录您在门口听到的情况。仅保存在本手机上 — 不会发送到任何地方。准备好后导出发给管理员。')}</p>
+    <textarea id="noteText" style="width:100%;box-sizing:border-box;min-height:90px;font:inherit;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px" placeholder="${T('Contoh: Penduduk Taman X kata bekalan air putus 3 hari…', 'e.g. Taman X residents say the water has been out 3 days…', '例如：Taman X 居民说停水三天了…')}"></textarea>
+    <div class="btn-row">
+      <button class="btn" id="noteSave">${T('Simpan nota', 'Save note', '保存笔记')}</button>
+      ${notes.length ? `<button class="btn secondary" id="notesCopy">📋 ${T('Salin semua', 'Copy all', '复制全部')} (${notes.length})</button>
+      <button class="btn secondary" id="notesJson">⬇ JSON</button>` : ''}
+    </div>
+    ${mine.length ? rows : `<p class="sub" style="margin-top:.6rem">${T('Belum ada nota untuk kerusi ini di telefon ini.', 'No notes for this seat on this phone yet.', '本手机上还没有此议席的笔记。')}</p>`}
+  </div>`
+}
+
+function bindGroundNotes(seat, rerender) {
+  const saveBtn = document.getElementById('noteSave')
+  if (!saveBtn) return
+  saveBtn.addEventListener('click', () => {
+    const text = document.getElementById('noteText').value.trim()
+    if (text.length < 10) return
+    const notes = loadNotes()
+    notes.unshift({ ts: new Date().toISOString(), code: seat.code, seat: `${seat.code} ${seat.name}`, text, theme: suggestTheme(text) })
+    saveNotes(notes)
+    rerender()
+  })
+  document.querySelectorAll('[data-delnote]').forEach(b => b.addEventListener('click', () => {
+    saveNotes(loadNotes().filter(n => n.ts !== b.dataset.delnote))
+    rerender()
+  }))
+  const copyBtn = document.getElementById('notesCopy')
+  if (copyBtn) copyBtn.addEventListener('click', async () => {
+    const text = loadNotes().map(n => `📍 ${n.seat} (${n.ts.slice(0, 16).replace('T', ' ')})${n.theme ? ` [${n.theme}]` : ''}\n${n.text}`).join('\n\n')
+    const ok = await copyToClipboard(text)
+    if (!ok) { window.prompt('Salin / Copy:', text); return }
+    const orig = copyBtn.textContent
+    copyBtn.textContent = L('copied')
+    setTimeout(() => { copyBtn.textContent = orig }, 2000)
+  })
+  const jsonBtn = document.getElementById('notesJson')
+  if (jsonBtn) jsonBtn.addEventListener('click', () => {
+    // intake-queue shape: the phase-2 admin queue imports this file unchanged
+    const items = loadNotes().map(n => ({
+      kind: 'ground', status: 'draft', text_bm: n.text,
+      seat_codes: [n.code], theme: n.theme ?? null, created_at: n.ts,
+    }))
+    const blob = new Blob([JSON.stringify({ exported: new Date().toISOString(), items }, null, 1)], { type: 'application/json' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `petamuda-nota-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(a.href)
+  })
+}
+
 // The prioritized 5-beat narrative: one story a candidate can carry, ordered
 // by what wins the seat — path, people, message, ground, ask. Every number is
 // pulled from the same verified data as the sections below it.
@@ -1859,6 +1930,7 @@ function renderField(seat, idx) {
       <p class="sub">${L('tp_sub')}</p>
       ${pts.map(g => `<h3>${esc(g.title)}</h3><ul class="points">${g.pts.map(p => `<li>${p.html}</li>`).join('')}</ul>`).join('')}
     </div>
+    ${groundNotesCard(seat)}
     ${recordCard(seat)}
     ${idx.edition === 'muda' ? `<div class="btn-row"><button class="btn" id="briefBtn">${L('brief_btn')}</button></div>` : ''}
     ${demoHtml}
@@ -1985,7 +2057,11 @@ async function renderSeat(slug, tab = 'brief') {
     <div id="tabContent"></div>`
 
   const content = document.getElementById('tabContent')
-  content.innerHTML = tab === 'field' ? renderField(seat, idx) : tab === 'hq' ? renderHq(seat) : renderBrief(seat, idx)
+  const renderTab = () => {
+    content.innerHTML = tab === 'field' ? renderField(seat, idx) : tab === 'hq' ? renderHq(seat) : renderBrief(seat, idx)
+    if (tab === 'field') bindGroundNotes(seat, renderTab)
+  }
+  renderTab()
 
   document.querySelectorAll('.tabs button').forEach(btn =>
     btn.addEventListener('click', () => { location.hash = `#/seat/${slug}/${btn.dataset.tab}` }))

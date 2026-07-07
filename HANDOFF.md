@@ -91,7 +91,18 @@ there is no wrangler file in the repo).
   for 60 days the refresh cron silently pauses until someone pushes or re-enables
   it in the Actions tab.
 
-## Intake queue (ground stories + news crawler → admin approval)
+## Intake (phase 1 live: device-local field notes; phase 2 built but dormant)
+
+**Phase 1 (live now)**: volunteers jot ground stories in the app itself — the
+"Nota lapangan" card on each seat's Field tab. Notes are stored in
+localStorage ONLY (no cloud sync), auto-tagged with a suggested theme, and
+exportable two ways: copy-all text for WhatsApp, or a JSON download already in
+the intake-queue shape so phase 2 (or a curator) can import it unchanged.
+Verified news articles still enter via the curated path (`data/manual/*.json`,
+adversarially verified, MUDA stances attached by theme) — that layer is
+unchanged and remains the only thing that publishes.
+
+**Phase 2 (code shipped, switched off until configured)**:
 
 Two feeds, one private queue, one human gate:
 
