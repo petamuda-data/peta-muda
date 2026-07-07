@@ -305,6 +305,12 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .resume-chip { display: inline-block; margin-bottom: 10px; font-size: .85rem; color: var(--muted); text-decoration: none; }
 .resume-chip strong { color: var(--ink); }
 .locate-hint { margin-top: 10px; font-size: .82rem; color: var(--up); font-weight: 600; }
+.install-chip {
+  display: block; width: 100%; margin-top: 10px; padding: 7px;
+  border: 2px dashed var(--ink); background: var(--accent-wash); color: var(--ink);
+  font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
+  font-size: .78rem; cursor: pointer; border-radius: 0;
+}
 
 /* ---- doorstep hero: the hand-held poster ---- */
 .card.hero {

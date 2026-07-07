@@ -39,6 +39,7 @@ const STR = {
     locate_finding: 'Mencari kawasan anda…',
     locate_denied: 'Tak dapat akses lokasi — cari kerusi anda di bawah.',
     locate_outside: 'Lokasi anda di luar Johor — cari kerusi anda di bawah.',
+    install_btn: 'Pasang aplikasi di telefon anda',
     voters: 'pengundi',
     youth: 'bawah 30',
     majority: 'majoriti',
@@ -145,6 +146,7 @@ const STR = {
     locate_finding: 'Finding your area…',
     locate_denied: 'Couldn’t access your location — search for your seat below.',
     locate_outside: 'You seem to be outside Johor — search for your seat below.',
+    install_btn: 'Install the app on your phone',
     voters: 'voters',
     youth: 'under 30',
     majority: 'majority',
@@ -697,6 +699,7 @@ function heroFork(idx) {
     <button class="btn${vol ? ' secondary' : ''}" id="forkLocate">${L('locate_btn')}</button>
     <button class="btn secondary" id="forkSearch">${T('Cari kerusi anda', 'Find your seat')}</button>
     <div class="locate-hint" id="locateHint" hidden></div>
+    <button class="install-chip" id="installChip" ${state.installPrompt ? '' : 'hidden'}>${L('install_btn')}</button>
   </div>`
 }
 
@@ -776,6 +779,13 @@ async function renderHome() {
         settle(() => { if (slug) { location.hash = `#/seat/${slug}` } else { fail(L('locate_outside')) } })
       } catch { settle(() => fail(L('locate_denied'))) }
     }, () => settle(() => fail(L('locate_denied'))), { timeout: 8000, maximumAge: 60000 })
+  })
+  document.getElementById('installChip')?.addEventListener('click', async () => {
+    const p = state.installPrompt
+    if (!p) return
+    state.installPrompt = null
+    document.getElementById('installChip').hidden = true
+    p.prompt()
   })
   renderFooter(idx)
 }
@@ -1705,3 +1715,15 @@ syncLangBtn()
 
 window.addEventListener('hashchange', route)
 route()
+
+// ---------- PWA: offline cache + one-tap install ----------
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => { /* offline support optional */ })
+}
+// Chrome/Android fires beforeinstallprompt when installable; stash it so the
+// home fork can show a one-tap "Pasang aplikasi" chip (see heroFork).
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault()
+  state.installPrompt = e
+  document.getElementById('installChip')?.removeAttribute('hidden')
+})
