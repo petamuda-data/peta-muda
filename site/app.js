@@ -89,7 +89,7 @@ const STR = {
     crime_note: 'Data PDRM peringkat daerah polis (bukan kerusi). Sahkan sebelum menerbitkan.',
     race_title: 'Harga vs pendapatan vs inflasi rasmi',
     race_sub: 'Kadar perubahan setahun — harga dapur diukur sejak PRN lalu (Mac 2022)',
-    basket_rate: 'Bakul dapur',
+    basket_rate: 'Barang dapur',
     income_rate: 'Pendapatan penengah',
     cpi_official: 'Inflasi rasmi (CPI Johor)',
     since_se15: 'Sejak PRN Mac 2022',
@@ -110,7 +110,7 @@ const STR = {
     poverty: 'Kadar kemiskinan mutlak',
     gini: 'Ketaksamaan (Gini)',
     u_rate: 'Kadar pengangguran',
-    pp_line: (b, i) => `Sejak PRN Mac 2022: bakul dapur naik ${b}%/thn, pendapatan hanya ${i}%/thn — kuasa beli keluarga semakin menyusut.`,
+    pp_line: (b, i) => `Sejak PRN Mac 2022: harga barang dapur naik ${b}%/thn, pendapatan hanya ${i}%/thn — kuasa beli keluarga semakin menyusut.`,
     share: 'Kongsi ringkasan',
     copied: 'Disalin ke papan keratan!',
     story_title: 'Cerita kempen — 5 langkah',
@@ -126,7 +126,7 @@ const STR = {
     issues_title: 'Isu tempatan (disahkan sumber)',
     issues_sub: 'Isu khusus kawasan ini, disemak terhadap laporan berita — nombor rujukan boleh diklik',
     issues_statewide: 'Seluruh Johor',
-    talking_points: 'Isu untuk pintu ke pintu',
+    talking_points: 'Isu untuk rumah ke rumah',
     tp_sub: 'Dijana automatik daripada data rasmi — semak sebelum guna',
     demo_title: 'Profil pengundi (daftar pemilih 2026)',
     demo_sub: 'Daftar pemilih JHR-SE-16 — ElectionData.MY',
@@ -1105,7 +1105,7 @@ async function renderVolunteer() {
         </span>
         <span class="btn-row" style="margin:0">
           <button class="btn" data-slug="${esc(s.slug)}">${L('volunteer_get_btn')}</button>
-          <button class="btn secondary" data-tp="${esc(s.slug)}">📋 ${T('Salin isi pintu ke pintu', 'Copy talking points', '复制拜访要点')}</button>
+          <button class="btn secondary" data-tp="${esc(s.slug)}">📋 ${T('Salin isi rumah ke rumah', 'Copy talking points', '复制拜访要点')}</button>
         </span>
       </div>`).join('') : `<p class="sub">${L('volunteer_none')}</p>`
     // no-AI fallback: copy the seat's talking points as WhatsApp-ready text
@@ -1355,7 +1355,7 @@ function raceCard(seat, idx) {
 function tpText(seat, idx) {
   const pts = talkingPoints(seat, idx).map(p => `• ${htmlToText(p)}`)
   return [
-    `📍 ${seat.code} ${seat.name} — ${T('isi pintu ke pintu', 'door-knocking points', '逐户拜访要点')}`,
+    `📍 ${seat.code} ${seat.name} — ${T('isi rumah ke rumah', 'door-knocking points', '逐户拜访要点')}`,
     ...pts,
     `${location.origin}${location.pathname}#/seat/${seat.slug}`,
   ].join('\n')
@@ -1397,7 +1397,7 @@ function doorstepHero(seat, idx) {
   if (r?.medPerc != null) {
     const pc = `${r.medPerc > 0 ? '+' : ''}${r.medPerc}%`
     lines.push(T(
-      `Bakul dapur di sini naik <strong>${pc}</strong> sejak PRN Mac 2022.`,
+      `Harga barang dapur di sini naik <strong>${pc}</strong> sejak PRN Mac 2022.`,
       `The kitchen basket here is up <strong>${pc}</strong> since the Mar 2022 election.`,
       `自2022年3月选举以来，这里的厨房篮子上涨了 <strong>${pc}</strong>。`))
   }
@@ -1454,7 +1454,7 @@ function talkingPoints(seat, idx) {
   const r = raceStats(seat, idx)
   if (r?.basketAnnual != null && r.cpiYoy != null && r.basketAnnual > r.cpiYoy + 1) {
     pts.push(bm
-      ? `Inflasi rasmi Johor hanya <strong>${r.cpiYoy.toFixed(1)}%</strong> setahun — tetapi bakul dapur di sini naik <strong>${r.basketAnnual.toFixed(1)}%</strong> setahun sejak PRN Mac 2022.`
+      ? `Inflasi rasmi Johor hanya <strong>${r.cpiYoy.toFixed(1)}%</strong> setahun — tetapi harga barang dapur di sini naik <strong>${r.basketAnnual.toFixed(1)}%</strong> setahun sejak PRN Mac 2022.`
       : `Official Johor inflation is just <strong>${r.cpiYoy.toFixed(1)}%</strong> a year — but the kitchen basket here is up <strong>${r.basketAnnual.toFixed(1)}%</strong> a year since the Mar 2022 election.`)
   }
   if (r?.basketAnnual != null && r.incomeAnnual != null && r.basketAnnual > r.incomeAnnual) {

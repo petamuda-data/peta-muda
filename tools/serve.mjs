@@ -10,6 +10,7 @@ const TYPES = {
   '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.json': 'application/json', '.geojson': 'application/geo+json',
   '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json',
+  '.mp4': 'video/mp4',
 }
 
 createServer(async (req, res) => {
