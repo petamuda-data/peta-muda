@@ -1,0 +1,18 @@
+# Cloudflare (Workers static assets / Pages) honors this file. The shell must
+# never be cached long: a stale app.js/index.html is what pinned old builds to
+# devices. sw.js especially must revalidate so a new service worker is picked
+# up immediately rather than on the browser's 24h fallback.
+/sw.js
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/app.js
+  Cache-Control: no-cache
+/styles.css
+  Cache-Control: no-cache
+/manifest.webmanifest
+  Cache-Control: no-cache
+/*.mjs
+  Cache-Control: no-cache

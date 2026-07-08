@@ -377,6 +377,9 @@ const index = {
   edition: EDITION,
   national_issues: nationalIssues.issues ?? [],
   live_alerts: liveAlerts,
+  // MUDA's statewide positions, surfaced on the home page's "Apa MUDA kata"
+  // card (muda edition only) — always-present, attributed, daily-relevant
+  muda_voice: mudaStances ? (mudaStances.themes ?? []).filter(t => t.statewide) : null,
   johor_context: { crime, undi18, muda: mudaJohor },
   muda_record: mudaRecord,
   source_health: health,

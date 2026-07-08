@@ -262,6 +262,7 @@ const index = {
   edition: EDITION,
   national_issues: nationalIssues,
   live_alerts: liveAlerts,
+  muda_voice: mudaStances ? (mudaStances.themes ?? []).filter(t => t.statewide) : null,
   johor_context: { crime: null, undi18, muda: mudaMelaka },
   muda_record: mudaRecord,
   source_health: null,

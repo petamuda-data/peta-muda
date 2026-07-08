@@ -14,8 +14,11 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises'
 import path from 'node:path'
 
-const ENDPOINT = (stateName) =>
+const FLOOD_ENDPOINT = (stateName) =>
   `https://api.data.gov.my/flood-warning?contains=${encodeURIComponent(stateName)}@state`
+// METMalaysia civil-defence warnings (heavy rain, thunderstorm, etc.) — national
+// feed, filtered client-side to rows mentioning the state.
+const WEATHER_ENDPOINT = 'https://api.data.gov.my/weather/warning'
 
 const snapshotPath = (stateName) =>
   path.join('data', 'derived', `alerts_${stateName.toLowerCase().replace(/\s+/g, '_')}.json`)
@@ -59,24 +62,57 @@ function summarise(rows) {
   }
 }
 
+// METMalaysia warnings that mention this state, most recent first. Defensive:
+// the response shape isn't verifiable from this environment, so we probe many
+// plausible field names and yield [] on any mismatch.
+function summariseWeather(rows, stateName) {
+  const out = []
+  const s = stateName.toLowerCase()
+  for (const r of Array.isArray(rows) ? rows : []) {
+    const title = r.heading_en ?? r.heading ?? r.title ?? r.warning ?? r.msg_en ?? null
+    if (!title) continue
+    const blob = JSON.stringify(r).toLowerCase()
+    // national feed — keep only warnings that name the state (or that carry no
+    // area field at all, i.e. nationwide)
+    const hasArea = /state|area|location|negeri|daerah/.test(blob)
+    if (hasArea && !blob.includes(s)) continue
+    out.push({
+      title: String(title).slice(0, 140),
+      valid_to: r.valid_to ?? r.valid_until ?? r.end ?? null,
+    })
+  }
+  return out.slice(0, 3)
+}
+
 // Returns the live-alerts block for a state, or null when there is nothing to
 // show (no alerts, or no data). Never throws.
+const UA = { headers: { 'User-Agent': 'PetaMuda/0.1 (civic data app)' } }
+const fetchArr = async (url) => {
+  const res = await fetch(url, UA)
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const raw = await res.json()
+  return Array.isArray(raw) ? raw : (raw?.data ?? raw?.results ?? [])
+}
+
 export async function loadAlerts(stateName, log = console.log) {
   let summary = null
   if (process.env.ALERTS_FEED === '1') {
     try {
-      const res = await fetch(ENDPOINT(stateName), { headers: { 'User-Agent': 'PetaMuda/0.1 (civic data app)' } })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const raw = await res.json()
-      // one-time field-shape probe: confirms the threshold keys map to the live
-      // response (a dry day and a field-name mismatch both yield 0 alerts, so
-      // log the raw shape until validated, then this can be removed)
-      const arr = Array.isArray(raw) ? raw : (raw?.data ?? raw?.results ?? [])
-      log(`alerts(${stateName}) probe: ${arr.length} station(s) received; sample keys: ${arr[0] ? Object.keys(arr[0]).join(',') : '(none)'}`)
-      summary = summarise(arr)
+      const floodArr = await fetchArr(FLOOD_ENDPOINT(stateName))
+      log(`alerts(${stateName}) flood probe: ${floodArr.length} station(s); keys: ${floodArr[0] ? Object.keys(floodArr[0]).join(',') : '(none)'}`)
+      summary = summarise(floodArr)
+      // weather is best-effort and must never fail the flood feed
+      try {
+        const wxArr = await fetchArr(WEATHER_ENDPOINT)
+        log(`alerts(${stateName}) weather probe: ${wxArr.length} warning(s); keys: ${wxArr[0] ? Object.keys(wxArr[0]).join(',') : '(none)'}`)
+        summary.weather = summariseWeather(wxArr, stateName)
+      } catch (e) {
+        log(`alerts(${stateName}): weather fetch failed (${e.message})`)
+        summary.weather = []
+      }
       await mkdir(path.dirname(snapshotPath(stateName)), { recursive: true })
       await writeFile(snapshotPath(stateName), JSON.stringify(summary, null, 1))
-      log(`alerts(${stateName}): ${summary.total} station(s) at alert+ (snapshot written)`)
+      log(`alerts(${stateName}): ${summary.total} river station(s) at alert+, ${summary.weather.length} weather warning(s) (snapshot written)`)
     } catch (e) {
       log(`alerts(${stateName}): live fetch failed (${e.message}), falling back to snapshot`)
       summary = null
@@ -90,5 +126,7 @@ export async function loadAlerts(stateName, log = console.log) {
       return null
     }
   }
-  return summary && summary.total > 0 ? summary : null
+  // show the card if there is any live signal — flood stations or weather
+  const has = (summary.total > 0) || ((summary.weather ?? []).length > 0)
+  return has ? summary : null
 }

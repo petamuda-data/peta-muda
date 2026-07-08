@@ -1,6 +1,11 @@
 // Peta MUDA — Seat Command Center (static, no build step).
-// Data: electiondata.my (CC0) + data.gov.my/OpenDOSM (CC BY 4.0) + KPDN PriceCatcher.
+// Data: electiondata.my (CC0) + data.gov.my/OpenDOSM (CC BY 4.0).
 import { suggestTheme } from './ops-match.mjs'
+
+// Code build tag, shown in the footer. Bump on every shipped app change — it's
+// the on-device proof of which build a phone is actually running (the cache-
+// staleness diagnostic). Not the data build time (that's idx.built_at).
+const BUILD = '2026-07-08b'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -345,7 +350,7 @@ function renderFooter(idx) {
   el.innerHTML = `
     <p><strong>${L('sources')}:</strong> ${idx.attribution.map(a => `<a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.name)}</a>`).join(' · ')}</p>
     ${health ? `<p>${health}</p>` : ''}
-    <p>${L('built')}: ${new Date(idx.built_at).toLocaleString()} · ${L('disclaimer')}</p>`
+    <p>${L('built')}: ${new Date(idx.built_at).toLocaleString()} · <span title="app code version">app ${BUILD}</span> · ${L('disclaimer')}</p>`
 }
 
 // Live flood-warning banner: the daily ground signal. Renders only when JPS
@@ -354,7 +359,8 @@ function renderFooter(idx) {
 // administration's live exposure next to MUDA's answer.
 function liveAlertsCard(idx) {
   const a = idx.live_alerts
-  if (!a || !a.total) return ''
+  const wx = a?.weather ?? []
+  if (!a || (!a.total && !wx.length)) return ''
   const c = a.counts ?? {}
   const parts = []
   if (c.danger) parts.push(`<strong>${c.danger}</strong> ${T('paras bahaya', 'at danger', '危险水位')}`)
@@ -363,13 +369,21 @@ function liveAlertsCard(idx) {
   const sevLabel = { danger: T('BAHAYA', 'DANGER'), warning: T('AMARAN', 'WARNING'), alert: T('WASPADA', 'ALERT') }
   const rows = (a.stations ?? []).slice(0, 5).map(s =>
     `<li>${esc(s.name)}${s.district ? ` <span style="color:var(--muted)">(${esc(s.district)})</span>` : ''} — <strong>${esc(sevLabel[s.severity] ?? s.severity)}</strong></li>`).join('')
+  const floodLine = a.total
+    ? `<p class="hero-line">${parts.join(' · ')} — ${esc(a.total)} ${T('stesen sungai di', 'river stations in', '条河流测站于')} ${esc(REGION_LABEL())} <span style="color:var(--muted)">(JPS, ${esc(a.as_of ?? '')})</span></p>`
+    : ''
+  const wxRows = wx.length
+    ? `<p class="sub" style="margin:.4rem 0 0"><strong>${T('Amaran cuaca', 'Weather warnings', '天气警报')}</strong> (METMalaysia)</p>
+       <ul class="points" style="margin:.2rem 0 0">${wx.map(w => `<li>${esc(w.title)}</li>`).join('')}</ul>`
+    : ''
   const mudaLine = idx.edition === 'muda'
     ? `<p class="sub" style="margin-top:.5rem"><strong>MUDA:</strong> ${T('Rekod #MariBantu — RM2 juta+ dikumpul untuk mangsa banjir 8 negeri (2021), audit pihak ketiga diterbitkan.', '#MariBantu record — RM2m+ raised for flood victims across 8 states (2021), third-party audited.')}</p>`
     : ''
   return `<div class="card alert">
-    <h2>${T('Amaran banjir langsung', 'Live flood alerts', '实时水灾警报')}</h2>
-    <p class="hero-line">${parts.join(' · ')} — ${esc(a.total)} ${T('stesen sungai di', 'river stations in', '条河流测站于')} ${esc(REGION_LABEL())} <span style="color:var(--muted)">(JPS, ${esc(a.as_of ?? '')})</span></p>
+    <h2>${a.total ? T('Amaran banjir langsung', 'Live flood alerts', '实时水灾警报') : T('Amaran cuaca langsung', 'Live weather alerts', '实时天气警报')}</h2>
+    ${floodLine}
     ${rows ? `<ul class="points" style="margin:.4rem 0 0">${rows}</ul>` : ''}
+    ${wxRows}
     ${mudaLine}
   </div>`
 }
@@ -398,6 +412,35 @@ function countdownCard(idx) {
     inner = `<div class="label">${L('poll_over')}</div>`
   }
   return `<div class="card"><div class="countdown">${inner}</div></div>`
+}
+
+// "Apa MUDA kata" — MUDA's strongest statewide positions on the current
+// issues, always present on the home page (muda edition). Commitment first,
+// the attributed verbatim quote + source second. Never empty — this is the
+// daily MUDA-first narrative surface, not a data readout.
+function mudaVoiceCard(idx) {
+  if (idx.edition !== 'muda') return ''
+  // strongest-first ordering; take the top 4 statewide themes that carry a lead
+  const order = ['cost_of_living', 'wages', 'housing', 'integrity', 'sst']
+  const themes = (idx.muda_voice ?? [])
+    .filter(t => t.verdict !== 'NO_VERIFIED_POSITION' && pick(t, 'stance'))
+    .sort((a, b) => (order.indexOf(a.key) + 1 || 99) - (order.indexOf(b.key) + 1 || 99))
+    .slice(0, 4)
+  if (!themes.length) return ''
+  const items = themes.map(t => {
+    const lead = leadClause(pick(t, 'stance'))
+    const qs = t.quotes ?? []
+    const q = qs.find(x => x.lang === state.lang) ?? qs[0]
+    const quote = q
+      ? `<br><span style="color:var(--muted);font-size:.82rem">“${esc(q.text)}” — <strong>${esc(q.who)}</strong>, ${esc(pick(q, 'role'))} (${esc((q.date ?? '').slice(0, 4))})${q.source ? ` <a href="${esc(q.source)}" target="_blank" rel="noopener" style="color:var(--muted)">[${T('sumber', 'source')}]</a>` : ''}</span>`
+      : ''
+    return `<li><strong>MUDA:</strong> ${esc(lead)}${quote}</li>`
+  }).join('')
+  return `<div class="card accent">
+    <h2>${T('Apa MUDA kata tentang isu semasa', 'What MUDA is saying on the issues')}</h2>
+    <p class="sub">${T('Pendirian rasmi MUDA — setiap satu disahkan sumber', 'MUDA’s official positions — each source-verified')}</p>
+    <ul class="points">${items}</ul>
+  </div>`
 }
 
 // ---- pro-MUDA edition (EDITION=muda) advocacy layer, gated on idx.edition ----
@@ -648,6 +691,7 @@ async function renderHome() {
     ${liveAlertsCard(idx)}
     ${countdownCard(idx)}
     ${mudaHomeCard(idx)}
+    ${mudaVoiceCard(idx)}
 
     <div class="card">
       <h2>${esc(featuredLabel)}</h2>
