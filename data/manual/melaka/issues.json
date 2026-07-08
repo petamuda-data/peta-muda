@@ -1,0 +1,90 @@
+{
+  "_comment": "Curated Melaka issues, compiled Jul 2026 from news research (the Melaka dossier round). Verdict REPORTED = sourced from named news reporting but NOT yet through the full adversarial fact-check the Johor CONFIRMED entries received — re-verify each before printing campaign material. Every entry must keep at least one working source URL. Seat keys use the current Melaka DUN codes.",
+  "updated": "2026-07-07",
+  "seats": {
+    "N.24": [
+      {
+        "theme": "integrity",
+        "issue_bm": "ADUN Bemban dipecat daripada Bersatu dan kini duduk sebagai Bebas — gabungan yang memenangi kerusi ini pada 2021 sudah tidak wujud di sini",
+        "issue_en": "Bemban's assemblyman was expelled from Bersatu and now sits as an Independent — the coalition that won this seat in 2021 no longer exists here",
+        "receipt_bm": "Dilaporkan Bernama/FMT (2025); majoriti 2021 hanya 328 undi dalam pertandingan tiga penjuru.",
+        "receipt_en": "Reported by Bernama/FMT (2025); the 2021 majority was just 328 votes in a three-way fight.",
+        "sources": ["https://bernama.com/en/news.php?id=2523911", "https://fulcrum.sg/perikatan-nasionals-performance-in-melaka-worth-a-double-take/"],
+        "verdict": "REPORTED"
+      },
+      {
+        "theme": "floods",
+        "issue_bm": "26 daripada 106 lokasi berisiko banjir di Melaka berada di daerah Jasin — banjir Okt 2025 sekali lagi memindahkan keluarga di sini",
+        "issue_en": "26 of Melaka's 106 flood-risk locations are in Jasin district — the Oct 2025 floods displaced families here again",
+        "receipt_bm": "Angka MTL/Bomba Melaka (Nov 2025) melalui Majlis Keselamatan Negara.",
+        "receipt_en": "MTL/Melaka Fire Dept figures (Nov 2025) via the National Security Council.",
+        "sources": ["https://www.mkn.gov.my/web/ms/2025/11/11/mtl-bomba-melaka-kenal-pasti-106-lokasi-di-melaka-berisiko-banjir/"],
+        "verdict": "REPORTED"
+      }
+    ],
+    "N.15": [
+      {
+        "theme": "integrity",
+        "issue_bm": "Pengundi Pengkalan Batu pernah melalui episod lompat parti: ADUN yang menang 2018 keluar parti pada 2020, bertanding semula sebagai Bebas dan tewas teruk — majoriti 2021 hanya 131 undi, paling tipis di Melaka",
+        "issue_en": "Pengkalan Batu lived through the defection saga first-hand: its 2018 winner left his party in 2020, ran again as an independent and was crushed — the 2021 majority here was 131 votes, the state's thinnest",
+        "receipt_bm": "Keputusan rasmi 2021; kronologi peralihan dilaporkan meluas.",
+        "receipt_en": "Official 2021 results; the defection chronology is widely reported.",
+        "sources": ["https://en.wikipedia.org/wiki/Norhizam_Hassan_Baktee"],
+        "verdict": "REPORTED"
+      }
+    ],
+    "N.13": [
+      {
+        "theme": "housing",
+        "issue_bm": "Paya Rumput ialah kawasan keluarga muda yang berkembang pesat — projek perumahan rakyat PRR bernilai RM80 juta sedang dibina, tanda permintaan rumah mampu milik yang tinggi",
+        "issue_en": "Paya Rumput is a fast-growing young-family belt — an RM80m PRR public-housing project is under construction, a marker of high affordable-housing demand",
+        "receipt_bm": "Dilaporkan Bernama (2025).",
+        "receipt_en": "Reported by Bernama (2025).",
+        "sources": ["https://www.bernama.com/en/news.php?id=2524098"],
+        "verdict": "REPORTED"
+      }
+    ],
+    "N.14": [
+      {
+        "theme": "reclamation",
+        "issue_bm": "Projek penambakan M-WEZ bernilai RM600 juta di pesisir Klebang berdepan bantahan nelayan yang kehilangan kawasan tangkapan",
+        "issue_en": "The RM600m M-WEZ waterfront reclamation off Klebang faces pushback from fishermen losing their fishing grounds",
+        "receipt_bm": "JV RM600j dilaporkan Business Today (Okt 2025); kesan ekologi dan nelayan didokumentasi Macaranga.",
+        "receipt_en": "The RM600m JV reported by Business Today (Oct 2025); ecological and fishermen impacts documented by Macaranga.",
+        "sources": ["https://www.businesstoday.com.my/2025/10/27/lbs-bina-and-oriental-holdings-ink-rm600-million-jv-for-klebang-waterfront-development/", "https://www.macaranga.org/reclamations-gateway-to-ecological-disaster/"],
+        "verdict": "REPORTED"
+      }
+    ],
+    "N.21": [
+      {
+        "theme": "integrity",
+        "issue_bm": "Duyong menyaksikan pergelutan terbuka BN–DAP tentang siapa patut bertanding di sini — sementara isu penduduk terbiar di tepi",
+        "issue_en": "Duyong is watching an open BN–DAP tussle over who gets to contest the seat — while residents' issues sit on the sidelines",
+        "receipt_bm": "Dilaporkan Malaysia Gazette (Jul 2025); majoriti 2021 hanya 200 undi.",
+        "receipt_en": "Reported by Malaysia Gazette (Jul 2025); the 2021 majority was just 200 votes.",
+        "sources": ["https://malaysiagazette.com/2025/07/13/dap-nak-duyong-helmy-selagi-hidup-saya-takkan-serahkan-tok-mat/"],
+        "verdict": "REPORTED"
+      }
+    ]
+  },
+  "statewide": [
+    {
+      "theme": "integrity",
+      "issue_bm": "Luka politik Melaka masih terbuka: kerajaan negeri tumbang pada Okt 2021 selepas empat ADUN menarik sokongan, memaksa pilihan raya pertengahan penggal — episod kedua selepas kerajaan 2018 turut tumbang melalui peralihan sokongan pada 2020",
+      "issue_en": "Melaka's political wound is still open: the state government collapsed in Oct 2021 after four assemblymen withdrew support, forcing a mid-term election — the second collapse after the 2018 government also fell through defections in 2020",
+      "receipt_bm": "Kronologi 2020–2021 didokumentasi meluas; PRN Nov 2021 diadakan akibat kehilangan majoriti.",
+      "receipt_en": "The 2020–2021 chronology is widely documented; the Nov 2021 snap election followed the loss of majority.",
+      "sources": ["https://en.wikipedia.org/wiki/2021_Malacca_state_election"],
+      "verdict": "REPORTED"
+    },
+    {
+      "theme": "floods",
+      "issue_bm": "106 lokasi di seluruh Melaka dikenal pasti berisiko banjir (MTL/Bomba, Nov 2025); banjir Mac dan Okt 2025 memindahkan penduduk termasuk di Taman Rambai Jaya",
+      "issue_en": "106 locations across Melaka are identified as flood-risk (MTL/Fire Dept, Nov 2025); the March and Oct 2025 floods displaced residents including in Taman Rambai Jaya",
+      "receipt_bm": "Kenyataan rasmi MKN (Nov 2025).",
+      "receipt_en": "Official MKN statement (Nov 2025).",
+      "sources": ["https://www.mkn.gov.my/web/ms/2025/11/11/mtl-bomba-melaka-kenal-pasti-106-lokasi-di-melaka-berisiko-banjir/"],
+      "verdict": "REPORTED"
+    }
+  ]
+}

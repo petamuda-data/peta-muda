@@ -54,6 +54,13 @@ jobs:
           # volunteer hub + AI briefings). Remove this env to publish the
           # neutral public edition instead.
           EDITION: muda
+      - name: Run Melaka pipeline
+        # the next front — same corpus filtered to Melaka + curated issues,
+        # written to site/data/melaka. Non-fatal so a Melaka-source hiccup
+        # never blocks the Johor refresh.
+        run: PIPELINE_STATE=Melaka node pipeline/run_melaka.mjs || echo "melaka build skipped"
+        env:
+          EDITION: muda
       - name: Commit refreshed data
         run: |
           git config user.name 'peta-muda-bot'

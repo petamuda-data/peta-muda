@@ -1,6 +1,10 @@
 // Pipeline configuration: scope, target seats, geography crosswalks, basket.
 
-export const STATE = 'Johor'
+// Default build is Johor (pipeline/run.mjs). The lean Melaka build
+// (pipeline/run_melaka.mjs) sets PIPELINE_STATE=Melaka so the shared steps
+// filter their national sources to Melaka rows.
+export const STATE = process.env.PIPELINE_STATE ?? 'Johor'
+export const EXPECTED_SEATS = STATE === 'Melaka' ? 28 : 56
 
 // Build edition: 'neutral' (default, the public data tool) or 'muda' (the
 // pro-MUDA advocacy build). Set via `EDITION=muda node pipeline/run.mjs`.

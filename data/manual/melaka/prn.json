@@ -1,0 +1,14 @@
+{
+  "_comment": "Melaka election metadata. No polling date exists yet: the assembly's five-year term runs from Dec 2021, auto-dissolves around Dec 2026, and polls are due by late Feb 2027. Update polling_date/early_voting_date/nomination_date the day SPR announces, and switch the pipeline's saluran/roll sources to the mlk_se16 lake files when they appear.",
+  "election": {
+    "id": "MLK-PRN-NEXT",
+    "name_bm": "Pilihan Raya Negeri Melaka (PRN)",
+    "name_en": "Melaka State Election",
+    "polling_date": null,
+    "early_voting_date": null,
+    "nomination_date": null,
+    "expected_by": "2027-02-25",
+    "note_bm": "Tarikh belum diumumkan — penggal DUN berakhir Dis 2026, pilihan raya perlu diadakan menjelang akhir Feb 2027.",
+    "note_en": "Date not yet announced — the assembly's term ends Dec 2026, so polls are due by late Feb 2027."
+  }
+}

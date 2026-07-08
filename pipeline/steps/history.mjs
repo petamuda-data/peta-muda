@@ -15,6 +15,13 @@ export async function loadHistory(seats) {
     fetchText(SOURCES.headlineBallots),
     fetchText(SOURCES.headlineStats),
   ])
+  return buildHistory(ballotsText, statsText, seats)
+}
+
+// Core classification, separated from the fetch so alternate runners (the
+// Melaka build uses the GitHub-raw MECo mirror of the same corpus) can reuse
+// the exact grouping/settlement rules.
+export function buildHistory(ballotsText, statsText, seats) {
   const ballots = parseCsvObjects(ballotsText).filter(r => r.state === STATE && r.seat.startsWith('N.'))
   const stats = parseCsvObjects(statsText).filter(r => r.state === STATE && r.seat.startsWith('N.'))
 

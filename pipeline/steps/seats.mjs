@@ -2,7 +2,7 @@
 // DUN -> parlimen crosswalk taken from data.gov.my hh_income_dun rows
 // (which embed parlimen for every DUN) and the KPDN market-district mapping.
 import { fetchJson } from '../lib/fetch.mjs'
-import { SOURCES, STATE, PARLIMEN_TO_KPDN, DUN_KPDN_OVERRIDES, TARGET_SEATS } from '../config.mjs'
+import { SOURCES, STATE, EXPECTED_SEATS, PARLIMEN_TO_KPDN, DUN_KPDN_OVERRIDES, TARGET_SEATS } from '../config.mjs'
 
 export const seatCode = (seat) => seat.split(' ')[0] // 'N.41'
 export const seatName = (seat) => seat.slice(seat.indexOf(' ') + 1) // 'Puteri Wangsa'
@@ -34,7 +34,7 @@ export async function loadSeats(socioDunParlimen) {
       }
     })
     .sort((a, b) => Number(a.code.slice(2)) - Number(b.code.slice(2)))
-  if (seats.length !== 56) throw new Error(`expected 56 Johor DUN seats, got ${seats.length}`)
+  if (seats.length !== EXPECTED_SEATS) throw new Error(`expected ${EXPECTED_SEATS} ${STATE} DUN seats, got ${seats.length}`)
   const missingParlimen = seats.filter(s => !s.parlimen)
   if (missingParlimen.length) throw new Error(`seats missing parlimen crosswalk: ${missingParlimen.map(s => s.code).join(',')}`)
   return seats

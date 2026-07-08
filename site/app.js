@@ -10,12 +10,20 @@ const storage = {
 }
 const LANGS = ['bm', 'en']
 const LANG_LABEL = { bm: 'BM', en: 'EN' }
+// which state's dataset is loaded. Johor is the live campaign; Melaka is the
+// next front (data built by pipeline/run_melaka.mjs into data/melaka/).
+const REGIONS = ['johor', 'melaka']
 const state = {
   lang: LANGS.includes(storage.get('lang')) ? storage.get('lang') : 'bm',
+  region: REGIONS.includes(storage.get('region')) ? storage.get('region') : 'johor',
   index: null,
   seats: new Map(), // slug -> seat json
   geo: null,
 }
+// per-region data locations. Johor keeps its original paths for compatibility.
+const DATA_DIR = () => state.region === 'melaka' ? 'data/melaka/' : 'data/'
+const GEO_URL = () => state.region === 'melaka' ? 'data/melaka/dun.geojson' : 'data/johor_dun.geojson'
+const REGION_LABEL = () => state.region === 'melaka' ? 'Melaka' : 'Johor'
 
 // ---------- i18n ----------
 const STR = {
@@ -240,6 +248,13 @@ const partyBadge = (p, coalition) => {
 
 const BLOC_COLORS = { PH: 'var(--ph)', BN: 'var(--bn)', PN: 'var(--pn)', MUDA: 'var(--muda)', LAIN: 'var(--lain)' }
 
+// the current electoral roll = newest demographics entry (JHR-SE-16 for Johor,
+// GE-15 for Melaka until its next PRN roll is gazetted); the prior roll (for
+// the "new voters since" line) is the next entry down, else null — so seat
+// pages work for either state without hardcoding a roll id
+const currentRoll = (seat) => seat.demographics?.[0] ?? null
+const priorRoll = (seat) => seat.demographics?.[1] ?? null
+
 // ---------- charts ----------
 function barRow(label, perc, valText, color = 'var(--ink)') {
   return `<div class="bar-row"><span>${esc(label)}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.min(perc, 100)}%;background:${color}"></div></div><span class="bar-val">${esc(valText)}</span></div>`
@@ -272,16 +287,27 @@ function miniMap(feature, bbox, size = 84) {
 
 // ---------- data ----------
 async function loadIndex() {
-  if (!state.index) state.index = await (await fetch('data/index.json')).json()
+  if (!state.index) state.index = await (await fetch(`${DATA_DIR()}index.json`)).json()
   return state.index
 }
 async function loadSeat(slug) {
-  if (!state.seats.has(slug)) state.seats.set(slug, await (await fetch(`data/seats/${slug}.json`)).json())
+  if (!state.seats.has(slug)) state.seats.set(slug, await (await fetch(`${DATA_DIR()}seats/${slug}.json`)).json())
   return state.seats.get(slug)
 }
 async function loadGeo() {
-  if (!state.geo) state.geo = await (await fetch('data/johor_dun.geojson')).json()
+  if (!state.geo) state.geo = await (await fetch(GEO_URL())).json()
   return state.geo
+}
+// switching states invalidates every cached dataset and returns home
+function setRegion(region) {
+  if (!REGIONS.includes(region) || region === state.region) return
+  state.region = region
+  storage.set('region', region)
+  state.index = null; state.seats = new Map(); state.geo = null
+  storage.set('last_seat', '') // a Johor slug must not resume under Melaka
+  location.hash = '#/'
+  syncStateToggle()
+  route()
 }
 
 // Which seat contains this WGS84 point? Even-odd ray casting across every
@@ -323,6 +349,15 @@ function renderFooter(idx) {
 }
 
 function countdownCard(idx) {
+  // no announced polling date yet (Melaka) — show the expected window instead
+  // of a broken countdown
+  if (!idx.election.polling_date) {
+    const exp = idx.election.expected_by
+    return `<div class="card"><div class="countdown">
+      <div class="label">${T('PRN belum diumumkan', 'Election not yet called')}</div>
+      ${exp ? `<div class="sublabel">${T('Dijangka menjelang', 'Expected by')} ${esc(exp)}</div>` : ''}
+    </div></div>`
+  }
   const today = new Date(); today.setHours(0, 0, 0, 0)
   const poll = new Date(`${idx.election.polling_date}T00:00:00`)
   const days = Math.round((poll - today) / 86400e3)
@@ -348,8 +383,9 @@ function mudaHomeCard(idx) {
   const headline = rec ? pick(rec, 'headline') : L('muda_title')
   const sub = rec ? pick(rec, 'sub') : ''
   const stats = []
-  if (u) stats.push(`<div style="min-width:130px"><div style="font-size:1.7rem;font-weight:800;color:var(--accent)">${fmtNum(u.total_18_20)}</div><div style="color:var(--muted);font-size:.72rem">${T('pengundi 18–20 tahun di daftar Johor 2026 — kohort yang dibuka oleh reformasi Undi18 2019', "voters aged 18–20 on Johor's 2026 roll — the cohort the 2019 Undi18 reform opened up", '2026年柔佛选民册上18–20岁的选民 — 2019年 Undi18 改革所开放的群体')}</div></div>`)
-  if (m) stats.push(`<div style="min-width:130px"><div style="font-size:1.7rem;font-weight:800;color:var(--accent)">${m.won}/${m.seats_contested}</div><div style="color:var(--muted);font-size:.72rem">${T(`kerusi Johor dimenangi MUDA pada 2022 (purata ${m.avg_perc}% undi)`, `Johor seats MUDA won in 2022 (avg ${m.avg_perc}% of the vote)`, `2022年 MUDA 胜出的柔佛议席（平均 ${m.avg_perc}% 选票）`)}</div></div>`)
+  const reg = REGION_LABEL()
+  if (u) stats.push(`<div style="min-width:130px"><div style="font-size:1.7rem;font-weight:800;color:var(--accent)">${fmtNum(u.total_18_20)}</div><div style="color:var(--muted);font-size:.72rem">${T(`pengundi 18–20 tahun dalam daftar pemilih ${reg} — kohort yang dibuka oleh reformasi Undi18 2019`, `voters aged 18–20 on the ${reg} roll — the cohort the 2019 Undi18 reform opened up`)}</div></div>`)
+  if (m) stats.push(`<div style="min-width:130px"><div style="font-size:1.7rem;font-weight:800;color:var(--accent)">${m.won}/${m.seats_contested}</div><div style="color:var(--muted);font-size:.72rem">${T(`kerusi ${reg} dimenangi MUDA pada 2022`, `${reg} seats MUDA won in 2022`)}</div></div>`)
   return `<div class="card accent">
     <h2>${esc(headline)}</h2>
     ${sub ? `<p class="sub">${esc(sub)}</p>` : ''}
@@ -413,13 +449,17 @@ async function copyAndDownloadBriefing(md, slug, btnEl, origText) {
 function briefingMd(seat, idx) {
   // operator instructions: 3-way, Chinese falls back to English for now
   const L2 = (b, e, z) => T(b, e, z)
-  const demo = seat.demographics.find(d => d.election === 'JHR-SE-16') ?? seat.demographics[0]
+  const demo = currentRoll(seat)
   const lines = []
   const px = (v, d = 1) => v == null ? '–' : Number(v).toFixed(d) + '%'
   const nf = (v) => v == null ? '–' : Number(v).toLocaleString('en-MY')
 
-  lines.push(`# PETA MUDA — AI Field Briefing: ${seat.code} ${seat.name} (PRN Johor 2026)`)
-  lines.push(`Generated ${new Date().toISOString().slice(0, 10)} from official open data (ElectionData.MY CC0; data.gov.my/OpenDOSM CC BY 4.0). Data built: ${idx.built_at?.slice(0, 10) ?? '–'}. Polling day: 11 July 2026 (early voting 7 July).`)
+  const e26 = seat.election2026 ?? {}
+  const pollLine = e26.polling_date
+    ? `Polling day: ${e26.polling_date}${e26.early_voting_date ? ` (early voting ${e26.early_voting_date})` : ''}.`
+    : 'Election not yet called.'
+  lines.push(`# PETA MUDA — AI Field Briefing: ${seat.code} ${seat.name} (${REGION_LABEL()} state election)`)
+  lines.push(`Generated ${new Date().toISOString().slice(0, 10)} from official open data (ElectionData.MY CC0; data.gov.my/OpenDOSM CC BY 4.0). Data built: ${idx.built_at?.slice(0, 10) ?? '–'}. ${pollLine}`)
   lines.push('')
   lines.push(`## ${L2('CARA GUNA (untuk petugas lapangan)', 'HOW TO USE (for the field operator)')}`)
   lines.push(L2(
@@ -433,7 +473,7 @@ function briefingMd(seat, idx) {
 4. Anytime, type "list intel" for the full log, or "recommendations" for the latest advice.`))
   lines.push('')
   lines.push('## INSTRUCTIONS TO THE AI ASSISTANT (binding for this whole conversation)')
-  lines.push(`You are the campaign field-intelligence assistant for the MUDA / Progressive Bloc team in ${seat.code} ${seat.name} at the 2026 Johor state election. Follow these rules for every reply:
+  lines.push(`You are the campaign field-intelligence assistant for the MUDA / Progressive Bloc team in ${seat.code} ${seat.name} at the ${REGION_LABEL()} state election. Follow these rules for every reply:
 
 1. GROUND YOUR ADVICE IN DATA. Recommendations must cite the DATA SNAPSHOT below wherever possible.
 2. GROUND INTEL IS GOLD. Any operator message reporting something heard/seen on the ground is GROUND INTEL — newer than this dataset and VERY IMPORTANT. Never dismiss it because it disagrees with the data. Log every item with a number and (if given) the place/date.
@@ -530,8 +570,8 @@ Confirm setup now by replying with: a 3-line summary of this seat, the ledger (e
   // johor context
   const jc = idx.johor_context
   if (jc?.undi18) {
-    lines.push('', '### Johor context')
-    lines.push(`- Undi18 footprint: ${nf(jc.undi18.total_18_20)} voters aged 18-20 statewide on the 2026 roll${demo ? `; this seat: ${nf(demo.age.age_18_20)}` : ''}`)
+    lines.push('', `### ${REGION_LABEL()} context`)
+    lines.push(`- Undi18 footprint: ${nf(jc.undi18.total_18_20)} voters aged 18-20 statewide on the current roll${demo ? `; this seat: ${nf(demo.age.age_18_20)}` : ''}`)
   }
 
   lines.push('', '## DATA CAVEATS (assistant must respect these)')
@@ -570,14 +610,20 @@ async function renderHome() {
   const idx = await loadIndex()
   const featured = idx.seats.filter(s => s.featured)
 
+  const kicker = `${T('Pusat Data Kerusi DUN', 'Seat Data Center —')} ${REGION_LABEL()}`
+  const featuredLabel = state.region === 'melaka'
+    ? T('Kerusi tumpuan', 'Focus seats')
+    : L('featured')
+  const allLabel = `${T('Semua', 'All')} ${idx.seats.length} ${T('kerusi DUN', 'DUN seats')} ${REGION_LABEL()}`
+
   app.innerHTML = `
-    <p class="kicker">${L('tagline')}</p>
+    <p class="kicker">${esc(kicker)}</p>
     ${heroFork(idx)}
     ${countdownCard(idx)}
     ${mudaHomeCard(idx)}
 
     <div class="card">
-      <h2>${L('featured')}</h2>
+      <h2>${esc(featuredLabel)}</h2>
       <p class="sub">${esc((state.lang === 'bm' ? idx.election.name_bm : idx.election.name_en) ?? idx.election.name_bm ?? '')}</p>
       <div class="seat-grid">
         ${featured.map(s => `
@@ -585,13 +631,13 @@ async function renderHome() {
             <div class="code">${esc(s.code)} · ${esc(s.parlimen ?? '')}</div>
             <div class="name">${esc(s.name)}</div>
             ${s.muda_candidate ? `<div class="cand">${partyBadge(s.bloc_party)} ${esc(s.muda_candidate)}</div>` : ''}
-            <div class="meta">${fmtNum(s.voters_total)} ${L('voters')} · ${fmtPct(s.youth_perc, 0)} ${L('youth')} · ${s.n_candidates_2026 ?? '–'} ${L('candidates')}</div>
+            <div class="meta">${fmtNum(s.voters_total)} ${L('voters')} · ${fmtPct(s.youth_perc, 0)} ${L('youth')}${s.n_candidates_2026 ? ` · ${s.n_candidates_2026} ${L('candidates')}` : s.last_result?.majority_perc != null ? ` · ${T('majoriti', 'maj')} ${fmtPct(s.last_result.majority_perc, 1)}` : ''}</div>
           </a>`).join('')}
       </div>
     </div>
 
     <div class="card">
-      <h2>${L('all_seats')}</h2>
+      <h2>${esc(allLabel)}</h2>
       <input class="searchbox" id="seatSearch" placeholder="${L('search')}" autocomplete="off">
       <div class="seat-list" id="seatList"></div>
     </div>`
@@ -658,7 +704,7 @@ async function renderVolunteer() {
   if (idx.edition !== 'muda') { location.hash = '#/'; return }
 
   app.innerHTML = `
-    <div class="crumbs"><a href="#/">← Johor</a></div>
+    <div class="crumbs"><a href="#/">← ${REGION_LABEL()}</a></div>
     <div class="card">
       <h2>${L('volunteer_title')}</h2>
       <p class="sub">${L('volunteer_sub')}</p>
@@ -1013,8 +1059,8 @@ function talkingPoints(seat, idx) {
   const national = issues.filter(e => e.scope === 'national').sort(withAnswerFirst).map(issuePt)
 
   const kempen = []
-  const demo = seat.demographics.find(d => d.election === 'JHR-SE-16')
-  const ge15 = seat.demographics.find(d => d.election === 'GE-15')
+  const demo = currentRoll(seat)
+  const ge15 = priorRoll(seat)
   if (demo) {
     const youthN = demo.age.age_18_20 + demo.age.age_21_29
     const youthP = (100 * youthN / demo.voters_total).toFixed(0)
@@ -1132,8 +1178,8 @@ function storyFor(seat, idx) {
   }
 
   // 2 — the deciders (youth + new voters)
-  const demo = seat.demographics.find(d => d.election === 'JHR-SE-16')
-  const ge15 = seat.demographics.find(d => d.election === 'GE-15')
+  const demo = currentRoll(seat)
+  const ge15 = priorRoll(seat)
   if (demo) {
     const youthN = demo.age.age_18_20 + demo.age.age_21_29
     const youthP = Math.round(100 * youthN / demo.voters_total)
@@ -1141,8 +1187,8 @@ function storyFor(seat, idx) {
     beats.push({
       title: L('beat_voters'),
       text: bm
-        ? `<strong>${fmtNum(youthN)}</strong> pengundi bawah 30 (${youthP}% daftar 2026)${newV ? `, termasuk <strong>${fmtNum(newV)}</strong> pengundi baharu sejak PRU15` : ''}.`
-        : `<strong>${fmtNum(youthN)}</strong> voters under 30 (${youthP}% of the 2026 roll)${newV ? `, including <strong>${fmtNum(newV)}</strong> new voters since GE15` : ''}.`,
+        ? `<strong>${fmtNum(youthN)}</strong> pengundi bawah 30 (${youthP}% daftar semasa)${newV ? `, termasuk <strong>${fmtNum(newV)}</strong> pengundi baharu sejak PRU15` : ''}.`
+        : `<strong>${fmtNum(youthN)}</strong> voters under 30 (${youthP}% of the roll)${newV ? `, including <strong>${fmtNum(newV)}</strong> new voters since GE15` : ''}.`,
     })
   }
 
@@ -1271,19 +1317,27 @@ function renderField(seat, idx) {
 
 // voter demographics (analyst form factor — lives on the Analisis tab)
 function demoCard(seat) {
-  const demo = seat.demographics.find(d => d.election === 'JHR-SE-16') ?? seat.demographics[0]
+  const demo = currentRoll(seat)
   if (!demo) return ''
   const ageBands = [['18–20', demo.age.age_18_20], ['21–29', demo.age.age_21_29], ['30–39', demo.age.age_30_39], ['40–49', demo.age.age_40_49], ['50–59', demo.age.age_50_59], ['60–69', demo.age.age_60_69], ['70+', demo.age.age_70_79 + demo.age.age_80_89 + demo.age['age_90+']]]
-  const eth = [[T('Melayu', 'Malay'), demo.ethnic.ethnic_malay], [T('Cina', 'Chinese'), demo.ethnic.ethnic_chinese], [T('India', 'Indian'), demo.ethnic.ethnic_indian], [T('Lain-lain', 'Others'), demo.ethnic.ethnic_bumi_sabah + demo.ethnic.ethnic_bumi_sarawak + demo.ethnic.ethnic_orang_asli + demo.ethnic.ethnic_other]]
   const maxAge = Math.max(...ageBands.map(a => a[1]))
-  const maxEth = Math.max(...eth.map(a => a[1]))
+  // ethnicity is absent on rolls sourced from the vote-count mirror (Melaka) —
+  // render the age bars alone rather than crash
+  const e = demo.ethnic
+  let ethHtml = ''
+  if (e) {
+    const eth = [[T('Melayu', 'Malay'), e.ethnic_malay], [T('Cina', 'Chinese'), e.ethnic_chinese], [T('India', 'Indian'), e.ethnic_indian], [T('Lain-lain', 'Others'), e.ethnic_bumi_sabah + e.ethnic_bumi_sarawak + e.ethnic_orang_asli + e.ethnic_other]]
+    const maxEth = Math.max(...eth.map(a => a[1]))
+    ethHtml = `<h3>${L('ethnic_dist')}</h3>
+      ${eth.map(([lbl, v]) => barRow(lbl, 100 * v / maxEth, fmtPct(100 * v / demo.voters_total, 0))).join('')}`
+  }
+  const rollSub = `${esc(demo.election ?? '')} ${T('daftar pemilih', 'roll')} — ElectionData.MY`
   return `<div class="card">
     <h2>${L('demo_title')}</h2>
-    <p class="sub">${L('demo_sub')} · ${fmtNum(demo.voters_total)} ${L('voters')} · ${fmtPct(100 * demo.sex_female / demo.voters_total, 0)} ${L('women')}</p>
+    <p class="sub">${rollSub} · ${fmtNum(demo.voters_total)} ${L('voters')} · ${fmtPct(100 * demo.sex_female / demo.voters_total, 0)} ${L('women')}</p>
     <h3>${L('age_dist')}</h3>
     ${ageBands.map(([lbl, v]) => barRow(lbl, 100 * v / maxAge, fmtPct(100 * v / demo.voters_total, 0))).join('')}
-    <h3>${L('ethnic_dist')}</h3>
-    ${eth.map(([lbl, v]) => barRow(lbl, 100 * v / maxEth, fmtPct(100 * v / demo.voters_total, 0))).join('')}
+    ${ethHtml}
   </div>`
 }
 
@@ -1361,7 +1415,7 @@ async function renderSeat(slug, tab = 'brief') {
     <div class="seat-head">
       ${mapSvg}
       <div>
-        <div class="crumbs"><a href="#/">← Johor</a> · ${esc(seat.parlimen ?? '')}</div>
+        <div class="crumbs"><a href="#/">← ${REGION_LABEL()}</a> · ${esc(seat.parlimen ?? '')}</div>
         <h1><span class="monogram">${esc(seat.code)}</span> ${esc(seat.name)}</h1>
         <div class="crumbs">${fmtNum(seat.election2026?.voters_total)} ${L('voters')}</div>
       </div>
@@ -1457,6 +1511,19 @@ langBtn.addEventListener('click', () => {
   route()
 })
 syncLangBtn()
+
+// state (region) toggle: Johor ↔ Melaka
+const stateToggle = document.getElementById('stateToggle')
+const syncStateToggle = () => {
+  stateToggle?.querySelectorAll('button').forEach(b => {
+    const on = b.dataset.state === state.region
+    b.classList.toggle('active', on)
+    b.setAttribute('aria-pressed', on ? 'true' : 'false')
+  })
+}
+stateToggle?.querySelectorAll('button').forEach(b =>
+  b.addEventListener('click', () => setRegion(b.dataset.state)))
+syncStateToggle()
 
 window.addEventListener('hashchange', route)
 route()

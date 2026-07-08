@@ -1,7 +1,7 @@
 // Peta MUDA service worker — network-first everywhere, cache fallback offline.
 // Data refreshes every 4 hours (and fast on results night), so nothing may be
 // served stale while online; the cache exists purely for doorstep dead zones.
-const CACHE = 'pm-v1'
+const CACHE = 'pm-v2'
 const PRECACHE = [
   './',
   'index.html',
