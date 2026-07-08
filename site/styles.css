@@ -334,6 +334,11 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .card.hero .btn { background: #fff; color: var(--ink); border-color: #fff; box-shadow: 2px 2px 0 var(--accent-2); }
 .card.hero .btn.wa { background: var(--wa); color: #fff; border-color: var(--wa); }
 
+/* live flood-alert card: red slab, reads as urgent without shouting */
+.card.alert { border: var(--border-hard); box-shadow: 4px 4px 0 var(--up); }
+.card.alert h2::before { background: var(--up); }
+.card.alert .hero-line strong { color: var(--up); }
+
 /* highlighter-marker on quotable numbers outside the hero */
 .card:not(.hero) .hero-line strong {
   background: linear-gradient(transparent 55%, var(--accent-wash) 55%);

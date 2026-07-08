@@ -17,6 +17,7 @@ import { updatePriceHistory, buildCostTrend } from './steps/cost_of_living.mjs'
 import { loadGeo } from './steps/geo.mjs'
 import { loadCrime } from './steps/crime.mjs'
 import { loadIntake } from './steps/intake.mjs'
+import { loadAlerts } from './steps/alerts.mjs'
 
 const OUT = path.join('site', 'data')
 const t0 = Date.now()
@@ -84,6 +85,9 @@ try {
 // ---- intake queue: admin-approved ground reports + news (Supabase in CI,
 // committed snapshot offline — see steps/intake.mjs) ----
 const intake = await loadIntake(log)
+
+// ---- live flood-warning feed (JPS via data.gov.my; snapshot fallback) ----
+const liveAlerts = await loadAlerts(STATE, log)
 
 // ---- curated national issues (research-verified, hand-maintained; neutral,
 // both editions — sourced facts like issues.json, surfaced app-wide) ----
@@ -372,6 +376,7 @@ const index = {
   cost_trend: costTrend,
   edition: EDITION,
   national_issues: nationalIssues.issues ?? [],
+  live_alerts: liveAlerts,
   johor_context: { crime, undi18, muda: mudaJohor },
   muda_record: mudaRecord,
   source_health: health,

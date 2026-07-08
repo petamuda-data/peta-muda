@@ -348,6 +348,32 @@ function renderFooter(idx) {
     <p>${L('built')}: ${new Date(idx.built_at).toLocaleString()} · ${L('disclaimer')}</p>`
 }
 
+// Live flood-warning banner: the daily ground signal. Renders only when JPS
+// has stations at alert level or above right now, dated, and (muda edition)
+// paired with MUDA's documented flood-relief record — the current
+// administration's live exposure next to MUDA's answer.
+function liveAlertsCard(idx) {
+  const a = idx.live_alerts
+  if (!a || !a.total) return ''
+  const c = a.counts ?? {}
+  const parts = []
+  if (c.danger) parts.push(`<strong>${c.danger}</strong> ${T('paras bahaya', 'at danger', '危险水位')}`)
+  if (c.warning) parts.push(`<strong>${c.warning}</strong> ${T('paras amaran', 'at warning', '警戒水位')}`)
+  if (c.alert) parts.push(`<strong>${c.alert}</strong> ${T('paras waspada', 'at alert', '提防水位')}`)
+  const sevLabel = { danger: T('BAHAYA', 'DANGER'), warning: T('AMARAN', 'WARNING'), alert: T('WASPADA', 'ALERT') }
+  const rows = (a.stations ?? []).slice(0, 5).map(s =>
+    `<li>${esc(s.name)}${s.district ? ` <span style="color:var(--muted)">(${esc(s.district)})</span>` : ''} — <strong>${esc(sevLabel[s.severity] ?? s.severity)}</strong></li>`).join('')
+  const mudaLine = idx.edition === 'muda'
+    ? `<p class="sub" style="margin-top:.5rem"><strong>MUDA:</strong> ${T('Rekod #MariBantu — RM2 juta+ dikumpul untuk mangsa banjir 8 negeri (2021), audit pihak ketiga diterbitkan.', '#MariBantu record — RM2m+ raised for flood victims across 8 states (2021), third-party audited.')}</p>`
+    : ''
+  return `<div class="card alert">
+    <h2>${T('Amaran banjir langsung', 'Live flood alerts', '实时水灾警报')}</h2>
+    <p class="hero-line">${parts.join(' · ')} — ${esc(a.total)} ${T('stesen sungai di', 'river stations in', '条河流测站于')} ${esc(REGION_LABEL())} <span style="color:var(--muted)">(JPS, ${esc(a.as_of ?? '')})</span></p>
+    ${rows ? `<ul class="points" style="margin:.4rem 0 0">${rows}</ul>` : ''}
+    ${mudaLine}
+  </div>`
+}
+
 function countdownCard(idx) {
   // no announced polling date yet (Melaka) — show the expected window instead
   // of a broken countdown
@@ -619,6 +645,7 @@ async function renderHome() {
   app.innerHTML = `
     <p class="kicker">${esc(kicker)}</p>
     ${heroFork(idx)}
+    ${liveAlertsCard(idx)}
     ${countdownCard(idx)}
     ${mudaHomeCard(idx)}
 
@@ -975,6 +1002,7 @@ function gotvCard(seat) {
 function renderBrief(seat, idx) {
   return `
     ${doorstepHero(seat, idx)}
+    ${liveAlertsCard(idx)}
     ${gotvCard(seat)}
     ${contestCard(seat)}
     ${incomeCard(seat, idx)}`

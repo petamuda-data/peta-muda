@@ -16,6 +16,7 @@ import { parseCsvObjects } from './lib/csv.mjs'
 import { seatCode, seatName, slugify } from './steps/seats.mjs'
 import { buildHistory } from './steps/history.mjs'
 import { loadGeo } from './steps/geo.mjs'
+import { loadAlerts } from './steps/alerts.mjs'
 
 if (STATE !== 'Melaka') {
   console.error('run_melaka.mjs must be invoked with PIPELINE_STATE=Melaka')
@@ -125,6 +126,9 @@ const socio = await (async () => {
 // ---- boundaries (DOSM national geojson, filtered to Melaka by the step) ----
 log('loading boundaries')
 const { geojson, bboxes } = await loadGeo(seats)
+
+// ---- live flood-warning feed (JPS via data.gov.my; snapshot fallback) ----
+const liveAlerts = await loadAlerts(STATE, log)
 
 // ---- manual Melaka content ----
 const readManual = async (file, fallback) => {
@@ -257,6 +261,7 @@ const index = {
   seats: summaries,
   edition: EDITION,
   national_issues: nationalIssues,
+  live_alerts: liveAlerts,
   johor_context: { crime: null, undi18, muda: mudaMelaka },
   muda_record: mudaRecord,
   source_health: null,

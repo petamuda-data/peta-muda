@@ -54,6 +54,9 @@ jobs:
           # volunteer hub + AI briefings). Remove this env to publish the
           # neutral public edition instead.
           EDITION: muda
+          # live JPS flood-warning feed (keyless data.gov.my OpenAPI); only
+          # fetched in CI, snapshot-committed for reproducible offline builds
+          ALERTS_FEED: '1'
       - name: Run Melaka pipeline
         # the next front — same corpus filtered to Melaka + curated issues,
         # written to site/data/melaka. Non-fatal so a Melaka-source hiccup
@@ -61,6 +64,7 @@ jobs:
         run: PIPELINE_STATE=Melaka node pipeline/run_melaka.mjs || echo "melaka build skipped"
         env:
           EDITION: muda
+          ALERTS_FEED: '1'
       - name: Commit refreshed data
         run: |
           git config user.name 'peta-muda-bot'
