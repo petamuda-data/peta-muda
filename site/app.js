@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-08c'
+const BUILD = '2026-07-08d'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -73,15 +73,10 @@ const STR = {
     muda_title: 'MUDA — parti kecil, kesan besar',
     brief_btn: 'Briefing AI (untuk ChatGPT/Gemini)',
     brief_saved: 'Fail .md dimuat turun!',
-    volunteer_title: 'Briefing AI untuk sukarelawan',
-    volunteer_sub: 'Cari kerusi anda, dapatkan briefing AI dengan satu klik — sedia untuk tampal terus ke ChatGPT/Gemini.',
-    volunteer_get_btn: 'Dapatkan briefing AI',
+    volunteer_title: 'Skrip sukarelawan',
+    volunteer_sub: 'Cari kerusi anda, salin skrip rumah ke rumah dengan satu klik — sedia untuk WhatsApp.',
     volunteer_loading: 'Menjana…',
     volunteer_none: 'Tiada kerusi sepadan.',
-    volunteer_copied: (seat) => `✓ Briefing ${seat} telah disalin — sedia untuk tampal`,
-    volunteer_cta_sub: 'Buka chat BARU, kemudian tampal (Cmd/Ctrl+V):',
-    volunteer_open_chatgpt: 'Buka ChatGPT',
-    volunteer_open_gemini: 'Buka Gemini',
     bloc_candidate: 'Calon Blok Progresif',
     income_ctx: 'Konteks pendapatan',
     income_median: 'Pendapatan penengah isi rumah',
@@ -169,15 +164,10 @@ const STR = {
     muda_title: 'MUDA — small party, big bite',
     brief_btn: 'AI briefing (for ChatGPT/Gemini)',
     brief_saved: '.md file downloaded!',
-    volunteer_title: 'Volunteer AI briefings',
-    volunteer_sub: 'Find your seat, get an AI briefing in one tap — ready to paste straight into ChatGPT/Gemini.',
-    volunteer_get_btn: 'Get my AI briefing',
+    volunteer_title: 'Volunteer script',
+    volunteer_sub: 'Find your seat, copy its door-knocking script in one tap — ready for WhatsApp.',
     volunteer_loading: 'Generating…',
     volunteer_none: 'No matching seats.',
-    volunteer_copied: (seat) => `✓ ${seat} briefing copied to clipboard`,
-    volunteer_cta_sub: 'Open a NEW chat, then paste it in (Cmd/Ctrl+V):',
-    volunteer_open_chatgpt: 'Open ChatGPT',
-    volunteer_open_gemini: 'Open Gemini',
     bloc_candidate: 'Progressive Bloc candidate',
     income_ctx: 'Income context',
     income_median: 'Median household income',
@@ -768,8 +758,9 @@ async function renderHome() {
   renderFooter(idx)
 }
 
-// ---- volunteer AI-briefing hub (muda edition only): find your seat, get an
-// AI briefing in one tap — no need to know a DUN code or dig through tabs ----
+// ---- volunteer script hub (muda edition only): find your seat, copy its
+// door-knocking script in one tap — no DUN code, no digging through tabs. The
+// interactive AI briefing lives on each seat's Field tab for those who want it.
 async function renderVolunteer() {
   const idx = await loadIndex()
   if (idx.edition !== 'muda') { location.hash = '#/'; return }
@@ -779,26 +770,10 @@ async function renderVolunteer() {
     <div class="card">
       <h2>${L('volunteer_title')}</h2>
       <p class="sub">${L('volunteer_sub')}</p>
-      <div id="volCta"></div>
       <input class="searchbox" id="volSearch" placeholder="${L('search')}" autocomplete="off">
       <div class="seat-list" id="volList"></div>
+      <p class="sub" style="margin-top:.6rem;color:var(--muted)">${T('Nak bantuan AI? Buka tab Lapangan kerusi anda.', 'Want AI help? Open your seat’s Field tab.')}</p>
     </div>`
-
-  const ctaEl = document.getElementById('volCta')
-  // after a successful copy, surface a single obvious next step: paste into a
-  // fresh ChatGPT/Gemini chat. The briefing is far too large to prefill via a
-  // URL param, so "copy → open app → paste" is the only reliable path.
-  const showCta = (seat) => {
-    ctaEl.innerHTML = `<div class="cta-copied">
-      <div class="cta-copied-head">${L('volunteer_copied', `${esc(seat.code)} ${esc(seat.name)}`)}</div>
-      <div class="sub">${L('volunteer_cta_sub')}</div>
-      <div class="btn-row">
-        <a class="btn" href="https://chatgpt.com/" target="_blank" rel="noopener">${L('volunteer_open_chatgpt')}</a>
-        <a class="btn" href="https://gemini.google.com/app" target="_blank" rel="noopener">${L('volunteer_open_gemini')}</a>
-      </div>
-    </div>`
-    ctaEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-  }
 
   const listEl = document.getElementById('volList')
   const renderList = (q = '') => {
@@ -812,11 +787,10 @@ async function renderVolunteer() {
           <span class="meta">${esc(s.parlimen ?? '')}</span>
         </span>
         <span class="btn-row vol-actions">
-          <button class="btn" data-slug="${esc(s.slug)}">${L('volunteer_get_btn')}</button>
-          <button class="btn secondary" data-tp="${esc(s.slug)}">${T('Salin skrip', 'Copy script')}</button>
+          <button class="btn" data-tp="${esc(s.slug)}">${T('Salin skrip', 'Copy script')}</button>
         </span>
       </div>`).join('') : `<p class="sub">${L('volunteer_none')}</p>`
-    // no-AI fallback: copy the seat's talking points as WhatsApp-ready text
+    // one tap: copy the seat's talking points as WhatsApp-ready text
     listEl.querySelectorAll('button[data-tp]').forEach(btn => btn.addEventListener('click', async () => {
       const orig = btn.textContent
       btn.textContent = L('volunteer_loading')
@@ -827,28 +801,6 @@ async function renderVolunteer() {
         const copied = await copyToClipboard(text)
         if (copied) btn.textContent = L('copied')
         else { window.prompt('Salin / Copy:', text); btn.textContent = orig }
-      } finally {
-        btn.disabled = false
-        if (btn.textContent === L('copied')) setTimeout(() => { btn.textContent = orig }, 2000)
-      }
-    }))
-    listEl.querySelectorAll('button[data-slug]').forEach(btn => btn.addEventListener('click', async () => {
-      const slug = btn.dataset.slug
-      const orig = btn.textContent
-      btn.textContent = L('volunteer_loading')
-      btn.disabled = true
-      try {
-        const seat = await loadSeat(slug)
-        const md = briefingMd(seat, idx)
-        const copied = await copyToClipboard(md)
-        if (copied) {
-          btn.textContent = L('copied')
-          showCta(seat)
-        } else {
-          // no download fallback here — hand the raw text over so they can copy it
-          window.prompt('Salin / Copy:', md)
-          btn.textContent = orig
-        }
       } finally {
         btn.disabled = false
         if (btn.textContent === L('copied')) setTimeout(() => { btn.textContent = orig }, 2000)
