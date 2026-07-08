@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-08b'
+const BUILD = '2026-07-08c'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -1600,10 +1600,12 @@ syncStateToggle()
 window.addEventListener('hashchange', route)
 route()
 
-// ---------- PWA: offline cache + one-tap install ----------
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => { /* offline support optional */ })
-}
+// ---------- PWA ----------
+// We deliberately do NOT register a service worker: an earlier caching SW kept
+// pinning stale builds to devices. sw.js is now a self-destruct worker that any
+// device with the old SW still installed will pick up on its next update check,
+// wiping itself + its caches so the app loads fresh from the network from then
+// on. (A correct offline SW can be reintroduced later at a NEW path.)
 // Chrome/Android fires beforeinstallprompt when installable; stash it so the
 // home fork can show a one-tap "Pasang aplikasi" chip (see heroFork).
 window.addEventListener('beforeinstallprompt', (e) => {
