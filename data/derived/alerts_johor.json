@@ -9,15 +9,15 @@
  "stations": [],
  "weather": [
   {
-   "title": "Thunderstorms Warning",
-   "valid_to": "2026-07-08T19:00:00"
-  },
-  {
-   "title": "No Advisory",
-   "valid_to": null
-  },
-  {
    "title": "Warning on Strong Wind and Rough Seas (Second Category)",
+   "valid_to": "2026-07-14T00:00:00"
+  },
+  {
+   "title": "Warning on Strong Wind and Rough Seas (First Category)",
+   "valid_to": "2026-07-13T00:00:00"
+  },
+  {
+   "title": "Warning on Strong Wind and Rough Seas (First Category)",
    "valid_to": "2026-07-14T00:00:00"
   }
  ]
