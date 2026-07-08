@@ -1,0 +1,9 @@
+{
+  // Self-contained static-assets deploy. Cloudflare Workers Builds runs
+  // `npx wrangler deploy`; with this file the deploy no longer depends on
+  // dashboard-only configuration. Serves everything under ./site (the static
+  // SPA + data), and honors ./site/_headers for cache-control on the shell.
+  "name": "peta-muda",
+  "compatibility_date": "2026-07-08",
+  "assets": { "directory": "./site" }
+}
