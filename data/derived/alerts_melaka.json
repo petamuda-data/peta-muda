@@ -6,5 +6,19 @@
   "alert": 0
  },
  "total": 0,
- "stations": []
+ "stations": [],
+ "weather": [
+  {
+   "title": "Warning on Strong Wind and Rough Seas (Second Category)",
+   "valid_to": "2026-07-09T00:00:00"
+  },
+  {
+   "title": "Warning on Thunderstorms",
+   "valid_to": "2026-07-08T14:00:00"
+  },
+  {
+   "title": "Warning on Thunderstorms",
+   "valid_to": "2026-07-08T14:00:00"
+  }
+ ]
 }
