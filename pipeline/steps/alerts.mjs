@@ -67,7 +67,13 @@ export async function loadAlerts(stateName, log = console.log) {
     try {
       const res = await fetch(ENDPOINT(stateName), { headers: { 'User-Agent': 'PetaMuda/0.1 (civic data app)' } })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      summary = summarise(await res.json())
+      const raw = await res.json()
+      // one-time field-shape probe: confirms the threshold keys map to the live
+      // response (a dry day and a field-name mismatch both yield 0 alerts, so
+      // log the raw shape until validated, then this can be removed)
+      const arr = Array.isArray(raw) ? raw : (raw?.data ?? raw?.results ?? [])
+      log(`alerts(${stateName}) probe: ${arr.length} station(s) received; sample keys: ${arr[0] ? Object.keys(arr[0]).join(',') : '(none)'}`)
+      summary = summarise(arr)
       await mkdir(path.dirname(snapshotPath(stateName)), { recursive: true })
       await writeFile(snapshotPath(stateName), JSON.stringify(summary, null, 1))
       log(`alerts(${stateName}): ${summary.total} station(s) at alert+ (snapshot written)`)
