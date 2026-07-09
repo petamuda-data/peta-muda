@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-08d'
+const BUILD = '2026-07-08e'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -427,6 +427,7 @@ function mudaVoiceCard(idx) {
     return `<li><strong>MUDA:</strong> ${esc(lead)}${quote}</li>`
   }).join('')
   return `<div class="card accent">
+    <p class="kicker" style="margin-bottom:6px">${T('Adakah hidup anda lebih baik daripada PRN lalu?', 'Are you better off than at the last election?')}</p>
     <h2>${T('Apa MUDA kata tentang isu semasa', 'What MUDA is saying on the issues')}</h2>
     <p class="sub">${T('Pendirian rasmi MUDA — setiap satu disahkan sumber', 'MUDA’s official positions — each source-verified')}</p>
     <ul class="points">${items}</ul>

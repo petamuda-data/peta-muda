@@ -263,6 +263,56 @@
         "https://www.freemalaysiatoday.com/category/nation/2022/05/01/pay-two-thirds-of-singapore-wages-to-keep-locals-home-says-dap-man/"
       ],
       "verdict": "CONFIRMED"
+    },
+    {
+      "theme": "floods",
+      "issue_bm": "Kawasan yang sama banjir setiap musim tengkujuh — Batu Pahat, Segamat, Kluang. Pada Mac 2023, 45,218 mangsa dipindahkan di Johor; ia berulang lagi pada 2024 dan 2025. Jawapan kerajaan negeri: sediakan bot dan pusat pemindahan — bukan hentikan banjir.",
+      "issue_en": "The same areas flood every monsoon — Batu Pahat, Segamat, Kluang. In March 2023, 45,218 people were evacuated in Johor; it repeated in 2024 and again in 2025. The state's answer is to pre-position boats and relief centres — not to stop the flood.",
+      "receipt_bm": "The Star (14 Mac 2023): puncak 45,218 mangsa banjir di Johor, Batu Pahat paling teruk. DOSM (28 Jan 2022): banjir 2021 rugi RM6.1 bilion nasional, hampir 400,000 dipindahkan (Johor antara terjejas). Malay Mail (20 Mac 2025): 10,000+ dipindahkan di Johor. The Star (23 Jan 2026): enam projek tebatan banjir masih lewat jadual.",
+      "receipt_en": "The Star (14 Mar 2023): Johor evacuations peaked at 45,218, Batu Pahat worst-hit. DOSM (28 Jan 2022): the 2021 floods cost RM6.1 billion nationally, nearly 400,000 displaced (Johor among those hit). Malay Mail (20 Mar 2025): 10,000+ evacuated in Johor. The Star (23 Jan 2026): six flood-mitigation projects still behind schedule.",
+      "sources": [
+        "https://www.thestar.com.my/news/nation/2023/03/14/floods-four-districts-in-johor-still-affected-batu-pahat-remains-worst-hit-with-over-37000-evacuees",
+        "https://www.dosm.gov.my/portal-main/release-content/special-report-on-impact-of-floods-in-malaysia-2021",
+        "https://www.malaymail.com/news/malaysia/2025/03/20/water-levels-surge-evacuations-ongoing-in-flooded-johor/170171",
+        "https://www.thestar.com.my/news/nation/2026/01/23/flood-control-works-delayed"
+      ],
+      "verdict": "CONFIRMED"
+    },
+    {
+      "theme": "water",
+      "issue_bm": "Bekalan air pun gagal berulang kali — pada November 2025 satu insiden pencemaran Sungai Johor memutuskan bekalan kepada 455,499 akaun; pada April 2024 tiga empangan tinggal ~55 hari air jika hujan tidak turun. Satu sungai, separuh juta keluarga terdedah.",
+      "issue_en": "Water supply fails on repeat too — in November 2025 a single Sungai Johor pollution event cut supply to 455,499 accounts; in April 2024 three dams had only ~55 days of water left without rain. One river, half a million families exposed.",
+      "receipt_bm": "Bernama (Nov 2025): 455,499 akaun terjejas gangguan tidak berjadual, 448,057 dipulihkan 3 Nov. Malay Mail (3 Apr 2024): MB arah Ranhill SAJ bersedia untuk kekurangan air — empangan Bekok, Machap, Sembrong tinggal ~55 hari tanpa hujan.",
+      "receipt_en": "Bernama (Nov 2025): 455,499 accounts hit by an unscheduled disruption, 448,057 restored by 3 Nov. Malay Mail (3 Apr 2024): the MB ordered Ranhill SAJ to prepare for shortages — the Bekok, Machap and Sembrong dams had ~55 days left without rain.",
+      "sources": [
+        "https://www.bernama.com/en/general/news.php?id=2486802",
+        "https://www.malaymail.com/news/malaysia/2024/04/03/johor-mb-ranhill-saj-ordered-to-prepare-for-water-shortage-issue-in-several-districts/127104"
+      ],
+      "verdict": "CONFIRMED"
+    },
+    {
+      "theme": "integrity",
+      "issue_bm": "Pada 7 Mei 2026, Johor meluluskan undang-undang membenarkan Menteri Besar melantik sehingga LIMA ADUN yang tidak dipilih rakyat — wakil yang anda tidak pernah undi kini boleh berbahas dan mengundi di Dewan negeri.",
+      "issue_en": "On 7 May 2026, Johor passed a law letting the Menteri Besar appoint up to FIVE assemblymen no one elected — representatives you never voted for can now debate and vote in the state assembly.",
+      "receipt_bm": "Malay Mail (7 Mei 2026): MB bentang pindaan, diluluskan 40 daripada 56 ADUN; pelantik boleh berbahas dan mengundi tetapi tidak boleh jadi MB atau exco. FMT (7 Mei 2026): Pakatan Johor sendiri kata rang undang-undang tergesa-gesa, persempadanan semula pilihan lebih demokratik.",
+      "receipt_en": "Malay Mail (7 May 2026): the MB tabled the amendment, passed by 40 of 56 assemblymen; appointees may debate and vote but cannot be MB or exco. FMT (7 May 2026): Johor Pakatan itself called the bill rushed, with redelineation the more democratic route.",
+      "sources": [
+        "https://www.malaymail.com/news/malaysia/2026/05/07/johor-mb-tables-bill-to-appoint-five-unelected-assemblymen/219025",
+        "https://www.malaymail.com/news/malaysia/2026/05/07/johor-pakatan-says-unelected-assemblymen-bill-was-rushed-redelineation-a-better-option/219066"
+      ],
+      "verdict": "CONFIRMED"
+    },
+    {
+      "theme": "allocation",
+      "issue_bm": "Wang pembangunan kawasan dijadikan senjata politik: peruntukan Muar ditahan lebih 500 hari selepas MUDA tarik sokongan daripada kerajaan perpaduan, dipulihkan RM200,000 sahaja dengan syarat — kes sampai ke Mahkamah Persekutuan.",
+      "issue_en": "Constituency development money is used as a political weapon: Muar's allocation was withheld for over 500 days after MUDA withdrew support from the unity government, restored at just RM200,000 with conditions — the case reached the Federal Court.",
+      "receipt_bm": "NST (Jul 2025): Ahli Parlimen Muar terima RM200,000 selepas 500+ hari, dengan syarat ketat; RM500,000 ditahan, akses myKHAS (dana RM2 juta) hilang, projek RM230,300 dibatalkan. The Star (10 Mac 2026): Mahkamah Persekutuan beri kebenaran rayuan.",
+      "receipt_en": "NST (Jul 2025): the Muar MP received RM200,000 after 500+ days, with strict conditions; RM500,000 was withheld, myKHAS access (a RM2m fund) lost, RM230,300 of projects cancelled. The Star (10 Mar 2026): the Federal Court granted leave to appeal.",
+      "sources": [
+        "https://www.nst.com.my/news/nation/2025/07/1248280/syed-saddiq-gets-rm200k-muar-allocation-strict-condition",
+        "https://www.thestar.com.my/news/nation/2026/03/10/syed-saddiq-three-muar-voters-get-leave-to-appeal-in-constituency-fund-case"
+      ],
+      "verdict": "CONFIRMED"
     }
   ]
 }
