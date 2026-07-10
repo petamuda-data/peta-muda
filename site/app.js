@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-09c'
+const BUILD = '2026-07-10a'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -916,46 +916,51 @@ function shareText(seat) {
   return lines.join('\n')
 }
 
-// The doorstep hero: this seat's argument in three plain lines, shown before
-// any table. Contrast structure — line 1 names what the current administration
-// is failing at HERE (curated, receipted), line 2 is the bright spot: MUDA's
-// attributed answer. Every line is guarded — thin-data seats render a subset.
-function doorstepHero(seat, idx) {
-  const bm = state.lang === 'bm'
+// The doorstep hero: the cost-of-living squeeze in three plain lines, shown
+// before any table. Line 1 is the national squeeze — median wage against fuel
+// and the widened SST (receipted in national_issues.json); line 2 is this
+// seat's household-income anchor, shown factually (most seats rose nominally,
+// so we never claim income "fell" — the national wage figure carries the
+// stagnation point); line 3 is the bright spot: MUDA's attributed answer.
+// Every line is guarded — thin-data seats render a subset.
+function costSqueezeHero(seat, idx) {
   const lines = []
-  // prefer the first issue that HAS a verified MUDA answer — the hero is the
-  // contrast pair, not a lone complaint; fall back to the top issue alone
-  const pool = [...(seat.local_issues?.seat ?? []), ...(seat.local_issues?.statewide ?? [])]
-  const stanceFor = (it) => {
-    const t = (seat.muda_stances ?? []).find(s => s.key === it.theme)
-    return t && t.verdict !== 'NO_VERIFIED_POSITION' ? t : null
+  const ni = idx.national_issues ?? []
+  const wages = ni.find(i => i.theme === 'wages')?.figure
+  const cost = ni.find(i => i.theme === 'cost_of_living')?.figure
+  if (wages?.wage && cost?.fuel) {
+    const sst = pick(cost, 'sst_scope')
+    lines.push(T(
+      `Gaji penengah negara cuma <strong>RM${esc(wages.wage.replace(/^RM/, ''))}</strong> sebulan (${esc(wages.wage_year ?? '')}), gaji minimum ${esc(wages.min_wage ?? '')} — tetapi RON95 tanpa subsidi kini <strong>${esc(cost.fuel)}</strong> seliter dan SST diperluas ke ${esc(sst)}.`,
+      `The national median wage is just <strong>RM${esc(wages.wage.replace(/^RM/, ''))}</strong>/month (${esc(wages.wage_year ?? '')}), minimum wage ${esc(wages.min_wage ?? '')} — but unsubsidised RON95 is now <strong>${esc(cost.fuel)}</strong>/litre and SST has widened to ${esc(sst)}.`,
+      `全国薪资中位数每月仅 <strong>RM${esc(wages.wage.replace(/^RM/, ''))}</strong>（${esc(wages.wage_year ?? '')}），最低薪金 ${esc(wages.min_wage ?? '')} — 但无津贴 RON95 已达每公升 <strong>${esc(cost.fuel)}</strong>，SST 更扩及 ${esc(sst)}。`))
   }
-  const issue = pool.find(it => stanceFor(it)) ?? pool[0] ?? null
-  if (issue) {
-    const lead = leadClause(bm ? (issue.issue_bm ?? issue.issue_en) : (issue.issue_en ?? issue.issue_bm))
-    if (lead) lines.push(esc(lead))
-    const t = stanceFor(issue)
-    if (t) {
-      const stanceLead = leadClause(pick(t, 'stance'))
-      if (stanceLead) lines.push(`<strong>MUDA:</strong> <strong>${esc(stanceLead)}</strong>`)
+  // this seat's household-income anchor: 2019→latest pair where we have it,
+  // else the single point (Melaka carries only 2020). Shown, never argued.
+  const inc = seat.socio?.income ?? []
+  const latest = inc.at(-1)
+  const y2019 = inc.find(r => r.date?.slice(0, 4) === '2019')
+  if (latest?.income_median != null) {
+    const ly = latest.date?.slice(0, 4)
+    if (y2019 && y2019 !== latest && y2019.income_median != null) {
+      lines.push(T(
+        `Di sini, pendapatan isi rumah penengah <strong>RM${fmtNum(latest.income_median)}</strong> sebulan (2019: RM${fmtNum(y2019.income_median)}).`,
+        `Here, median household income is <strong>RM${fmtNum(latest.income_median)}</strong>/month (2019: RM${fmtNum(y2019.income_median)}).`,
+        `本区家庭收入中位数每月 <strong>RM${fmtNum(latest.income_median)}</strong>（2019：RM${fmtNum(y2019.income_median)}）。`))
+    } else {
+      lines.push(T(
+        `Di sini, pendapatan isi rumah penengah <strong>RM${fmtNum(latest.income_median)}</strong> sebulan (${ly}).`,
+        `Here, median household income is <strong>RM${fmtNum(latest.income_median)}</strong>/month (${ly}).`,
+        `本区家庭收入中位数每月 <strong>RM${fmtNum(latest.income_median)}</strong>（${ly}）。`))
     }
   }
-  const e = seat.election2026
-  const last = seat.history?.[0]
-  const contest = []
-  if (e?.muda_candidate) {
-    contest.push(T(
-      `<strong>${esc(e.muda_candidate)}</strong> ★ bertanding untuk ${esc(e.bloc_party ?? 'MUDA')} di sini`,
-      `<strong>${esc(e.muda_candidate)}</strong> ★ is standing for ${esc(e.bloc_party ?? 'MUDA')} here`,
-      `<strong>${esc(e.muda_candidate)}</strong> ★ 代表 ${esc(e.bloc_party ?? 'MUDA')} 在此参选`))
+  // MUDA bright spot — the attributed answer on cost of living, else wages
+  const stance = (seat.muda_stances ?? []).find(s => s.key === 'cost_of_living' && s.verdict !== 'NO_VERIFIED_POSITION')
+    ?? (seat.muda_stances ?? []).find(s => s.key === 'wages' && s.verdict !== 'NO_VERIFIED_POSITION')
+  if (stance) {
+    const stanceLead = leadClause(pick(stance, 'stance'))
+    if (stanceLead) lines.push(`<strong>MUDA:</strong> <strong>${esc(stanceLead)}</strong>`)
   }
-  if (last?.majority_perc != null && last.majority_perc < 10) {
-    contest.push(T(
-      `majoriti ${last.date.slice(0, 4)} hanya <strong>${fmtPct(last.majority_perc)}</strong> — setiap undi penting`,
-      `the ${last.date.slice(0, 4)} majority was only <strong>${fmtPct(last.majority_perc)}</strong> — every vote counts`,
-      `${last.date.slice(0, 4)}年多数票仅 <strong>${fmtPct(last.majority_perc)}</strong> — 每一票都关键`))
-  }
-  if (contest.length) lines.push(`${contest.join(' · ')}.`)
   if (!lines.length) return ''
   const wa = `https://wa.me/?text=${encodeURIComponent(shareText(seat))}`
   return `<div class="card hero">
@@ -1011,7 +1016,7 @@ function posterButton(seat) {
 
 function renderBrief(seat, idx) {
   return `
-    ${doorstepHero(seat, idx)}
+    ${costSqueezeHero(seat, idx)}
     ${liveAlertsCard(idx)}
     ${gotvCard(seat)}
     ${posterButton(seat)}

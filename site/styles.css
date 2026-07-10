@@ -326,7 +326,7 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
   padding: 22px 18px;
 }
 .card.hero::before {
-  content: 'DI PINTU'; display: block;
+  content: 'KOS HIDUP'; display: block;
   font-family: var(--font-display); font-weight: 800; font-size: .68rem;
   letter-spacing: .18em; color: var(--accent-2); margin-bottom: 8px;
 }

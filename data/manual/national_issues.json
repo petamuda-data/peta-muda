@@ -14,6 +14,11 @@
         "https://mof.gov.my/portal/ms/berita/siaran-media/budi-madani-diesel-22062026",
         "https://paultan.org/2026/06/30/malaysian-fuel-prices-july-1-to-8-2026-diesel-ron95-ron97-all-down-10-sen-rm2-10-budi-diesel-starts/"
       ],
+      "figure": {
+        "fuel": "RM3.37",
+        "sst_scope_bm": "sewa, klinik dan jagaan anak",
+        "sst_scope_en": "rent, clinics and childcare"
+      },
       "verdict": "PARTLY_CONFIRMED"
     },
     {
@@ -43,6 +48,11 @@
         "https://open.dosm.gov.my/data-catalogue/lfs_qtr_sru_age",
         "https://www.thestar.com.my/news/nation/2024/10/18/budget-2025-minimum-wage-to-go-up-to-rm1700-from-feb-1-2025-says-anwar"
       ],
+      "figure": {
+        "wage": "RM2,793",
+        "wage_year": "2024",
+        "min_wage": "RM1,700"
+      },
       "verdict": "PARTLY_CONFIRMED"
     },
     {
