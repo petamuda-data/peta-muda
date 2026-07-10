@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-09a'
+const BUILD = '2026-07-09b'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -33,19 +33,17 @@ const REGION_LABEL = () => state.region === 'melaka' ? 'Melaka' : 'Johor'
 // ---------- i18n ----------
 const STR = {
   bm: {
-    tagline: 'Pusat Data Kerusi — PRN Johor 2026',
     days_to_poll: 'hari lagi ke hari mengundi',
     poll_day: 'Hari mengundi: 11 Julai 2026',
     early_vote: 'Undi awal: 7 Julai 2026',
     poll_today: 'HARI MENGUNDI — keluar mengundi!',
-    poll_over: 'PRN Johor 2026 telah selesai. Terima kasih kerana mengundi!',
+    poll_over: () => `PRN ${REGION_LABEL()} telah selesai. Terima kasih kerana mengundi!`,
     featured: 'Kerusi Blok Progresif (MUDA–PSM)',
-    all_seats: 'Semua 56 kerusi DUN Johor',
     search: 'Cari kerusi, kawasan atau parlimen…',
     locate_btn: 'Guna lokasi saya',
     locate_finding: 'Mencari kawasan anda…',
     locate_denied: 'Tak dapat akses lokasi — cari kerusi anda di bawah.',
-    locate_outside: 'Lokasi anda di luar Johor — cari kerusi anda di bawah.',
+    locate_outside: () => `Lokasi anda di luar ${REGION_LABEL()} — cari kerusi anda di bawah.`,
     install_btn: 'Pasang aplikasi di telefon anda',
     gotv_title: 'Jom keluar mengundi',
     gotv_today: 'Hari ini hari mengundi — keluar sekarang!',
@@ -54,7 +52,7 @@ const STR = {
     gotv_logistics: 'Pastikan anda tahu pusat mengundi dan saluran anda, bawa MyKad, dan ajak keluarga sekali.',
     gotv_check: 'Semak daftar & saluran anda',
     gotv_invite: 'Ajak kawan',
-    gotv_wa: (name, poll, url) => `PRN Johor: hari mengundi ${poll}. Jom kita keluar mengundi di ${name}! Semak kerusi dan calon anda: ${url}`,
+    gotv_wa: (name, poll, url) => `PRN ${REGION_LABEL()}: hari mengundi ${poll}. Jom kita keluar mengundi di ${name}! Semak kerusi dan calon anda: ${url}`,
     voters: 'pengundi',
     youth: 'bawah 30',
     majority: 'majoriti',
@@ -98,7 +96,7 @@ const STR = {
     issues_national: 'Nasional',
     issues_title: 'Isu tempatan (disahkan sumber)',
     issues_sub: 'Isu khusus kawasan ini, disemak terhadap laporan berita — nombor rujukan boleh diklik',
-    issues_statewide: 'Seluruh Johor',
+    issues_statewide: () => `Seluruh ${REGION_LABEL()}`,
     talking_points: 'Isu untuk rumah ke rumah',
     tp_sub: 'Dijana automatik daripada data rasmi — semak sebelum guna',
     demo_title: 'Profil pengundi (daftar pemilih 2026)',
@@ -124,19 +122,17 @@ const STR = {
     income_note: (y) => `Anggaran HIES ${y}, DOSM`,
   },
   en: {
-    tagline: 'Seat Command Center — 2026 Johor Election',
     days_to_poll: 'days to polling day',
     poll_day: 'Polling day: 11 July 2026',
     early_vote: 'Early voting: 7 July 2026',
     poll_today: 'POLLING DAY — get out and vote!',
-    poll_over: 'The 2026 Johor election has concluded. Thank you for voting!',
+    poll_over: () => `The ${REGION_LABEL()} election has concluded. Thank you for voting!`,
     featured: 'Progressive Bloc seats (MUDA–PSM)',
-    all_seats: 'All 56 Johor state seats',
     search: 'Search seat, area or parlimen…',
     locate_btn: 'Use my location',
     locate_finding: 'Finding your area…',
     locate_denied: 'Couldn’t access your location — search for your seat below.',
-    locate_outside: 'You seem to be outside Johor — search for your seat below.',
+    locate_outside: () => `You seem to be outside ${REGION_LABEL()} — search for your seat below.`,
     install_btn: 'Install the app on your phone',
     gotv_title: 'Get out and vote',
     gotv_today: 'Polling day is today — go vote now!',
@@ -145,7 +141,7 @@ const STR = {
     gotv_logistics: 'Know your polling centre and saluran, bring your MyKad, and bring your family along.',
     gotv_check: 'Check your voter registration',
     gotv_invite: 'Invite a friend',
-    gotv_wa: (name, poll, url) => `Johor votes on ${poll}. Let’s go vote in ${name}! Check your seat and candidates: ${url}`,
+    gotv_wa: (name, poll, url) => `${REGION_LABEL()} votes on ${poll}. Let’s go vote in ${name}! Check your seat and candidates: ${url}`,
     voters: 'voters',
     youth: 'under 30',
     majority: 'majority',
@@ -189,7 +185,7 @@ const STR = {
     issues_national: 'National',
     issues_title: 'Local issues (source-verified)',
     issues_sub: 'Issues specific to this area, checked against news reporting — reference numbers are clickable',
-    issues_statewide: 'Johor-wide',
+    issues_statewide: () => `${REGION_LABEL()}-wide`,
     talking_points: 'Door-knocking talking points',
     tp_sub: 'Auto-generated from official data — verify before use',
     demo_title: 'Voter profile (2026 electoral roll)',
@@ -907,7 +903,7 @@ function shareText(seat) {
       : `The ${last.date.slice(0, 4)} majority was just ${fmtNum(last.majority)} votes — your vote decides.`)
     : null
   const lines = [
-    `📍 ${seat.code} ${seat.name} — PRN Johor ${e.polling_date === '2026-07-11' ? '11 Julai 2026' : e.polling_date}`,
+    `📍 ${seat.code} ${seat.name} — PRN ${REGION_LABEL()}${e.polling_date ? ` ${e.polling_date === '2026-07-11' ? '11 Julai 2026' : e.polling_date}` : ''}`,
     e.muda_candidate ? `★ ${L('bloc_candidate')}: ${e.muda_candidate}${e.bloc_party ? ` (${e.bloc_party})` : ''}` : null,
     issueLine ? `❗ ${issueLine}` : null,
     stanceLine ? `✅ MUDA: ${stanceLine}` : null,
