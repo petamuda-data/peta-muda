@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ms"><head><meta charset="utf-8">
+<style>
+  :root{--ink:#0a0a0a;--bg:#f4f2ec;--cy:#00c2b8;--up:#e5173f;--muted:#6b6b66;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1920px;background:var(--bg);color:var(--ink);
+    font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue Condensed",sans-serif-condensed,sans-serif;}
+  .poster{width:1080px;height:1920px;padding:52px 64px 44px;display:flex;flex-direction:column;position:relative}
+  .brand{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .brand .pm{font-weight:900;font-size:36px;letter-spacing:1px;border:5px solid var(--ink);padding:2px 13px;text-transform:uppercase}
+  .brand .pm.inv{background:var(--ink);color:#fff;box-shadow:inset 0 -7px 0 var(--cy)}
+  .brand .state{margin-left:auto;font-weight:800;font-size:28px;text-transform:uppercase;letter-spacing:3px;
+    background:var(--ink);color:var(--cy);padding:6px 18px}
+  .kicker{font-weight:800;font-size:30px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:26px}
+  .head{font-weight:900;font-size:90px;line-height:.9;letter-spacing:-2px;text-transform:uppercase;margin:4px 0 6px}
+  .head em{font-style:normal;color:var(--cy);-webkit-text-stroke:2px var(--ink)}
+  .rule{height:9px;background:var(--ink);margin:14px 0 22px}
+  .pillars{display:flex;flex-direction:column;gap:20px;flex:1}
+  .p{border:5px solid var(--ink);background:#fff;padding:18px 26px 20px;box-shadow:12px 12px 0 var(--ink);position:relative}
+  .p .tag{position:absolute;top:-1px;left:-1px;background:var(--ink);color:var(--cy);font-weight:900;
+    font-size:22px;letter-spacing:2px;text-transform:uppercase;padding:5px 15px}
+  .p .num{font-weight:900;font-size:62px;line-height:.9;color:var(--up);margin:22px 0 4px;letter-spacing:-2px}
+  .p .txt{font-weight:700;font-size:33px;line-height:1.3}
+  .p .txt b{background:var(--cy);color:var(--ink);padding:3px 8px;
+    -webkit-box-decoration-break:clone;box-decoration-break:clone}
+  .close{margin-top:22px;background:var(--ink);color:#fff;padding:24px 30px;box-shadow:12px 12px 0 var(--cy)}
+  .close .big{font-weight:900;font-size:50px;line-height:1;text-transform:uppercase;letter-spacing:-1px}
+  .close .big em{font-style:normal;color:var(--cy)}
+  .close .sub{font-weight:700;font-size:30px;margin-top:10px;color:#e7e7e2}
+  .foot{margin-top:20px;font-weight:700;font-size:25px;color:var(--muted);line-height:1.3}
+  .foot b{color:var(--ink)}
+</style></head>
+<body>
+<div class="poster">
+  <div class="brand">
+    <span class="pm">PETA</span><span class="pm inv">MUDA</span>
+    <span class="state" id="state">JOHOR</span>
+  </div>
+  <div class="kicker" id="kicker">Sebelum anda mengundi —</div>
+  <div class="head" id="head">ADAKAH HIDUP ANDA <em>LEBIH BAIK?</em></div>
+  <div class="rule"></div>
+  <div class="pillars" id="pillars"></div>
+  <div class="close">
+    <div class="big" id="closebig">MUDA — <em>parti baharu.</em></div>
+    <div class="sub" id="closesub">Jujur, muda, di sini. Berdiri untuk anda, bukan untuk diri sendiri.</div>
+  </div>
+  <div class="foot">Setiap angka bersumber — semak sendiri di <b>peta-muda.petamuda-data.workers.dev</b></div>
+</div>
+<script>
+  const DATA = window.__POSTER__ || {}
+  document.getElementById('state').textContent = DATA.state || 'JOHOR'
+  if (DATA.kicker) document.getElementById('kicker').textContent = DATA.kicker
+  if (DATA.head) document.getElementById('head').innerHTML = DATA.head
+  if (DATA.closeBig) document.getElementById('closebig').innerHTML = DATA.closeBig
+  if (DATA.closeSub) document.getElementById('closesub').innerHTML = DATA.closeSub
+  const pillars = document.getElementById('pillars')
+  for (const p of (DATA.pillars || [])) {
+    const el = document.createElement('div'); el.className = 'p'
+    el.innerHTML = `<span class="tag">${p.tag}</span><div class="num">${p.num}</div><div class="txt">${p.txt}</div>`
+    pillars.appendChild(el)
+  }
+</script>
+</body></html>

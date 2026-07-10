@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-08e'
+const BUILD = '2026-07-09a'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -996,11 +996,26 @@ function gotvCard(seat) {
   </div>`
 }
 
+// Shareable poster per seat: seat-specific where one exists, else the state
+// poster — so every seat page has a one-tap WhatsApp-ready download.
+const SEAT_POSTERS = {
+  'n51-bukit-batu': 'bukit-batu.png',
+  'n15-maharani': 'maharani.png',
+  'n41-puteri-wangsa': 'puteri-wangsa.png',
+}
+function posterButton(seat) {
+  const file = SEAT_POSTERS[seat.slug] ?? (state.region === 'melaka' ? 'melaka.png' : 'johor.png')
+  return `<div class="btn-row" style="margin-bottom:16px">
+    <a class="btn secondary" href="posters/${file}" download>${T('Muat turun poster', 'Download poster')}</a>
+  </div>`
+}
+
 function renderBrief(seat, idx) {
   return `
     ${doorstepHero(seat, idx)}
     ${liveAlertsCard(idx)}
     ${gotvCard(seat)}
+    ${posterButton(seat)}
     ${contestCard(seat)}
     ${incomeCard(seat, idx)}`
 }

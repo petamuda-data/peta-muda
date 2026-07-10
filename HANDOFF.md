@@ -91,6 +91,15 @@ there is no wrangler file in the repo).
   for 60 days the refresh cron silently pauses until someone pushes or re-enables
   it in the Actions tab.
 
+## Posters
+
+Campaign posters (Editorial Punch, 1080×1920 WhatsApp-ready PNG) live at
+`site/posters/` → `https://peta-muda.petamuda-data.workers.dev/posters/<name>.png`
+(johor, melaka, bukit-batu, maharani, puteri-wangsa). Each seat's Ringkas tab
+has a "Muat turun poster" button (seat-specific where one exists, else the
+state poster). Generator: `tools/poster/` — see its header for the re-render
+recipe (Playwright via `npm i --no-save`, never a package.json dependency).
+
 ## Intake (phase 1 live: device-local field notes; phase 2 built but dormant)
 
 **Phase 1 (live now)**: volunteers jot ground stories in the app itself — the
