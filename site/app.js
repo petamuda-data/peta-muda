@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-10a'
+const BUILD = '2026-07-10b'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -79,6 +79,7 @@ const STR = {
     income_ctx: 'Konteks pendapatan',
     income_median: 'Pendapatan penengah isi rumah',
     income_mean: 'Pendapatan purata',
+    spending: 'Perbelanjaan isi rumah',
     poverty: 'Kadar kemiskinan mutlak',
     gini: 'Ketaksamaan (Gini)',
     u_rate: 'Kadar pengangguran',
@@ -168,6 +169,7 @@ const STR = {
     income_ctx: 'Income context',
     income_median: 'Median household income',
     income_mean: 'Mean income',
+    spending: 'Household spending',
     poverty: 'Absolute poverty rate',
     gini: 'Inequality (Gini)',
     u_rate: 'Unemployment rate',
@@ -855,24 +857,50 @@ function contestCard(seat) {
   </div>`
 }
 
+// Render a socio series as a compact trend: v1 → v2 → v3, latest bolded.
+// One point → the bolded value alone; empty → ''. Powers the income-vs-
+// spending squeeze — most seats' income actually recovered by 2024, so the
+// honest story is the two series climbing together, with the caption noting
+// the 2025-26 fuel/SST shock landed after this data.
+function socioTrend(arr, field, fmt) {
+  const pts = (arr ?? []).filter(r => r?.[field] != null)
+  if (!pts.length) return ''
+  return pts.map((r, i) => {
+    const v = fmt(r[field])
+    return i === pts.length - 1 ? `<strong>${v}</strong>` : v
+  }).join(' <span class="arrow">→</span> ')
+}
+
 function incomeCard(seat, idx) {
-  const inc = seat.socio.income?.at(-1)
+  const incArr = seat.socio.income ?? []
+  const expArr = seat.socio.expenditure ?? []
+  const inc = incArr.at(-1)
   const pov = seat.socio.poverty?.at(-1)
   const gin = seat.socio.inequality?.at(-1)
   const labArr = seat.socio.labour ?? []
   const lab = labArr.at(-1)
   const labPrev = labArr.length >= 2 ? labArr.at(-2) : null
   if (!inc && !lab) return ''
-  const year = inc?.date?.slice(0, 4)
+  const rm = (v) => `RM${fmtNum(v)}`
+  const incTrend = socioTrend(incArr, 'income_median', rm)
+  const expTrend = socioTrend(expArr, 'expenditure', rm)
+  const yN = inc?.date?.slice(0, 4)
+  const years = incArr.map(r => r.date?.slice(0, 4)).join(' → ')
+  const note = incArr.length >= 2
+    ? T(
+      `HIES DOSM · ${years} (nilai nominal). Kejutan petrol tanpa subsidi & SST melanda 2025-26 — selepas data ini.`,
+      `DOSM HIES · ${years} (nominal). The unsubsidised-fuel & SST shock hit in 2025-26 — after this data.`,
+      `HIES DOSM · ${years}（名义值）。无津贴油价与 SST 冲击发生于 2025-26 年 — 在此数据之后。`)
+    : (inc ? L('income_note', yN) : '')
   return `<div class="card">
     <h2>${L('income_ctx')}</h2>
-    ${inc ? `<p class="sub">${L('income_note', year)}</p>` : ''}
+    ${note ? `<p class="sub">${note}</p>` : ''}
     <table class="data"><tbody>
-      ${inc ? `<tr><td>${L('income_median')}</td><td class="num"><strong>RM${fmtNum(inc.income_median)}</strong></td><td></td></tr>` : ''}
-      ${inc ? `<tr><td>${L('income_mean')}</td><td class="num">RM${fmtNum(inc.income_mean)}</td><td></td></tr>` : ''}
-      ${pov ? `<tr><td>${L('poverty')}</td><td class="num">${fmtPct(pov.poverty ?? pov.poverty_absolute)}</td><td></td></tr>` : ''}
-      ${gin ? `<tr><td>${L('gini')}</td><td class="num">${(gin.gini ?? '–')}</td><td></td></tr>` : ''}
-      ${lab ? `<tr><td>${L('u_rate')} (${lab.date?.slice(0, 4)})</td><td class="num">${fmtPct(lab.u_rate)}</td><td class="num" style="color:var(--muted)">${labPrev ? `${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)}` : ''}</td></tr>` : ''}
+      ${incTrend ? `<tr><td>${L('income_median')}</td><td class="num">${incTrend}</td></tr>` : ''}
+      ${expTrend ? `<tr><td>${L('spending')}</td><td class="num">${expTrend}</td></tr>` : ''}
+      ${pov ? `<tr><td>${L('poverty')}</td><td class="num">${fmtPct(pov.poverty ?? pov.poverty_absolute)}</td></tr>` : ''}
+      ${gin ? `<tr><td>${L('gini')}</td><td class="num">${(gin.gini ?? '–')}</td></tr>` : ''}
+      ${lab ? `<tr><td>${L('u_rate')} (${lab.date?.slice(0, 4)})</td><td class="num">${fmtPct(lab.u_rate)}${labPrev ? ` <span style="color:var(--muted)">(${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)})</span>` : ''}</td></tr>` : ''}
     </tbody></table>
   </div>`
 }

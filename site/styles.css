@@ -244,6 +244,7 @@ table.data th {
 table.data td { padding: 8px 5px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
 table.data tr:last-child td { border-bottom: var(--border-hard); }
 table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.data .arrow { color: var(--muted); padding: 0 2px; }
 .delta-up { color: var(--up); font-weight: 900; font-variant-numeric: tabular-nums; }
 .delta-down { color: var(--down); font-weight: 900; font-variant-numeric: tabular-nums; }
 .delta-flat { color: var(--muted); }
