@@ -206,6 +206,13 @@ a { color: inherit; }
   font-family: var(--font-display); font-weight: 900; text-transform: uppercase;
 }
 .seat-head .crumbs { font-size: .8rem; color: var(--muted); }
+/* the back link is a real target, not fine print — chunky bordered chip */
+.crumbs a {
+  display: inline-block; border: 2px solid var(--ink); background: #fff;
+  color: var(--ink); text-decoration: none; font-family: var(--font-display);
+  font-weight: 800; text-transform: uppercase; font-size: .8rem;
+  padding: 5px 12px; margin-bottom: 4px; box-shadow: 2px 2px 0 var(--ink);
+}
 .monogram {
   display: inline-block; background: var(--ink); color: #fff;
   padding: 2px 10px 4px; box-shadow: inset 0 -4px 0 var(--accent-2);

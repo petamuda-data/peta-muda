@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-09b'
+const BUILD = '2026-07-09c'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -770,6 +770,9 @@ async function renderVolunteer() {
       <input class="searchbox" id="volSearch" placeholder="${L('search')}" autocomplete="off">
       <div class="seat-list" id="volList"></div>
       <p class="sub" style="margin-top:.6rem;color:var(--muted)">${T('Nak bantuan AI? Buka tab Lapangan kerusi anda.', 'Want AI help? Open your seat’s Field tab.')}</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn secondary" href="#/">← ${T('Kembali ke halaman utama', 'Back to the main page')}</a>
     </div>`
 
   const listEl = document.getElementById('volList')
@@ -1437,7 +1440,7 @@ function renderHq(seat) {
     </div>`
 }
 
-async function renderSeat(slug, tab = 'brief') {
+async function renderSeat(slug, tab = 'field') {
   const [idx, seat] = await Promise.all([loadIndex(), loadSeat(slug)])
   storage.set('last_seat', slug) // powers the home page's one-tap return chip
   let mapSvg = ''
@@ -1457,11 +1460,14 @@ async function renderSeat(slug, tab = 'brief') {
       </div>
     </div>
     <div class="tabs">
-      <button data-tab="brief" class="${tab === 'brief' ? 'active' : ''}">${L('tab_brief')}</button>
       <button data-tab="field" class="${tab === 'field' ? 'active' : ''}">${L('tab_field')}</button>
+      <button data-tab="brief" class="${tab === 'brief' ? 'active' : ''}">${L('tab_brief')}</button>
       <button data-tab="hq" class="${tab === 'hq' ? 'active' : ''}">${L('tab_hq')}</button>
     </div>
-    <div id="tabContent"></div>`
+    <div id="tabContent"></div>
+    <div class="btn-row" style="margin-top:20px">
+      <a class="btn secondary" href="#/">← ${T('Kembali ke halaman utama', 'Back to the main page')}</a>
+    </div>`
 
   const content = document.getElementById('tabContent')
   const renderTab = () => {
@@ -1525,7 +1531,7 @@ async function route() {
   const hash = location.hash || '#/'
   try {
     const m = hash.match(/^#\/seat\/([a-z0-9-]+)(?:\/(brief|field|hq))?/)
-    if (m) await renderSeat(m[1], m[2] ?? 'brief')
+    if (m) await renderSeat(m[1], m[2] ?? 'field')
     else if (hash === '#/volunteer') await renderVolunteer()
     else await renderHome()
   } catch (e) {
