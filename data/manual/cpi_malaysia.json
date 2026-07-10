@@ -1,0 +1,20 @@
+{
+  "_comment": "Malaysia annual CPI inflation (calendar-year %), used to deflate nominal HIES household income into constant ringgit for a real-terms doorstep line. Values are DOSM's official published annual Consumer Price Index inflation (base 2010=100), cross-checked here against the World Bank FP.CPI.TOTL.ZG series mirrored at datahub datasets/cpi (raw.githubusercontent.com/datasets/cpi) — which returns the identical figures and is the only CPI source reachable from the build sandbox (DOSM/data.gov.my hosts are proxy-blocked). base_year is the year all nominal values are expressed in: to convert a nominal value from year Y into base_year ringgit, multiply by the product of (1 + inflation_pct/100) for every year from Y+1 to base_year. Closed-year inflation is final and does not revise. Re-verify against OpenDOSM cpi_annual before printing campaign material.",
+  "updated": "2026-07-10",
+  "base_year": 2024,
+  "unit": "annual_inflation_pct",
+  "series": [
+    { "year": 2019, "inflation_pct": 0.66 },
+    { "year": 2020, "inflation_pct": -1.14 },
+    { "year": 2021, "inflation_pct": 2.48 },
+    { "year": 2022, "inflation_pct": 3.38 },
+    { "year": 2023, "inflation_pct": 2.49 },
+    { "year": 2024, "inflation_pct": 1.83 }
+  ],
+  "sources": [
+    "https://open.dosm.gov.my/data-catalogue/cpi_annual",
+    "https://data.gov.my/data-catalogue/cpi_headline",
+    "https://github.com/datasets/cpi"
+  ],
+  "verdict": "CONFIRMED"
+}

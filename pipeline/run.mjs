@@ -95,6 +95,21 @@ let nationalIssues = { issues: [] }
 try {
   nationalIssues = JSON.parse(await readFile(path.join('data', 'manual', 'national_issues.json'), 'utf8'))
 } catch { log('no manual national_issues.json, skipping national issues') }
+// ---- CPI deflator (real-terms income): compound annual inflation to base_year
+// so nominal HIES income can be expressed in constant ringgit at the door.
+let cpiDeflator = null
+try {
+  const cpi = JSON.parse(await readFile(path.join('data', 'manual', 'cpi_malaysia.json'), 'utf8'))
+  const rate = Object.fromEntries(cpi.series.map(r => [r.year, r.inflation_pct]))
+  const mult = {}
+  for (const { year } of cpi.series) {
+    let m = 1
+    for (let y = year + 1; y <= cpi.base_year; y++) if (rate[y] != null) m *= 1 + rate[y] / 100
+    mult[year] = Number(m.toFixed(6))
+  }
+  cpiDeflator = { base_year: cpi.base_year, mult, source: cpi.sources?.[0] ?? '', verdict: cpi.verdict ?? '' }
+} catch { /* cpi optional */ }
+
 
 // ---- government price ceilings (hand-maintained; neutral, both editions) ----
 let priceCeilings = { items: {} }
@@ -376,6 +391,7 @@ const index = {
   cost_trend: costTrend,
   edition: EDITION,
   national_issues: nationalIssues.issues ?? [],
+  cpi_deflator: cpiDeflator,
   live_alerts: liveAlerts,
   // MUDA's statewide positions, surfaced on the home page's "Apa MUDA kata"
   // card (muda edition only) — always-present, attributed, daily-relevant

@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-10b'
+const BUILD = '2026-07-10c'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -80,6 +80,7 @@ const STR = {
     income_median: 'Pendapatan penengah isi rumah',
     income_mean: 'Pendapatan purata',
     spending: 'Perbelanjaan isi rumah',
+    income_real: 'Pendapatan (nilai 2024)',
     poverty: 'Kadar kemiskinan mutlak',
     gini: 'Ketaksamaan (Gini)',
     u_rate: 'Kadar pengangguran',
@@ -170,6 +171,7 @@ const STR = {
     income_median: 'Median household income',
     income_mean: 'Mean income',
     spending: 'Household spending',
+    income_real: 'Income (2024 ringgit)',
     poverty: 'Absolute poverty rate',
     gini: 'Inequality (Gini)',
     u_rate: 'Unemployment rate',
@@ -885,21 +887,42 @@ function incomeCard(seat, idx) {
   const incTrend = socioTrend(incArr, 'income_median', rm)
   const expTrend = socioTrend(expArr, 'expenditure', rm)
   const yN = inc?.date?.slice(0, 4)
-  const years = incArr.map(r => r.date?.slice(0, 4)).join(' → ')
+  const years = incArr.map(r => r.date?.slice(0, 4)).join(' \u2192 ')
+  // real-terms: deflate every nominal income point into base-year ringgit (CPI,
+  // idx.cpi_deflator) so the trend is apples-to-apples. Where prices outran pay
+  // the real line ends below where it began — the honest 'getting worse' story.
+  const def = idx.cpi_deflator
+  const y0 = incArr[0]?.date?.slice(0, 4)
+  const m0 = def?.mult?.[y0]
+  const canReal = incArr.length >= 2 && def && m0 && inc?.income_median != null && incArr[0]?.income_median != null
+  const realRow = canReal
+    ? socioTrend(incArr.map(r => ({ real: Math.round(r.income_median * (def.mult[r.date?.slice(0, 4)] ?? 1)) })), 'real', rm)
+    : ''
+  let realNote = ''
+  if (canReal) {
+    const realFirst = incArr[0].income_median * m0
+    const d = Math.round((inc.income_median - realFirst) / realFirst * 100)
+    const cum = ((m0 - 1) * 100).toFixed(1)
+    realNote = T(
+      ` Selepas inflasi (CPI +${cum}% sejak ${y0}): pendapatan benar ${d > 0 ? 'naik' : 'turun'} ${Math.abs(d)}%.`,
+      ` After inflation (CPI +${cum}% since ${y0}): real household income ${d > 0 ? 'up' : 'down'} ${Math.abs(d)}%.`,
+      ` \u7ecf\u901a\u80c0\u8c03\u6574\uff08CPI \u81ea${y0}\u5e74 +${cum}%\uff09\uff1a\u5b9e\u8d28\u6536\u5165${d > 0 ? '\u4e0a\u5347' : '\u4e0b\u964d'} ${Math.abs(d)}%\u3002`)
+  }
   const note = incArr.length >= 2
     ? T(
-      `HIES DOSM · ${years} (nilai nominal). Kejutan petrol tanpa subsidi & SST melanda 2025-26 — selepas data ini.`,
-      `DOSM HIES · ${years} (nominal). The unsubsidised-fuel & SST shock hit in 2025-26 — after this data.`,
-      `HIES DOSM · ${years}（名义值）。无津贴油价与 SST 冲击发生于 2025-26 年 — 在此数据之后。`)
+      `HIES DOSM \u00b7 ${years} (nilai nominal). Kejutan petrol tanpa subsidi & SST melanda 2025-26 \u2014 selepas data ini.`,
+      `DOSM HIES \u00b7 ${years} (nominal). The unsubsidised-fuel & SST shock hit in 2025-26 \u2014 after this data.`,
+      `HIES DOSM \u00b7 ${years}\uff08\u540d\u4e49\u503c\uff09\u3002\u65e0\u6d25\u8d34\u6cb9\u4ef7\u4e0e SST \u51b2\u51fb\u53d1\u751f\u4e8e 2025-26 \u5e74 \u2014 \u5728\u6b64\u6570\u636e\u4e4b\u540e\u3002`) + realNote
     : (inc ? L('income_note', yN) : '')
   return `<div class="card">
     <h2>${L('income_ctx')}</h2>
     ${note ? `<p class="sub">${note}</p>` : ''}
     <table class="data"><tbody>
       ${incTrend ? `<tr><td>${L('income_median')}</td><td class="num">${incTrend}</td></tr>` : ''}
+      ${realRow ? `<tr><td>${L('income_real')}</td><td class="num">${realRow}</td></tr>` : ''}
       ${expTrend ? `<tr><td>${L('spending')}</td><td class="num">${expTrend}</td></tr>` : ''}
       ${pov ? `<tr><td>${L('poverty')}</td><td class="num">${fmtPct(pov.poverty ?? pov.poverty_absolute)}</td></tr>` : ''}
-      ${gin ? `<tr><td>${L('gini')}</td><td class="num">${(gin.gini ?? '–')}</td></tr>` : ''}
+      ${gin ? `<tr><td>${L('gini')}</td><td class="num">${(gin.gini ?? '\u2013')}</td></tr>` : ''}
       ${lab ? `<tr><td>${L('u_rate')} (${lab.date?.slice(0, 4)})</td><td class="num">${fmtPct(lab.u_rate)}${labPrev ? ` <span style="color:var(--muted)">(${labPrev.date?.slice(0, 4)}: ${fmtPct(labPrev.u_rate)})</span>` : ''}</td></tr>` : ''}
     </tbody></table>
   </div>`
