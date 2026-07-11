@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-10d'
+const BUILD = '2026-07-10e'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -81,7 +81,7 @@ const STR = {
     income_mean: 'Pendapatan purata',
     spending: 'Perbelanjaan isi rumah',
     income_real: 'Pendapatan (nilai 2024)',
-    income_growth: 'Pertumbuhan sejak PRN 2022',
+    income_growth: 'Pertumbuhan sejak 2019',
     income_vs: 'Berbanding penengah',
     poverty: 'Kadar kemiskinan mutlak',
     gini: 'Ketaksamaan (Gini)',
@@ -174,7 +174,7 @@ const STR = {
     income_mean: 'Mean income',
     spending: 'Household spending',
     income_real: 'Income (2024 ringgit)',
-    income_growth: 'Growth since 2022 election',
+    income_growth: 'Growth since 2019',
     income_vs: 'Compared to median',
     poverty: 'Absolute poverty rate',
     gini: 'Inequality (Gini)',
@@ -881,11 +881,12 @@ function incomeCard(seat, idx) {
       ` After inflation (CPI +${cum}% since ${y0}): real household income ${d > 0 ? 'up' : 'down'} ${Math.abs(d)}%.`,
       ` \u7ecf\u901a\u80c0\u8c03\u6574\uff08CPI \u81ea${y0}\u5e74 +${cum}%\uff09\uff1a\u5b9e\u8d28\u6536\u5165${d > 0 ? '\u4e0a\u5347' : '\u4e0b\u964d'} ${Math.abs(d)}%\u3002`)
   }
-  // growth since the last state election: the 2022 HIES point -> latest.
-  const r2022 = incArr.find(r => r.date?.slice(0, 4) === '2022')
+  // growth vs 2019 — the pre-COVID anchor. 2022 was the pandemic trough, so a
+  // 2022 baseline overstates recovery as growth; 2019 is the honest comparison.
+  const r2019 = incArr.find(r => r.date?.slice(0, 4) === '2019')
   let growthRow = ''
-  if (r2022?.income_median != null && inc?.income_median != null && r2022 !== inc) {
-    const g = Math.round((inc.income_median - r2022.income_median) / r2022.income_median * 100)
+  if (r2019?.income_median != null && inc?.income_median != null && r2019 !== inc) {
+    const g = Math.round((inc.income_median - r2019.income_median) / r2019.income_median * 100)
     growthRow = `${g > 0 ? '+' : ''}${g}%`
   }
   // this seat's median vs the national + state median (nearest common HIES year).
@@ -1489,7 +1490,23 @@ function renderHq(seat, idx) {
 
 async function renderSeat(slug, tab = 'field') {
   if (tab === 'brief') tab = 'field' // Brief tab retired; legacy links land on Field
-  const [idx, seat] = await Promise.all([loadIndex(), loadSeat(slug)])
+  let idx = await loadIndex()
+  // Shared links must just work: slugs are unique across regions, so a seat
+  // that isn't in the current region's index belongs to the other region —
+  // switch in place (same resets as setRegion, minus the jump to home).
+  if (!idx.seats.some(s => s.slug === slug)) {
+    const other = state.region === 'melaka' ? 'johor' : 'melaka'
+    const otherDir = other === 'melaka' ? 'data/melaka/' : 'data/'
+    const otherIdx = await (await fetch(`${otherDir}index.json`)).json()
+    if (!otherIdx.seats.some(s => s.slug === slug)) throw new Error(`unknown seat ${slug}`)
+    state.region = other
+    storage.set('region', other)
+    state.index = otherIdx; state.seats = new Map(); state.geo = null
+    storage.set('last_seat', '')
+    syncStateToggle()
+    idx = otherIdx
+  }
+  const seat = await loadSeat(slug)
   storage.set('last_seat', slug) // powers the home page's one-tap return chip
   let mapSvg = ''
   try {
