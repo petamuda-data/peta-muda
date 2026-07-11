@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11e'
+const BUILD = '2026-07-11f'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -298,6 +298,7 @@ function renderFooter(idx) {
   el.innerHTML = `
     <p><strong>${L('sources')}:</strong> ${idx.attribution.map(a => `<a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.name)}</a>`).join(' · ')}</p>
     ${health ? `<p>${health}</p>` : ''}
+    <p><a href="#/about">${T('Tentang aplikasi ini', 'About this app')}</a></p>
     <p>${L('built')}: ${new Date(idx.built_at).toLocaleString()} · <span title="app code version">app ${BUILD}</span> · ${L('disclaimer')}</p>`
 }
 
@@ -650,6 +651,55 @@ async function renderHome() {
     box.focus({ preventScroll: true })
   }
   document.getElementById('forkSearch')?.addEventListener('click', focusSearch)
+  renderFooter(idx)
+}
+
+// ---- about page (muda edition only): the two doorstep problems this app
+// was built to answer, and how each feature maps to one of them. Plain
+// prose, bilingual via T() — no L() keys, this content lives nowhere else.
+async function renderAbout() {
+  const idx = await loadIndex()
+  if (idx.edition !== 'muda') { location.hash = '#/'; return }
+
+  app.innerHTML = `
+    <div class="crumbs"><a href="#/">← ${REGION_LABEL()}</a></div>
+    <div class="card">
+      <h2>${T('Tentang aplikasi ini', 'About this app')}</h2>
+      <p class="sub">${T(
+        'Peta MUDA dibina untuk dua masalah khusus di lapangan — bukan sebagai laman kempen am.',
+        'Peta MUDA was built for two specific problems on the ground — not as a general campaign site.')}</p>
+    </div>
+
+    <div class="card">
+      <h2>${T('Masalah 1: Sukarelawan tak cukup yakin', 'Problem 1: volunteers are willing, but not confident')}</h2>
+      <p>${T(
+        'MUDA tidak kekurangan orang yang sanggup mengetuk pintu — yang kurang ialah orang yang rasa <strong>bersedia</strong> untuk mengetuk. Mengundi dari pintu ke pintu bermakna dihentikan oleh orang asing dan ditanya soalan sukar di situ juga: &ldquo;Apa sebenarnya yang kerajaan buat salah di sini?&rdquo; atau &ldquo;Apa pendirian MUDA tentang X?&rdquo; — dan perlu jawapan yang benar dan khusus, bukan kabur. Tanpa cara pantas untuk dapatkan fakta khusus kerusi dan jawapan yang boleh dipertahankan, sukarelawan yang sanggup pun teragak-agak, kurang bersedia, atau terus tidak turun padang. Halangan bukan kesanggupan. Ia keyakinan.',
+        'MUDA has no shortage of people willing to knock on doors — the shortage is in people who feel <strong>ready</strong> to knock. Canvassing means being stopped by a stranger and asked a hard question on the spot: &ldquo;What has this government actually done wrong here?&rdquo; or &ldquo;What&rsquo;s MUDA&rsquo;s position on X?&rdquo; — and needing a true, specific answer, not a vague one. Without a fast way to get seat-specific facts and a defensible answer, willing volunteers hesitate, under-prepare, or simply don&rsquo;t go out. The bottleneck isn&rsquo;t willingness. It&rsquo;s confidence.')}</p>
+      <h3>${T('Cara aplikasi ini membantu', 'How the app addresses this')}</h3>
+      <p>${T(
+        'Aplikasi ini gantikan &ldquo;ingat fakta anda&rdquo; dengan &ldquo;cari fakta kerusi anda.&rdquo; Setiap halaman kerusi bermula dengan satu fakta paling tajam dan benar tentang kerusi itu — majoriti tepat yang menentukan kerusi kali lepas, dan berapa ramai pengundi muda melebihi majoriti itu — supaya ayat pembuka sukarelawan sentiasa khusus, bukan generik. Di bawahnya, pembina briefing menyenaraikan setiap isu tempatan, isu kebangsaan dan babak cerita kempen bagi kerusi itu sebagai senarai semak; tiga yang paling kukuh sudah ditanda, dan satu klik salin tepat pilihan sukarelawan — sedia dibaca di pintu atau ditampal ke WhatsApp. Setiap fakta membawa taraf pengesahan — <strong>DISAHKAN</strong>, <strong>SEBAHAGIAN DISAHKAN</strong>, atau pengakuan jujur &ldquo;tiada pendirian disahkan&rdquo; — supaya sukarelawan sentiasa tahu sejauh mana kukuh sesuatu dakwaan sebelum mengulanginya, dan ke mana nak tunjuk jika dicabar. Untuk sukarelawan yang mahu lebih mendalam, satu klik menjana briefing AI yang mengeksport dossier bersumber penuh kerusi itu untuk berlatih menjawab soalan sebelum turun padang. Semua ini tidak perlukan hafalan; ia perlukan membuka aplikasi di pintu.',
+        'The app replaces &ldquo;remember your talking points&rdquo; with &ldquo;look up your seat&rsquo;s facts.&rdquo; Every seat page opens with the single sharpest, true fact about that specific seat — the exact margin it was decided by last time, and how many young voters outnumber that margin — so a volunteer&rsquo;s opening line is always concrete, never generic. Below that, a briefing builder lists every sourced local issue, national issue, and campaign-story beat for that seat as a checklist; the three strongest are pre-selected, and one tap copies exactly the volunteer&rsquo;s chosen points, ready to read at the door or paste into WhatsApp. Every fact carries a verdict — <strong>VERIFIED</strong>, <strong>CONFIRMED</strong>, <strong>PARTLY CONFIRMED</strong>, or an honest &ldquo;no verified position exists&rdquo; — so a volunteer always knows how solid a claim is before repeating it, and where to point if challenged. For volunteers who want to go deeper, a one-tap AI briefing exports the seat&rsquo;s full sourced dossier to rehearse likely questions before heading out. None of this requires memorisation; it requires opening the app at the door.')}</p>
+    </div>
+
+    <div class="card">
+      <h2>${T('Masalah 2: Pengundi dah tak mahu buka pintu', 'Problem 2: voters have stopped opening the door for politics')}</h2>
+      <p>${T(
+        'Selepas bertahun-tahun janji parti yang tidak bertahan selepas kerajaan dibentuk, refleks di kebanyakan pintu ialah tidak menjawab — kerana sesiapa di luar dianggap menjual manifesto lain yang akan berakhir sama seperti yang lepas. Keletihan itu adalah rasional: ia tindak balas yang dipelajari daripada corak yang benar. Mana-mana kempen yang datang dengan lebih banyak janji, walau seikhlas mana pun, hanya mengesahkan refleks yang cuba dipecahkan.',
+        'After years of party promises that didn&rsquo;t survive contact with government, the reflex at most doors is to not answer — because whoever&rsquo;s outside is assumed to be selling another manifesto that will age the same way as the last one. That fatigue is rational: it&rsquo;s a learned response to a real pattern. Any campaign that shows up with more promises, however sincere, confirms the exact reflex it needs to break.')}</p>
+      <h3>${T('Cara aplikasi ini membantu', 'How the app addresses this')}</h3>
+      <p>${T(
+        'Aplikasi ini dibina sebagai alat data, bukan penjana pujukan. Ia tidak pernah menyatakan janji — ia menyatakan fakta (potongan subsidi, banjir, angka gaji, majoriti undi) dan, hanya jika ada satu yang disahkan, jawapan MUDA yang disandarkan: orang bernama, jawatan, tarikh, sumber. Jika tiada pendirian disahkan, aplikasi menyatakannya dengan jelas dan bukan mereka-reka satu — tahap kejujuran yang luar biasa untuk alat kempen, dan ia sengaja begitu. Setiap angka yang ditunjukkan khusus untuk kerusi <em>itu</em> — majoriti pilihan rayanya sendiri, sejarah banjir atau airnya sendiri, tren pendapatannya sendiri — bukan skrip kebangsaan yang diulang dari pintu ke pintu. Jika MUDA mengaku kredit, ia untuk sesuatu yang sudah dibuat dan boleh disahkan secara bebas (contohnya dana bantuan banjir dengan audit pihak ketiga yang diterbitkan), bukan sesuatu yang dijanjikan. Dan kandungan keluar mengundi dibingkai sebagai logistik dan kuasa diri — sedekat mana kerusi ini sebenarnya, cara semak pusat mengundi anda — bukan pujukan, yang menghormati hakikat orang yang menjawab pintu mungkin sudah membuat keputusan dan cuma perlukan maklumat praktikal.',
+        'The app is built as a data tool, not a pitch generator. It never states a promise — it states a fact (a subsidy cut, a flood, a wage figure, a vote margin) and, only where one is verified, MUDA&rsquo;s attributed answer: a named person, a role, a date, a source. Where no verified position exists, the app says so plainly rather than inventing one — an unusual level of honesty for a campaign tool, and a deliberate one. Every number shown is specific to <em>that</em> seat: its own election margin, its own flood or water history, its own income trend — not a national script repeated door to door. Where MUDA claims credit, it&rsquo;s for something already done and independently checkable (e.g. flood-relief funds with a published third-party audit), not something promised. And the get-out-the-vote content is framed as logistics and agency — how close the seat really is, how to check your polling station — not persuasion, which respects that the person answering the door may have already made up their mind and just needs practical information.')}</p>
+      <h3>${T('Sebelum pintu, bukan hanya di pintu', 'Before the door, not just at it')}</h3>
+      <p>${T(
+        'Setiap kerusi juga ada poster sedia pakai — angka kerusi itu sendiri, bukan slogan — dibina untuk dikongsi di WhatsApp. Dihantar oleh seseorang yang penerima sudah kenal (jiran, saudara, kawan) berbanding orang asing, ia sampai sebagai sesuatu yang seorang yang dipercayai pilih untuk kongsi, bukan parti yang mengetuk secara sejuk. Itu jenis penerimaan yang berbeza daripada orang asing di pintu — ia berfungsi paling baik jika kekal peribadi, dihantar kepada orang yang sukarelawan benar-benar kenal di kerusi itu, bukan disebar kepada orang asing, yang hanya akan mencipta semula keletihan yang cuba dielakkan.',
+        'Every seat also has a ready-made poster — the seat&rsquo;s own numbers, not a slogan — built to be shared on WhatsApp. Sent by someone the recipient already knows (a neighbour, a relative, a friend) rather than a stranger, it reaches people as something a person they trust chose to share, not a party knocking cold. That&rsquo;s a different kind of receptivity than a stranger at the door — it works best kept personal, sent to people volunteers actually know in that seat, not blasted to strangers, which would just recreate the fatigue it&rsquo;s meant to avoid.')}</p>
+    </div>
+
+    <div class="btn-row">
+      <a class="btn secondary" href="#/">← ${T('Kembali ke halaman utama', 'Back to the main page')}</a>
+    </div>`
+
   renderFooter(idx)
 }
 
@@ -1526,6 +1576,7 @@ async function route() {
     const m = hash.match(/^#\/seat\/([a-z0-9-]+)(?:\/(brief|field|hq))?/)
     if (m) await renderSeat(m[1], m[2] ?? 'field')
     else if (hash === '#/volunteer') await renderVolunteer()
+    else if (hash === '#/about') await renderAbout()
     else await renderHome()
   } catch (e) {
     console.error(e)
