@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11i'
+const BUILD = '2026-07-11j'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -493,7 +493,14 @@ Confirm setup now by replying with: a 3-line summary of this seat, the ledger (e
     lines.push('', '### Voters (2026 roll)')
     const yt = demo.age.age_18_20 + demo.age.age_21_29
     lines.push(`- Total ${nf(demo.voters_total)} | aged 18-20: ${nf(demo.age.age_18_20)} | aged 18-29: ${nf(yt)} (${px(100 * yt / demo.voters_total)}) | women: ${px(100 * demo.sex_female / demo.voters_total, 0)}`)
-    lines.push(`- Ethnic: Malay ${px(100 * demo.ethnic.ethnic_malay / demo.voters_total, 0)}, Chinese ${px(100 * demo.ethnic.ethnic_chinese / demo.voters_total, 0)}, Indian ${px(100 * demo.ethnic.ethnic_indian / demo.voters_total, 0)}`)
+    // Melaka rolls publish no ethnicity (ethnic is null) — fall back to the
+    // census population split, labelled so the assistant never reads it as roll data
+    if (demo.ethnic) {
+      lines.push(`- Ethnic: Malay ${px(100 * demo.ethnic.ethnic_malay / demo.voters_total, 0)}, Chinese ${px(100 * demo.ethnic.ethnic_chinese / demo.voters_total, 0)}, Indian ${px(100 * demo.ethnic.ethnic_indian / demo.voters_total, 0)}`)
+    } else if (seat.census_ethnic) {
+      const c = seat.census_ethnic
+      lines.push(`- Ethnicity (${c.year} census, population share — roll ethnicity not published for this state): Bumiputera ${px(c.bumi, 0)}, Chinese ${px(c.chinese, 0)}, Indian ${px(c.indian, 0)}`)
+    }
   }
 
   // history + saluran
