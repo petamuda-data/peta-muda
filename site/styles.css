@@ -273,21 +273,6 @@ table.data .arrow { color: var(--muted); padding: 0 2px; }
 .points li { margin-bottom: 10px; }
 .points { padding-left: 20px; margin: 8px 0; }
 
-/* ---- 5-beat story: zine chapter markers ---- */
-.story { list-style: none; padding: 0; margin: 10px 0 0; counter-reset: beat; }
-.story li { display: flex; gap: 12px; margin-bottom: 16px; counter-increment: beat; }
-.story li::before {
-  content: counter(beat);
-  flex: 0 0 26px; height: 26px; border-radius: 0;
-  background: var(--ink); color: var(--accent-2);
-  font-family: var(--font-display); font-weight: 900; font-size: .9rem;
-  display: flex; align-items: center; justify-content: center; margin-top: 2px;
-}
-.story .beat-title {
-  font-weight: 900; font-size: .72rem; text-transform: uppercase;
-  letter-spacing: .06em; color: var(--accent); margin-bottom: 2px;
-}
-
 /* ---- buttons: rubber-stamp press ---- */
 .btn {
   display: inline-block; border: var(--border-hard); background: var(--ink); color: #fff;

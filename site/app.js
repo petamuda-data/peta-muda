@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11d'
+const BUILD = '2026-07-11e'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -82,8 +82,6 @@ const STR = {
     u_rate: 'Kadar pengangguran',
     share: 'Kongsi ringkasan',
     copied: 'Disalin!',
-    story_title: (n) => `Cerita kempen — ${n} langkah`,
-    story_sub: 'Satu naratif tersusun; butiran penuh di bahagian bawah',
     beat_path: 'Jalan kemenangan',
     beat_voters: 'Pengundi penentu',
     beat_message: 'Mesej di pintu',
@@ -91,10 +89,6 @@ const STR = {
     beat_ask: 'Tindakan',
     beat_local: 'Tempatan',
     beat_national: 'Nasional',
-    issues_national: 'Nasional',
-    issues_title: 'Isu tempatan (disahkan sumber)',
-    issues_sub: 'Isu khusus kawasan ini, disemak terhadap laporan berita — nombor rujukan boleh diklik',
-    issues_statewide: () => `Seluruh ${REGION_LABEL()}`,
     talking_points: 'Isu untuk rumah ke rumah',
     tp_sub: '3 point terkuat sudah ditanda — tanda/buang pilihan, semak pratonton, salin. Dijana daripada data rasmi.',
     demo_title: 'Profil pengundi (daftar pemilih 2026)',
@@ -169,8 +163,6 @@ const STR = {
     u_rate: 'Unemployment rate',
     share: 'Share summary',
     copied: 'Copied to clipboard!',
-    story_title: (n) => `The campaign story — ${n} beats`,
-    story_sub: 'One ordered narrative; full detail in the sections below',
     beat_path: 'Path to victory',
     beat_voters: 'The deciders',
     beat_message: 'The doorstep message',
@@ -178,10 +170,6 @@ const STR = {
     beat_ask: 'The ask',
     beat_local: 'Local',
     beat_national: 'National',
-    issues_national: 'National',
-    issues_title: 'Local issues (source-verified)',
-    issues_sub: 'Issues specific to this area, checked against news reporting — reference numbers are clickable',
-    issues_statewide: () => `${REGION_LABEL()}-wide`,
     talking_points: 'Door-knocking talking points',
     tp_sub: 'The 3 strongest points are pre-ticked — adjust the selection, check the preview, copy. Generated from official data.',
     demo_title: 'Voter profile (2026 electoral roll)',
@@ -924,8 +912,8 @@ function shareText(seat) {
 // 2022 margin in VOTES (visceral, unique per seat), the under-30 cohort as a
 // multiple of that margin (+ new voters since GE15 where a prior roll exists),
 // and the MUDA candidate standing here. Every line is guarded — thin-data
-// seats render a subset. The national cost-of-living story stays in
-// issuesCard/talkingPoints below.
+// seats render a subset. The national cost-of-living story stays in the
+// briefing builder's points below.
 function decisiveHero(seat, idx) {
   const lines = []
   const last = seat.history?.[0]
@@ -1197,7 +1185,7 @@ function bindGroundNotes(seat, rerender) {
 // pulled from the same verified data as the sections below it.
 // The punchy head of a curated issue string for a one-line doorstep message:
 // the clause before the first " — ", trimmed to a sentence / ~140 chars. Full
-// receipts and sources stay in issuesCard.
+// receipts and sources stay in the AI briefing (briefingMd).
 function leadClause(text) {
   if (!text) return ''
   const head = text.split(' — ')[0].trim()
@@ -1311,46 +1299,7 @@ function storyFor(seat, idx) {
   return beats
 }
 
-function storyCard(seat, idx) {
-  const beats = storyFor(seat, idx)
-  if (beats.length < 3) return ''
-  return `<div class="card">
-    <h2>${L('story_title', beats.length)}</h2>
-    <p class="sub">${L('story_sub')}</p>
-    <ol class="story">
-      ${beats.map(b => `<li><div><div class="beat-title">${esc(b.title)}</div><div>${b.text}</div></div></li>`).join('')}
-    </ol>
-  </div>`
-}
 
-// Curated, source-verified issues: this seat's local ones, the Johor-statewide
-// set (data/manual/issues.json), and the national set (national_issues.json).
-function issuesCard(seat, idx) {
-  const li = seat.local_issues
-  if (!li) return ''
-  const bm = state.lang === 'bm'
-  const render = (list, tag) => list.map(it => {
-    const text = bm ? (it.issue_bm ?? it.issue_en) : (it.issue_en ?? it.issue_bm)
-    const receipt = bm ? (it.receipt_bm ?? it.receipt_en) : (it.receipt_en ?? it.receipt_bm)
-    const refs = (it.sources ?? []).map((u, i) =>
-      ` <a href="${esc(u)}" target="_blank" rel="noopener" style="color:var(--muted)">[${i + 1}]</a>`).join('')
-    const groundTag = it.verdict === 'GROUND_REPORT' ? `<span class="badge" style="background:var(--lain)">${GROUND_LABEL()}</span> ` : ''
-    return `<li>${tag ? `<span class="badge" style="background:var(--lain)">${esc(tag)}</span> ` : ''}${groundTag}${esc(text ?? '')}${receipt ? `<br><span style="color:var(--muted);font-size:.78rem">${esc(receipt)}</span>` : ''}${refs}</li>`
-  }).join('')
-  const seatItems = li.seat ?? []
-  const stateItems = li.statewide ?? []
-  const nationalItems = idx?.national_issues ?? []
-  if (!seatItems.length && !stateItems.length && !nationalItems.length) return ''
-  return `<div class="card">
-    <h2>${L('issues_title')}</h2>
-    <p class="sub">${L('issues_sub')}</p>
-    <ul class="points">
-      ${render(seatItems, null)}
-      ${render(stateItems, L('issues_statewide'))}
-      ${render(nationalItems, L('issues_national'))}
-    </ul>
-  </div>`
-}
 
 function renderField(seat, idx) {
   const pts = talkingPoints(seat, idx)
@@ -1359,8 +1308,6 @@ function renderField(seat, idx) {
     ${decisiveHero(seat, idx)}
     ${gotvCard(seat)}
     ${posterCard(seat)}
-    ${storyCard(seat, idx)}
-    ${issuesCard(seat, idx)}
     <div class="card" id="tpBuilder">
       <h2>${L('talking_points')}</h2>
       <p class="sub">${L('tp_sub')}</p>
