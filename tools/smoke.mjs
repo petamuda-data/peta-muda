@@ -157,7 +157,7 @@ await page.waitForTimeout(500)
 await page.locator('#briefBtn').click()
 await page.waitForTimeout(800)
 const briefClip = await page.evaluate(() => navigator.clipboard.readText()).catch(() => '')
-checks.push(`${briefClip.includes('AI Field Briefing') && briefClip.includes('census, population share') ? 'PASS' : 'FAIL'} AI briefing works on a Melaka seat (${briefClip.length} chars, census-labelled ethnicity)`)
+checks.push(`${briefClip.includes('Talking Points') && briefClip.includes('census, population share') ? 'PASS' : 'FAIL'} talking-points export works on a Melaka seat (${briefClip.length} chars, census-labelled ethnicity)`)
 await page.goto(`${base}/#/seat/n51-bukit-batu/hq`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(700)
 const xJhr = await page.evaluate(() => document.querySelector('.state-toggle button[data-state="johor"]')?.classList.contains('active') ?? false)
@@ -190,7 +190,7 @@ checks.push(`${(prev1.match(/•/g) || []).length === 2 ? 'PASS' : 'FAIL'} unche
 await page.locator('#tpCopy').click()
 await page.waitForTimeout(500)
 const clip = await page.evaluate(() => navigator.clipboard.readText()).catch(() => '')
-checks.push(`${clip === prev1 && (clip.match(/•/g) || []).length === 2 ? 'PASS' : 'FAIL'} copy puts exactly the previewed briefing on the clipboard`)
+checks.push(`${clip === prev1 && (clip.match(/•/g) || []).length === 2 ? 'PASS' : 'FAIL'} copy puts exactly the previewed talking points on the clipboard`)
 
 // ---- language toggle: BM <-> EN only, zh falls back to bm ----
 await page.evaluate(() => { localStorage.setItem('lang', 'zh'); location.hash = '#/'; location.reload() })

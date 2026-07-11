@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11k'
+const BUILD = '2026-07-11l'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -422,7 +422,7 @@ async function copyAndDownloadBriefing(md, slug, btnEl, origText) {
   const blob = new Blob([md], { type: 'text/markdown' })
   const a = document.createElement('a')
   a.href = URL.createObjectURL(blob)
-  a.download = `${slug}-ai-briefing.md`
+  a.download = `${slug}-talking-points.md`
   a.click()
   URL.revokeObjectURL(a.href)
   if (btnEl) {
@@ -444,7 +444,7 @@ function briefingMd(seat, idx) {
   const pollLine = e26.polling_date
     ? `Polling day: ${e26.polling_date}${e26.early_voting_date ? ` (early voting ${e26.early_voting_date})` : ''}.`
     : 'Election not yet called.'
-  lines.push(`# PETA MUDA — AI Field Briefing: ${seat.code} ${seat.name} (${REGION_LABEL()} state election)`)
+  lines.push(`# PETA MUDA — Talking Points: ${seat.code} ${seat.name} (${REGION_LABEL()} state election)`)
   lines.push(`Generated ${new Date().toISOString().slice(0, 10)} from official open data (ElectionData.MY CC0; data.gov.my/OpenDOSM CC BY 4.0). Data built: ${idx.built_at?.slice(0, 10) ?? '–'}. ${pollLine}`)
   lines.push('')
   lines.push(`## ${L2('CARA GUNA (untuk petugas lapangan)', 'HOW TO USE (for the field operator)')}`)
@@ -587,7 +587,7 @@ function heroFork(idx) {
     ? `<a class="resume-chip" href="#/seat/${esc(last.slug)}">↩ ${T('Kerusi anda', 'Your seat', '您的议席')}: <strong>${esc(last.code)} ${esc(last.name)}</strong></a>`
     : ''
   const vol = idx.edition === 'muda'
-    ? `<a class="btn" href="#/volunteer">${T('Saya sukarelawan — beri saya briefing', 'I’m a volunteer — give me my briefing')}</a>`
+    ? `<a class="btn" href="#/volunteer">${T('Saya sukarelawan — beri saya poin perbualan', 'I’m a volunteer — give me my talking points')}</a>`
     : ''
   return `<div class="card fork">
     ${resume}
@@ -684,9 +684,9 @@ async function renderAbout() {
       <h3>${T('Cara aplikasi ini membantu', 'How the app addresses this')}</h3>
       <ul class="points">
         <li>${T('<strong>Ayat pembuka sedia ada:</strong> setiap halaman kerusi bermula dengan fakta paling tajam dan benar — majoriti tepat kerusi itu, dan berapa ramai pengundi muda melebihi majoriti itu.', '<strong>A ready opening line:</strong> every seat page leads with its sharpest true fact — the exact margin it was decided by, and how many young voters outnumber that margin.')}</li>
-        <li>${T('<strong>Briefing yang dibina, bukan dihafal:</strong> setiap isu tempatan, isu kebangsaan dan babak cerita kempen bagi kerusi itu jadi senarai semak; tiga terkuat sudah ditanda, satu klik salin pilihan anda.', '<strong>A briefing you build, not memorise:</strong> every local issue, national issue, and campaign-story beat for that seat is a checklist; the three strongest are pre-selected, one tap copies your choice.')}</li>
+        <li>${T('<strong>Poin perbualan yang dibina, bukan dihafal:</strong> setiap isu tempatan, isu kebangsaan dan babak cerita kempen bagi kerusi itu jadi senarai semak; tiga terkuat sudah ditanda, satu klik salin pilihan anda.', '<strong>Talking points you build, not memorise:</strong> every local issue, national issue, and campaign-story beat for that seat is a checklist; the three strongest are pre-selected, one tap copies your choice.')}</li>
         <li>${T('<strong>Tahu sejauh mana kukuh setiap fakta:</strong> setiap titik membawa taraf pengesahan — DISAHKAN, SEBAHAGIAN DISAHKAN, atau pengakuan jujur &ldquo;tiada pendirian disahkan&rdquo; — supaya anda tahu apa boleh dipertahankan.', '<strong>Know how solid each fact is:</strong> every point carries a verdict — VERIFIED, CONFIRMED, PARTLY CONFIRMED, or an honest &ldquo;no verified position&rdquo; — so you know what you can defend.')}</li>
-        <li>${T('<strong>Persediaan lebih mendalam bila perlu:</strong> satu klik menjana briefing AI yang mengeksport dossier bersumber penuh kerusi itu untuk berlatih soalan sukar.', '<strong>Deeper prep on demand:</strong> a one-tap AI briefing exports the seat&rsquo;s full sourced dossier to rehearse tough questions.')}</li>
+        <li>${T('<strong>Persediaan lebih mendalam bila perlu:</strong> satu klik mengeksport poin perbualan terkuratkan — dossier bersumber penuh kerusi itu — untuk berlatih soalan sukar.', '<strong>Deeper prep on demand:</strong> one tap exports the Curated talking points — the seat&rsquo;s full sourced dossier — to rehearse tough questions.')}</li>
         <li>${T('<strong>Tiada apa perlu dihafal:</strong> semua ini ada dalam aplikasi, bukan dalam kepala anda — buka je di pintu.', '<strong>Nothing to memorise:</strong> all of this lives in the app, not in your head — open it at the door.')}</li>
       </ul>
     </div>
@@ -1297,9 +1297,9 @@ function renderField(seat, idx) {
       <h2>${L('talking_points')}</h2>
       <p class="sub">${L('tp_sub')}</p>
       ${pts.map((g, gi) => `<h3>${esc(g.title)}</h3><ul class="points tp-pick">${g.pts.map((p, pi) => `<li><label><input type="checkbox" data-k="${gi}:${pi}" ${picks.has(`${gi}:${pi}`) ? 'checked' : ''}> <span>${p.html}</span></label></li>`).join('')}</ul>`).join('')}
-      <h3>${T('Pratonton briefing anda', 'Your briefing preview', '简报预览')}</h3>
+      <h3>${T('Pratonton poin perbualan anda', 'Your talking points', '谈话要点预览')}</h3>
       <pre class="tp-preview" id="tpPreview"></pre>
-      <div class="btn-row"><button class="btn" id="tpCopy">${T('Salin briefing', 'Copy briefing', '复制简报')}</button></div>
+      <div class="btn-row"><button class="btn" id="tpCopy">${T('Salin poin perbualan', 'Copy talking points', '复制谈话要点')}</button></div>
     </div>
     ${groundNotesCard(seat)}
     ${idx.edition === 'muda' ? `<div class="btn-row"><button class="btn" id="briefBtn">${L('brief_btn')}</button></div>` : ''}`
