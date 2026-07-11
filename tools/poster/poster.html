@@ -44,7 +44,7 @@
     <div class="big" id="closebig">MUDA — <em>parti baharu.</em></div>
     <div class="sub" id="closesub">Jujur, muda, di sini. Berdiri untuk anda, bukan untuk diri sendiri.</div>
   </div>
-  <div class="foot">Setiap angka bersumber daripada data rasmi terbuka.</div>
+  <div class="foot" id="foot">Setiap angka bersumber daripada data rasmi terbuka.</div>
 </div>
 <script>
   const DATA = window.__POSTER__ || {}
@@ -53,6 +53,7 @@
   if (DATA.head) document.getElementById('head').innerHTML = DATA.head
   if (DATA.closeBig) document.getElementById('closebig').innerHTML = DATA.closeBig
   if (DATA.closeSub) document.getElementById('closesub').innerHTML = DATA.closeSub
+  if (DATA.foot) document.getElementById('foot').textContent = DATA.foot
   const pillars = document.getElementById('pillars')
   for (const p of (DATA.pillars || [])) {
     const el = document.createElement('div'); el.className = 'p'

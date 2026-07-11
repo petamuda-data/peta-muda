@@ -310,27 +310,7 @@ table.data .arrow { color: var(--muted); padding: 0 2px; }
 .resume-chip { display: inline-block; margin-bottom: 10px; font-size: .85rem; color: var(--muted); text-decoration: none; }
 .resume-chip strong { color: var(--ink); }
 
-/* ---- doorstep hero: the hand-held poster ---- */
-.card.hero {
-  background: var(--ink); color: #fff;
-  border: var(--border-hard); box-shadow: var(--shadow-poster);
-  padding: 22px 18px;
-}
-.card.hero::before {
-  content: 'UNDI PENENTU'; display: block;
-  font-family: var(--font-display); font-weight: 800; font-size: .68rem;
-  letter-spacing: .18em; color: var(--accent-2); margin-bottom: 8px;
-}
 .hero-line { font-size: 1.08rem; margin: .45rem 0; line-height: 1.45; }
-.card.hero .hero-line strong {
-  color: var(--accent-2); font-family: var(--font-display); font-weight: 900;
-}
-/* line 1 is the failing (white sentence), line 2 the bright spot — MUDA's
-   answer in cyan, slightly larger; a short money line still reads as a poster */
-.card.hero .hero-line:first-of-type { font-size: 1.2rem; font-weight: 700; }
-.card.hero .hero-line strong { font-size: 1.15em; }
-.card.hero .btn { background: #fff; color: var(--ink); border-color: #fff; box-shadow: 2px 2px 0 var(--accent-2); }
-.card.hero .btn.wa { background: var(--wa); color: #fff; border-color: var(--wa); }
 
 /* live flood-alert card: red slab, reads as urgent without shouting */
 .card.alert { border: var(--border-hard); box-shadow: 4px 4px 0 var(--up); }

@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11g'
+const BUILD = '2026-07-11h'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -80,7 +80,6 @@ const STR = {
     poverty: 'Kadar kemiskinan mutlak',
     gini: 'Ketaksamaan (Gini)',
     u_rate: 'Kadar pengangguran',
-    share: 'Kongsi ringkasan',
     copied: 'Disalin!',
     beat_path: 'Jalan kemenangan',
     beat_voters: 'Pengundi penentu',
@@ -161,7 +160,6 @@ const STR = {
     poverty: 'Absolute poverty rate',
     gini: 'Inequality (Gini)',
     u_rate: 'Unemployment rate',
-    share: 'Share summary',
     copied: 'Copied to clipboard!',
     beat_path: 'Path to victory',
     beat_voters: 'The deciders',
@@ -393,7 +391,6 @@ function mudaHomeCard(idx) {
 // carries them. Plain text — no HTML escaping (this is an .md, not the DOM).
 // robust copy: Clipboard API first, then a hidden-textarea execCommand fallback
 // for insecure contexts / older browsers. Returns whether the copy succeeded.
-// (Same chain the shareBtn handler uses.)
 // talking points are built as HTML for the Field tab; this strips them back to
 // WhatsApp-ready plain text (tags out, the five esc() entities decoded)
 const htmlToText = (s) => String(s).replace(/<[^>]+>/g, '')
@@ -946,92 +943,7 @@ function bindTpBuilder(seat, idx) {
   })
 }
 
-function shareText(seat) {
-  const e = seat.election2026
-  const bm = state.lang === 'bm'
-  // lead with the seat's curated issue and MUDA's attributed answer — the
-  // bright-spot contrast, never a data complaint
-  const issue = seat.local_issues?.seat?.[0] ?? seat.local_issues?.statewide?.[0] ?? null
-  const issueLine = issue ? leadClause(bm ? (issue.issue_bm ?? issue.issue_en) : (issue.issue_en ?? issue.issue_bm)) : null
-  const t = issue ? (seat.muda_stances ?? []).find(s => s.key === issue.theme) : null
-  const stanceLine = t && t.verdict !== 'NO_VERIFIED_POSITION' ? leadClause(pick(t, 'stance')) : null
-  const last = seat.history?.[0]
-  const marginLine = last?.majority_perc != null && last.majority_perc < 10
-    ? (bm
-      ? `Majoriti ${last.date.slice(0, 4)} hanya ${fmtNum(last.majority)} undi — undi anda penentu.`
-      : `The ${last.date.slice(0, 4)} majority was just ${fmtNum(last.majority)} votes — your vote decides.`)
-    : null
-  const lines = [
-    `📍 ${seat.code} ${seat.name} — PRN ${REGION_LABEL()}${e.polling_date ? ` ${e.polling_date === '2026-07-11' ? '11 Julai 2026' : e.polling_date}` : ''}`,
-    e.muda_candidate ? `★ ${L('bloc_candidate')}: ${e.muda_candidate}${e.bloc_party ? ` (${e.bloc_party})` : ''}` : null,
-    issueLine ? `❗ ${issueLine}` : null,
-    stanceLine ? `✅ MUDA: ${stanceLine}` : null,
-    marginLine,
-    `Data terbuka rasmi · ${location.origin}${location.pathname}#/seat/${seat.slug}`,
-  ].filter(Boolean)
-  return lines.join('\n')
-}
 
-// The doorstep hero: this seat's decisive math in three plain lines — the
-// 2022 margin in VOTES (visceral, unique per seat), the under-30 cohort as a
-// multiple of that margin (+ new voters since GE15 where a prior roll exists),
-// and the MUDA candidate standing here. Every line is guarded — thin-data
-// seats render a subset. The national cost-of-living story stays in the
-// briefing builder's points below.
-function decisiveHero(seat, idx) {
-  const lines = []
-  const last = seat.history?.[0]
-  const year = last?.date?.slice(0, 4)
-  if (last && (last.majority != null || last.majority_perc != null)) {
-    const t = last.voter_turnout_perc
-    const turnBm = t != null ? ` \u2014 hanya ${fmtPct(t, 0)} keluar mengundi` : ''
-    const turnEn = t != null ? ` \u2014 only ${fmtPct(t, 0)} turned out` : ''
-    const turnZh = t != null ? `\uff0c\u6295\u7968\u7387\u4ec5 ${fmtPct(t, 0)}` : ''
-    if (last.majority != null) {
-      lines.push(T(
-        `${year}: kerusi ini diputuskan dengan majoriti <strong>${fmtNum(last.majority)} undi</strong> (${fmtPct(last.majority_perc, 1)})${turnBm}.`,
-        `${year}: this seat was decided by <strong>${fmtNum(last.majority)} votes</strong> (${fmtPct(last.majority_perc, 1)})${turnEn}.`,
-        `${year}\u5e74\uff1a\u672c\u5e2d\u4f4d\u4ec5\u4ee5 <strong>${fmtNum(last.majority)} \u7968</strong>\uff08${fmtPct(last.majority_perc, 1)}\uff09\u4e4b\u5dee\u5b9a\u80dc\u8d1f${turnZh}\u3002`))
-    } else {
-      lines.push(T(
-        `${year}: majoriti kerusi ini hanya <strong>${fmtPct(last.majority_perc, 1)}</strong>${turnBm}.`,
-        `${year}: the majority here was just <strong>${fmtPct(last.majority_perc, 1)}</strong>${turnEn}.`,
-        `${year}\u5e74\uff1a\u591a\u6570\u7968\u4ec5 <strong>${fmtPct(last.majority_perc, 1)}</strong>${turnZh}\u3002`))
-    }
-  }
-  const demo = currentRoll(seat)
-  if (demo?.age) {
-    const youth = (demo.age.age_18_20 ?? 0) + (demo.age.age_21_29 ?? 0)
-    if (youth > 0) {
-      const prior = priorRoll(seat)
-      const newV = prior && demo.voters_total > prior.voters_total ? demo.voters_total - prior.voters_total : null
-      const ratio = last?.majority > 0 ? youth / last.majority : 0
-      const multBm = ratio >= 2 ? ` \u2014 <strong>${Math.round(ratio)}\u00d7</strong> majoriti itu` : ''
-      const multEn = ratio >= 2 ? ` \u2014 <strong>${Math.round(ratio)}\u00d7</strong> that margin` : ''
-      const multZh = ratio >= 2 ? ` \u2014 \u662f\u591a\u6570\u7968\u7684 <strong>${Math.round(ratio)}\u500d</strong>` : ''
-      lines.push(T(
-        `<strong>${fmtNum(youth)}</strong> pengundi bawah 30 di sini${multBm}${newV ? `, termasuk ${fmtNum(newV)} pengundi baharu sejak PRU15` : ''}.`,
-        `<strong>${fmtNum(youth)}</strong> voters under 30 here${multEn}${newV ? `, including ${fmtNum(newV)} new voters since GE15` : ''}.`,
-        `\u672c\u533a\u6709 <strong>${fmtNum(youth)}</strong> \u540d 30 \u5c81\u4ee5\u4e0b\u9009\u6c11${multZh}${newV ? `\uff0c\u542b GE15 \u4ee5\u6765 ${fmtNum(newV)} \u540d\u65b0\u9009\u6c11` : ''}\u3002`))
-    }
-  }
-  const e = seat.election2026
-  if (e?.muda_candidate) {
-    lines.push(T(
-      `<strong>${esc(e.muda_candidate)}</strong> \u2605 bertanding untuk ${esc(e.bloc_party ?? 'MUDA')} di sini.`,
-      `<strong>${esc(e.muda_candidate)}</strong> \u2605 is standing for ${esc(e.bloc_party ?? 'MUDA')} here.`,
-      `<strong>${esc(e.muda_candidate)}</strong> \u2605 \u4ee3\u8868 ${esc(e.bloc_party ?? 'MUDA')} \u5728\u6b64\u53c2\u9009\u3002`))
-  }
-  if (!lines.length) return ''
-  const wa = `https://wa.me/?text=${encodeURIComponent(shareText(seat))}`
-  return `<div class="card hero">
-    ${lines.map(l => `<p class="hero-line">${l}</p>`).join('')}
-    <div class="btn-row">
-      <button class="btn" id="shareBtn">${L('share')}</button>
-      <a class="btn wa" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-    </div>
-  </div>`
-}
 
 // The conversion step right under the pitch: one tap to check your register
 // entry on MySPR Semak, one tap to bring someone along. Gone once polls close.
@@ -1069,7 +981,10 @@ const SEAT_POSTERS = {
   'n41-puteri-wangsa': 'puteri-wangsa.png',
 }
 function posterCard(seat) {
-  const file = SEAT_POSTERS[seat.slug] ?? (state.region === 'melaka' ? 'melaka.png' : 'johor.png')
+  const base = SEAT_POSTERS[seat.slug] ?? (state.region === 'melaka' ? 'melaka.png' : 'johor.png')
+  // posters are pre-rendered PNGs (no live text), so the file itself must
+  // match the site language — LANGS is bm/en only, EN files carry a -en suffix.
+  const file = state.lang === 'en' ? base.replace('.png', '-en.png') : base
   return `<div class="card">
     <img class="poster-img" src="posters/${file}" alt="Poster ${esc(seat.name)}" loading="lazy">
     <div class="btn-row">
@@ -1369,7 +1284,6 @@ function renderField(seat, idx) {
   const pts = talkingPoints(seat, idx)
   const picks = tpDefaultPicks(pts)
   return `
-    ${decisiveHero(seat, idx)}
     ${gotvCard(seat)}
     ${posterCard(seat)}
     <div class="card" id="tpBuilder">
@@ -1535,29 +1449,6 @@ async function renderSeat(slug, tab = 'field') {
 
   document.querySelectorAll('.tabs button').forEach(btn =>
     btn.addEventListener('click', () => { location.hash = `#/seat/${slug}/${btn.dataset.tab}` }))
-
-  const shareBtn = document.getElementById('shareBtn')
-  if (shareBtn) shareBtn.addEventListener('click', async () => {
-    const text = shareText(seat)
-    if (navigator.share) { try { await navigator.share({ text }) } catch { /* cancelled */ } return }
-    let ok = false
-    if (navigator.clipboard?.writeText) {
-      try { await navigator.clipboard.writeText(text); ok = true } catch { /* denied */ }
-    }
-    if (!ok) {
-      // clipboard API needs a secure context; fall back for plain-http hosting
-      const ta = document.createElement('textarea')
-      ta.value = text
-      ta.style.position = 'fixed'; ta.style.opacity = '0'
-      document.body.appendChild(ta); ta.select()
-      try { ok = document.execCommand('copy') } catch { /* unsupported */ }
-      ta.remove()
-    }
-    if (!ok) { window.prompt('Salin / Copy:', text); return }
-    const orig = shareBtn.textContent
-    shareBtn.textContent = L('copied')
-    setTimeout(() => { shareBtn.textContent = orig }, 2000)
-  })
 
   const csvBtn = document.getElementById('csvBtn')
   if (csvBtn) csvBtn.addEventListener('click', () => {
