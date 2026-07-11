@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-10e'
+const BUILD = '2026-07-10f'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -40,11 +40,6 @@ const STR = {
     poll_over: () => `PRN ${REGION_LABEL()} telah selesai. Terima kasih kerana mengundi!`,
     featured: 'Kerusi Blok Progresif (MUDA–PSM)',
     search: 'Cari kerusi, kawasan atau parlimen…',
-    locate_btn: 'Guna lokasi saya',
-    locate_finding: 'Mencari kawasan anda…',
-    locate_denied: 'Tak dapat akses lokasi — cari kerusi anda di bawah.',
-    locate_outside: () => `Lokasi anda di luar ${REGION_LABEL()} — cari kerusi anda di bawah.`,
-    install_btn: 'Pasang aplikasi di telefon anda',
     gotv_title: 'Jom keluar mengundi',
     gotv_today: 'Hari ini hari mengundi — keluar sekarang!',
     gotv_early: (poll) => `Undi awal dah bermula — hari mengundi ${poll}.`,
@@ -133,11 +128,6 @@ const STR = {
     poll_over: () => `The ${REGION_LABEL()} election has concluded. Thank you for voting!`,
     featured: 'Progressive Bloc seats (MUDA–PSM)',
     search: 'Search seat, area or parlimen…',
-    locate_btn: 'Use my location',
-    locate_finding: 'Finding your area…',
-    locate_denied: 'Couldn’t access your location — search for your seat below.',
-    locate_outside: () => `You seem to be outside ${REGION_LABEL()} — search for your seat below.`,
-    install_btn: 'Install the app on your phone',
     gotv_title: 'Get out and vote',
     gotv_today: 'Polling day is today — go vote now!',
     gotv_early: (poll) => `Early voting has started — polling day is ${poll}.`,
@@ -307,28 +297,6 @@ function setRegion(region) {
   location.hash = '#/'
   syncStateToggle()
   route()
-}
-
-// Which seat contains this WGS84 point? Even-odd ray casting across every
-// ring of every polygon, so holes count correctly. Returns a slug or null.
-function seatAtPoint(geo, lng, lat) {
-  const inRing = (ring) => {
-    let inside = false
-    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-      const [xi, yi] = ring[i], [xj, yj] = ring[j]
-      if ((yi > lat) !== (yj > lat) && lng < (xj - xi) * (lat - yi) / (yj - yi) + xi) inside = !inside
-    }
-    return inside
-  }
-  for (const f of geo.features) {
-    const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates
-    for (const rings of polys) {
-      let inside = false
-      for (const ring of rings) if (inRing(ring)) inside = !inside
-      if (inside) return f.properties.slug
-    }
-  }
-  return null
 }
 
 // ---------- views ----------
@@ -633,10 +601,7 @@ function heroFork(idx) {
   return `<div class="card fork">
     ${resume}
     ${vol}
-    <button class="btn${vol ? ' secondary' : ''}" id="forkLocate">${L('locate_btn')}</button>
-    <button class="btn secondary" id="forkSearch">${T('Cari kerusi anda', 'Find your seat')}</button>
-    <div class="locate-hint" id="locateHint" hidden></div>
-    <button class="install-chip" id="installChip" ${state.installPrompt ? '' : 'hidden'}>${L('install_btn')}</button>
+    <button class="btn${vol ? ' secondary' : ''}" id="forkSearch">${T('Cari kerusi anda', 'Find your seat')}</button>
   </div>`
 }
 
@@ -699,36 +664,6 @@ async function renderHome() {
     box.focus({ preventScroll: true })
   }
   document.getElementById('forkSearch')?.addEventListener('click', focusSearch)
-  const locateBtn = document.getElementById('forkLocate')
-  locateBtn?.addEventListener('click', () => {
-    const hint = document.getElementById('locateHint')
-    const fail = (msg) => {
-      locateBtn.textContent = L('locate_btn'); locateBtn.disabled = false
-      hint.textContent = msg; hint.hidden = false
-      focusSearch()
-    }
-    if (!navigator.geolocation) { fail(L('locate_denied')); return }
-    locateBtn.textContent = L('locate_finding'); locateBtn.disabled = true
-    // An ignored permission prompt fires neither callback — the geolocation
-    // timeout option only counts after permission is granted.
-    let done = false
-    const settle = (fn) => { if (!done) { done = true; fn() } }
-    setTimeout(() => settle(() => fail(L('locate_denied'))), 12000)
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      try {
-        const geo = await loadGeo()
-        const slug = seatAtPoint(geo, pos.coords.longitude, pos.coords.latitude)
-        settle(() => { if (slug) { location.hash = `#/seat/${slug}` } else { fail(L('locate_outside')) } })
-      } catch { settle(() => fail(L('locate_denied'))) }
-    }, () => settle(() => fail(L('locate_denied'))), { timeout: 8000, maximumAge: 60000 })
-  })
-  document.getElementById('installChip')?.addEventListener('click', async () => {
-    const p = state.installPrompt
-    if (!p) return
-    state.installPrompt = null
-    document.getElementById('installChip').hidden = true
-    p.prompt()
-  })
   renderFooter(idx)
 }
 
@@ -1640,10 +1575,3 @@ route()
 // device with the old SW still installed will pick up on its next update check,
 // wiping itself + its caches so the app loads fresh from the network from then
 // on. (A correct offline SW can be reintroduced later at a NEW path.)
-// Chrome/Android fires beforeinstallprompt when installable; stash it so the
-// home fork can show a one-tap "Pasang aplikasi" chip (see heroFork).
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault()
-  state.installPrompt = e
-  document.getElementById('installChip')?.removeAttribute('hidden')
-})
