@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-10f'
+const BUILD = '2026-07-11a'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -901,50 +901,55 @@ function shareText(seat) {
   return lines.join('\n')
 }
 
-// The doorstep hero: the cost-of-living squeeze in three plain lines, shown
-// before any table. Line 1 is the national squeeze — median wage against fuel
-// and the widened SST (receipted in national_issues.json); line 2 is this
-// seat's household-income anchor, shown factually (most seats rose nominally,
-// so we never claim income "fell" — the national wage figure carries the
-// stagnation point); line 3 is the bright spot: MUDA's attributed answer.
-// Every line is guarded — thin-data seats render a subset.
-function costSqueezeHero(seat, idx) {
+// The doorstep hero: this seat's decisive math in three plain lines — the
+// 2022 margin in VOTES (visceral, unique per seat), the under-30 cohort as a
+// multiple of that margin (+ new voters since GE15 where a prior roll exists),
+// and the MUDA candidate standing here. Every line is guarded — thin-data
+// seats render a subset. The national cost-of-living story stays in
+// issuesCard/talkingPoints below.
+function decisiveHero(seat, idx) {
   const lines = []
-  const ni = idx.national_issues ?? []
-  const wages = ni.find(i => i.theme === 'wages')?.figure
-  const cost = ni.find(i => i.theme === 'cost_of_living')?.figure
-  if (wages?.wage && cost?.fuel) {
-    const sst = pick(cost, 'sst_scope')
-    lines.push(T(
-      `Gaji penengah negara cuma <strong>RM${esc(wages.wage.replace(/^RM/, ''))}</strong> sebulan (${esc(wages.wage_year ?? '')}), gaji minimum ${esc(wages.min_wage ?? '')} — tetapi RON95 tanpa subsidi kini <strong>${esc(cost.fuel)}</strong> seliter dan SST diperluas ke ${esc(sst)}.`,
-      `The national median wage is just <strong>RM${esc(wages.wage.replace(/^RM/, ''))}</strong>/month (${esc(wages.wage_year ?? '')}), minimum wage ${esc(wages.min_wage ?? '')} — but unsubsidised RON95 is now <strong>${esc(cost.fuel)}</strong>/litre and SST has widened to ${esc(sst)}.`,
-      `全国薪资中位数每月仅 <strong>RM${esc(wages.wage.replace(/^RM/, ''))}</strong>（${esc(wages.wage_year ?? '')}），最低薪金 ${esc(wages.min_wage ?? '')} — 但无津贴 RON95 已达每公升 <strong>${esc(cost.fuel)}</strong>，SST 更扩及 ${esc(sst)}。`))
-  }
-  // this seat's household-income anchor: 2019→latest pair where we have it,
-  // else the single point (Melaka carries only 2020). Shown, never argued.
-  const inc = seat.socio?.income ?? []
-  const latest = inc.at(-1)
-  const y2019 = inc.find(r => r.date?.slice(0, 4) === '2019')
-  if (latest?.income_median != null) {
-    const ly = latest.date?.slice(0, 4)
-    if (y2019 && y2019 !== latest && y2019.income_median != null) {
+  const last = seat.history?.[0]
+  const year = last?.date?.slice(0, 4)
+  if (last && (last.majority != null || last.majority_perc != null)) {
+    const t = last.voter_turnout_perc
+    const turnBm = t != null ? ` \u2014 hanya ${fmtPct(t, 0)} keluar mengundi` : ''
+    const turnEn = t != null ? ` \u2014 only ${fmtPct(t, 0)} turned out` : ''
+    const turnZh = t != null ? `\uff0c\u6295\u7968\u7387\u4ec5 ${fmtPct(t, 0)}` : ''
+    if (last.majority != null) {
       lines.push(T(
-        `Di sini, pendapatan isi rumah penengah <strong>RM${fmtNum(latest.income_median)}</strong> sebulan (2019: RM${fmtNum(y2019.income_median)}).`,
-        `Here, median household income is <strong>RM${fmtNum(latest.income_median)}</strong>/month (2019: RM${fmtNum(y2019.income_median)}).`,
-        `本区家庭收入中位数每月 <strong>RM${fmtNum(latest.income_median)}</strong>（2019：RM${fmtNum(y2019.income_median)}）。`))
+        `${year}: kerusi ini diputuskan dengan majoriti <strong>${fmtNum(last.majority)} undi</strong> (${fmtPct(last.majority_perc, 1)})${turnBm}.`,
+        `${year}: this seat was decided by <strong>${fmtNum(last.majority)} votes</strong> (${fmtPct(last.majority_perc, 1)})${turnEn}.`,
+        `${year}\u5e74\uff1a\u672c\u5e2d\u4f4d\u4ec5\u4ee5 <strong>${fmtNum(last.majority)} \u7968</strong>\uff08${fmtPct(last.majority_perc, 1)}\uff09\u4e4b\u5dee\u5b9a\u80dc\u8d1f${turnZh}\u3002`))
     } else {
       lines.push(T(
-        `Di sini, pendapatan isi rumah penengah <strong>RM${fmtNum(latest.income_median)}</strong> sebulan (${ly}).`,
-        `Here, median household income is <strong>RM${fmtNum(latest.income_median)}</strong>/month (${ly}).`,
-        `本区家庭收入中位数每月 <strong>RM${fmtNum(latest.income_median)}</strong>（${ly}）。`))
+        `${year}: majoriti kerusi ini hanya <strong>${fmtPct(last.majority_perc, 1)}</strong>${turnBm}.`,
+        `${year}: the majority here was just <strong>${fmtPct(last.majority_perc, 1)}</strong>${turnEn}.`,
+        `${year}\u5e74\uff1a\u591a\u6570\u7968\u4ec5 <strong>${fmtPct(last.majority_perc, 1)}</strong>${turnZh}\u3002`))
     }
   }
-  // MUDA bright spot — the attributed answer on cost of living, else wages
-  const stance = (seat.muda_stances ?? []).find(s => s.key === 'cost_of_living' && s.verdict !== 'NO_VERIFIED_POSITION')
-    ?? (seat.muda_stances ?? []).find(s => s.key === 'wages' && s.verdict !== 'NO_VERIFIED_POSITION')
-  if (stance) {
-    const stanceLead = leadClause(pick(stance, 'stance'))
-    if (stanceLead) lines.push(`<strong>MUDA:</strong> <strong>${esc(stanceLead)}</strong>`)
+  const demo = currentRoll(seat)
+  if (demo?.age) {
+    const youth = (demo.age.age_18_20 ?? 0) + (demo.age.age_21_29 ?? 0)
+    if (youth > 0) {
+      const prior = priorRoll(seat)
+      const newV = prior && demo.voters_total > prior.voters_total ? demo.voters_total - prior.voters_total : null
+      const ratio = last?.majority > 0 ? youth / last.majority : 0
+      const multBm = ratio >= 2 ? ` \u2014 <strong>${Math.round(ratio)}\u00d7</strong> majoriti itu` : ''
+      const multEn = ratio >= 2 ? ` \u2014 <strong>${Math.round(ratio)}\u00d7</strong> that margin` : ''
+      const multZh = ratio >= 2 ? ` \u2014 \u662f\u591a\u6570\u7968\u7684 <strong>${Math.round(ratio)}\u500d</strong>` : ''
+      lines.push(T(
+        `<strong>${fmtNum(youth)}</strong> pengundi bawah 30 di sini${multBm}${newV ? `, termasuk ${fmtNum(newV)} pengundi baharu sejak PRU15` : ''}.`,
+        `<strong>${fmtNum(youth)}</strong> voters under 30 here${multEn}${newV ? `, including ${fmtNum(newV)} new voters since GE15` : ''}.`,
+        `\u672c\u533a\u6709 <strong>${fmtNum(youth)}</strong> \u540d 30 \u5c81\u4ee5\u4e0b\u9009\u6c11${multZh}${newV ? `\uff0c\u542b GE15 \u4ee5\u6765 ${fmtNum(newV)} \u540d\u65b0\u9009\u6c11` : ''}\u3002`))
+    }
+  }
+  const e = seat.election2026
+  if (e?.muda_candidate) {
+    lines.push(T(
+      `<strong>${esc(e.muda_candidate)}</strong> \u2605 bertanding untuk ${esc(e.bloc_party ?? 'MUDA')} di sini.`,
+      `<strong>${esc(e.muda_candidate)}</strong> \u2605 is standing for ${esc(e.bloc_party ?? 'MUDA')} here.`,
+      `<strong>${esc(e.muda_candidate)}</strong> \u2605 \u4ee3\u8868 ${esc(e.bloc_party ?? 'MUDA')} \u5728\u6b64\u53c2\u9009\u3002`))
   }
   if (!lines.length) return ''
   const wa = `https://wa.me/?text=${encodeURIComponent(shareText(seat))}`
@@ -1323,7 +1328,7 @@ function issuesCard(seat, idx) {
 function renderField(seat, idx) {
   const pts = talkingPoints(seat, idx)
   return `
-    ${costSqueezeHero(seat, idx)}
+    ${decisiveHero(seat, idx)}
     ${gotvCard(seat)}
     ${posterButton(seat)}
     ${storyCard(seat, idx)}
