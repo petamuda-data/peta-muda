@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11j'
+const BUILD = '2026-07-11k'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -64,7 +64,7 @@ const STR = {
     record_hop: (n) => `Bertukar parti ${n} kali`,
     record_switchedin: (p) => `Bertanding atas tiket ${p} buat kali pertama tahun ini`,
     muda_title: 'MUDA — parti kecil, kesan besar',
-    brief_btn: 'Briefing AI (untuk ChatGPT/Gemini)',
+    brief_btn: 'Poin perbualan terpilih',
     brief_saved: 'Fail .md dimuat turun!',
     volunteer_title: 'Skrip sukarelawan',
     volunteer_sub: 'Cari kerusi anda, bina skrip pintu ke pintu — 3 point terkuat dipilih untuk anda, salin, sedia untuk WhatsApp.',
@@ -144,7 +144,7 @@ const STR = {
     record_hop: (n) => `Switched party ${n} times`,
     record_switchedin: (p) => `Standing on the ${p} ticket for the first time this year`,
     muda_title: 'MUDA — small party, big bite',
-    brief_btn: 'AI briefing (for ChatGPT/Gemini)',
+    brief_btn: 'Curated talking points',
     brief_saved: '.md file downloaded!',
     volunteer_title: 'Volunteer script',
     volunteer_sub: 'Find your seat, build its door-knocking script — the 3 strongest points are pre-picked, copy, ready for WhatsApp.',

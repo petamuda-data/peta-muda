@@ -115,7 +115,7 @@ checks.push(`${heroN51Count === 0 ? 'PASS' : 'FAIL'} n51 Field has no black hero
 await has('talking points groups', 'Tempatan')
 await has('MUDA-first talking points', 'MUDA:')
 await has('issue as context under MUDA line', 'Isu di sini')
-await has('AI briefing button lives on Field tab', 'Briefing AI')
+await has('curated-talking-points button on Field tab', 'Poin perbualan terpilih')
 await has('notes card kept', 'Nota lapangan')
 await lacks('stances card merged away', 'Jawapan MUDA untuk isu tempatan')
 await lacks('record card merged away', 'Rekod calon')
