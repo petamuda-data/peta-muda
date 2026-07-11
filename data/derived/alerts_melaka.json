@@ -9,16 +9,16 @@
  "stations": [],
  "weather": [
   {
-   "title": "Warning on Strong Wind and Rough Seas (First Category)",
+   "title": "Warning on Strong Wind and Rough Seas (Third Category)",
    "valid_to": "2026-07-16T00:00:00"
   },
   {
-   "title": "Warning on Thunderstorms",
-   "valid_to": "2026-07-11T17:00:00"
+   "title": "Warning on Strong Wind and Rough Seas (Second Category)",
+   "valid_to": "2026-07-16T00:00:00"
   },
   {
-   "title": "Warning on Thunderstorms",
-   "valid_to": "2026-07-11T17:00:00"
+   "title": "Warning on Strong Wind and Rough Seas (First Category)",
+   "valid_to": "2026-07-13T00:00:00"
   }
  ]
 }
