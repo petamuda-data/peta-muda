@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11c'
+const BUILD = '2026-07-11d'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -1016,10 +1016,13 @@ const SEAT_POSTERS = {
   'n15-maharani': 'maharani.png',
   'n41-puteri-wangsa': 'puteri-wangsa.png',
 }
-function posterButton(seat) {
+function posterCard(seat) {
   const file = SEAT_POSTERS[seat.slug] ?? (state.region === 'melaka' ? 'melaka.png' : 'johor.png')
-  return `<div class="btn-row" style="margin-bottom:16px">
-    <a class="btn secondary" href="posters/${file}" download>${T('Muat turun poster', 'Download poster')}</a>
+  return `<div class="card">
+    <img class="poster-img" src="posters/${file}" alt="Poster ${esc(seat.name)}" loading="lazy">
+    <div class="btn-row">
+      <a class="btn secondary" href="posters/${file}" download>${T('Muat turun poster', 'Download poster')}</a>
+    </div>
   </div>`
 }
 
@@ -1033,8 +1036,8 @@ function issueAnswers(seat, idx) {
   const li = seat.local_issues ?? {}
   const entries = [
     ...(li.seat ?? []).map(it => ({ it, scope: 'seat' })),
-    ...(li.statewide ?? []).slice(0, 2).map(it => ({ it, scope: 'state' })),
-    ...((idx?.national_issues ?? []).slice(0, 2)).map(it => ({ it, scope: 'national' })),
+    ...(li.statewide ?? []).map(it => ({ it, scope: 'state' })),
+    ...(idx?.national_issues ?? []).map(it => ({ it, scope: 'national' })),
   ]
   // each MUDA stance is attached only to the FIRST issue carrying its theme —
   // two flood stories must not repeat the identical answer word for word
@@ -1122,10 +1125,15 @@ function talkingPoints(seat, idx) {
       : `Marginal seat: the ${yr} (${esc(last.election)}) majority was only <strong>${fmtPct(last.majority_perc)}</strong> (${fmtNum(last.majority)} votes).`))
   }
 
+  const beats = storyFor(seat, idx).map(b =>
+    pt(`<strong>${esc(b.title)}:</strong> ${b.text}`,
+      `${b.title}: ${htmlToText(b.text.replace(/<br\s*\/?>/g, ' · '))}`))
+
   return [
     { title: T('Tempatan', 'Local', '本地'), pts: local },
     { title: T('Nasional', 'National', '全国'), pts: national },
     { title: T('Fakta kempen', 'Campaign facts', '竞选数据'), pts: kempen },
+    { title: T('Cerita kempen', 'Campaign story', '竞选叙事'), pts: beats },
   ].filter(g => g.pts.length)
 }
 
@@ -1350,7 +1358,7 @@ function renderField(seat, idx) {
   return `
     ${decisiveHero(seat, idx)}
     ${gotvCard(seat)}
-    ${posterButton(seat)}
+    ${posterCard(seat)}
     ${storyCard(seat, idx)}
     ${issuesCard(seat, idx)}
     <div class="card" id="tpBuilder">

@@ -170,6 +170,9 @@ a { color: inherit; }
 .seat-row .meta { font-size: .75rem; color: var(--muted); }
 .seat-row .right { font-size: .75rem; color: var(--muted); text-align: right; flex: 0 0 auto; }
 
+/* poster: shown inline, poster treatment */
+.poster-img { display: block; width: 100%; height: auto; border: var(--border-hard); box-shadow: var(--shadow-poster); margin-bottom: 12px; }
+
 /* briefing builder: pickable talking points + live preview */
 .tp-pick label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
 .tp-pick input[type="checkbox"] { accent-color: var(--accent-2); margin-top: 3px; flex-shrink: 0; }
