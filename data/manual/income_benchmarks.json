@@ -1,0 +1,18 @@
+{
+  "_comment": "DOSM median MONTHLY household income (RM), national and by state, per Household Income Survey year — used to show each seat's median as a % of the national and state benchmark. Sourced from DOSM's Household Income Survey reports (2019 HIBAS, 2022, and 2024 released Oct 2025), corroborated via multiple independent search-result excerpts tied to the cited URLs (DOSM/news/CEIC) — direct page loads of DOSM are proxy-blocked in the build sandbox, hence CONFIRMED only where >=2 independent sources agreed, else PARTLY_CONFIRMED. Melaka carries no 2019 point here (only 2022/2024 could be sourced); Melaka seat income is a single 2020 estimate, so the app compares it to the nearest benchmark year common to national+state (2022) and labels that year. Re-verify against OpenDOSM hh_income_state before printing campaign material.",
+  "updated": "2026-07-10",
+  "unit": "median_monthly_household_income_rm",
+  "national": { "2019": 5873, "2022": 6338, "2024": 7017 },
+  "state": {
+    "johor": { "2019": 6427, "2022": 6879, "2024": 7712 },
+    "melaka": { "2022": 6518, "2024": 6891 }
+  },
+  "sources": [
+    "https://www.dosm.gov.my/portal-main/release-content/household-income-survey-report--malaysia--states-2024",
+    "https://www.dosm.gov.my/portal-main/release-content/household-income-survey-report--malaysia--states",
+    "https://www.dosm.gov.my/portal-main/release-content/household-income-&-basic-amenities-survey-report-2019",
+    "https://open.dosm.gov.my/data-catalogue/hh_income_state",
+    "https://www.ceicdata.com/en/malaysia/household-income-and-basic-amenities-survey-monthly-gross-income-median-and-mean-by-state/hibas-monthly-gross-income-median-melaka"
+  ],
+  "verdict": { "national": "CONFIRMED", "johor": "CONFIRMED", "melaka": "PARTLY_CONFIRMED" }
+}

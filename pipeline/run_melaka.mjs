@@ -152,6 +152,12 @@ try {
   }
   cpiDeflator = { base_year: cpi.base_year, mult, source: cpi.sources?.[0] ?? '', verdict: cpi.verdict ?? '' }
 } catch { /* cpi optional */ }
+// ---- income benchmarks (national + state median HH income; % context) ----
+let incomeBenchmarks = null
+try {
+  incomeBenchmarks = JSON.parse(await readFile(path.join('data', 'manual', 'income_benchmarks.json'), 'utf8'))
+} catch { /* benchmarks optional */ }
+
 
 let mudaStances = null
 let mudaRecord = null
@@ -277,6 +283,7 @@ const index = {
   edition: EDITION,
   national_issues: nationalIssues,
   cpi_deflator: cpiDeflator,
+  income_benchmarks: incomeBenchmarks,
   live_alerts: liveAlerts,
   muda_voice: mudaStances ? (mudaStances.themes ?? []).filter(t => t.statewide) : null,
   johor_context: { crime: null, undi18, muda: mudaMelaka },

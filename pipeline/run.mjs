@@ -109,6 +109,12 @@ try {
   }
   cpiDeflator = { base_year: cpi.base_year, mult, source: cpi.sources?.[0] ?? '', verdict: cpi.verdict ?? '' }
 } catch { /* cpi optional */ }
+// ---- income benchmarks (national + state median HH income; % context) ----
+let incomeBenchmarks = null
+try {
+  incomeBenchmarks = JSON.parse(await readFile(path.join('data', 'manual', 'income_benchmarks.json'), 'utf8'))
+} catch { /* benchmarks optional */ }
+
 
 
 // ---- government price ceilings (hand-maintained; neutral, both editions) ----
@@ -392,6 +398,7 @@ const index = {
   edition: EDITION,
   national_issues: nationalIssues.issues ?? [],
   cpi_deflator: cpiDeflator,
+  income_benchmarks: incomeBenchmarks,
   live_alerts: liveAlerts,
   // MUDA's statewide positions, surfaced on the home page's "Apa MUDA kata"
   // card (muda edition only) — always-present, attributed, daily-relevant

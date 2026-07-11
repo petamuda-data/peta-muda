@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-10c'
+const BUILD = '2026-07-10d'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -81,12 +81,14 @@ const STR = {
     income_mean: 'Pendapatan purata',
     spending: 'Perbelanjaan isi rumah',
     income_real: 'Pendapatan (nilai 2024)',
+    income_growth: 'Pertumbuhan sejak PRN 2022',
+    income_vs: 'Berbanding penengah',
     poverty: 'Kadar kemiskinan mutlak',
     gini: 'Ketaksamaan (Gini)',
     u_rate: 'Kadar pengangguran',
     share: 'Kongsi ringkasan',
     copied: 'Disalin!',
-    story_title: 'Cerita kempen — 5 langkah',
+    story_title: (n) => `Cerita kempen — ${n} langkah`,
     story_sub: 'Satu naratif tersusun; butiran penuh di bahagian bawah',
     beat_path: 'Jalan kemenangan',
     beat_voters: 'Pengundi penentu',
@@ -172,12 +174,14 @@ const STR = {
     income_mean: 'Mean income',
     spending: 'Household spending',
     income_real: 'Income (2024 ringgit)',
+    income_growth: 'Growth since 2022 election',
+    income_vs: 'Compared to median',
     poverty: 'Absolute poverty rate',
     gini: 'Inequality (Gini)',
     u_rate: 'Unemployment rate',
     share: 'Share summary',
     copied: 'Copied to clipboard!',
-    story_title: 'The campaign story — 5 beats',
+    story_title: (n) => `The campaign story — ${n} beats`,
     story_sub: 'One ordered narrative; full detail in the sections below',
     beat_path: 'Path to victory',
     beat_voters: 'The deciders',
@@ -347,36 +351,6 @@ function renderFooter(idx) {
 // has stations at alert level or above right now, dated, and (muda edition)
 // paired with MUDA's documented flood-relief record — the current
 // administration's live exposure next to MUDA's answer.
-function liveAlertsCard(idx) {
-  const a = idx.live_alerts
-  const wx = a?.weather ?? []
-  if (!a || (!a.total && !wx.length)) return ''
-  const c = a.counts ?? {}
-  const parts = []
-  if (c.danger) parts.push(`<strong>${c.danger}</strong> ${T('paras bahaya', 'at danger', '危险水位')}`)
-  if (c.warning) parts.push(`<strong>${c.warning}</strong> ${T('paras amaran', 'at warning', '警戒水位')}`)
-  if (c.alert) parts.push(`<strong>${c.alert}</strong> ${T('paras waspada', 'at alert', '提防水位')}`)
-  const sevLabel = { danger: T('BAHAYA', 'DANGER'), warning: T('AMARAN', 'WARNING'), alert: T('WASPADA', 'ALERT') }
-  const rows = (a.stations ?? []).slice(0, 5).map(s =>
-    `<li>${esc(s.name)}${s.district ? ` <span style="color:var(--muted)">(${esc(s.district)})</span>` : ''} — <strong>${esc(sevLabel[s.severity] ?? s.severity)}</strong></li>`).join('')
-  const floodLine = a.total
-    ? `<p class="hero-line">${parts.join(' · ')} — ${esc(a.total)} ${T('stesen sungai di', 'river stations in', '条河流测站于')} ${esc(REGION_LABEL())} <span style="color:var(--muted)">(JPS, ${esc(a.as_of ?? '')})</span></p>`
-    : ''
-  const wxRows = wx.length
-    ? `<p class="sub" style="margin:.4rem 0 0"><strong>${T('Amaran cuaca', 'Weather warnings', '天气警报')}</strong> (METMalaysia)</p>
-       <ul class="points" style="margin:.2rem 0 0">${wx.map(w => `<li>${esc(w.title)}</li>`).join('')}</ul>`
-    : ''
-  const mudaLine = idx.edition === 'muda'
-    ? `<p class="sub" style="margin-top:.5rem"><strong>MUDA:</strong> ${T('Rekod #MariBantu — RM2 juta+ dikumpul untuk mangsa banjir 8 negeri (2021), audit pihak ketiga diterbitkan.', '#MariBantu record — RM2m+ raised for flood victims across 8 states (2021), third-party audited.')}</p>`
-    : ''
-  return `<div class="card alert">
-    <h2>${a.total ? T('Amaran banjir langsung', 'Live flood alerts', '实时水灾警报') : T('Amaran cuaca langsung', 'Live weather alerts', '实时天气警报')}</h2>
-    ${floodLine}
-    ${rows ? `<ul class="points" style="margin:.4rem 0 0">${rows}</ul>` : ''}
-    ${wxRows}
-    ${mudaLine}
-  </div>`
-}
 
 function countdownCard(idx) {
   // no announced polling date yet (Melaka) — show the expected window instead
@@ -679,7 +653,6 @@ async function renderHome() {
   app.innerHTML = `
     <p class="kicker">${esc(kicker)}</p>
     ${heroFork(idx)}
-    ${liveAlertsCard(idx)}
     ${countdownCard(idx)}
     ${mudaHomeCard(idx)}
     ${mudaVoiceCard(idx)}
@@ -908,6 +881,29 @@ function incomeCard(seat, idx) {
       ` After inflation (CPI +${cum}% since ${y0}): real household income ${d > 0 ? 'up' : 'down'} ${Math.abs(d)}%.`,
       ` \u7ecf\u901a\u80c0\u8c03\u6574\uff08CPI \u81ea${y0}\u5e74 +${cum}%\uff09\uff1a\u5b9e\u8d28\u6536\u5165${d > 0 ? '\u4e0a\u5347' : '\u4e0b\u964d'} ${Math.abs(d)}%\u3002`)
   }
+  // growth since the last state election: the 2022 HIES point -> latest.
+  const r2022 = incArr.find(r => r.date?.slice(0, 4) === '2022')
+  let growthRow = ''
+  if (r2022?.income_median != null && inc?.income_median != null && r2022 !== inc) {
+    const g = Math.round((inc.income_median - r2022.income_median) / r2022.income_median * 100)
+    growthRow = `${g > 0 ? '+' : ''}${g}%`
+  }
+  // this seat's median vs the national + state median (nearest common HIES year).
+  const bm = idx.income_benchmarks
+  let benchRow = ''
+  if (bm && inc?.income_median != null) {
+    const natB = bm.national ?? {}
+    const stB = bm.state?.[state.region] ?? {}
+    const common = Object.keys(natB).filter(y => stB[y] != null).map(Number)
+    if (common.length) {
+      const seatY = Number(yN)
+      const by = common.sort((a, b) => Math.abs(a - seatY) - Math.abs(b - seatY))[0]
+      const natPct = Math.round(inc.income_median / natB[by] * 100)
+      const stPct = Math.round(inc.income_median / stB[by] * 100)
+      const yrTag = by !== seatY ? ` (${by})` : ''
+      benchRow = `${natPct}% ${T('nasional', 'national', '全国')} \u00b7 ${stPct}% ${REGION_LABEL()}${yrTag}`
+    }
+  }
   const note = incArr.length >= 2
     ? T(
       `HIES DOSM \u00b7 ${years} (nilai nominal). Kejutan petrol tanpa subsidi & SST melanda 2025-26 \u2014 selepas data ini.`,
@@ -920,6 +916,8 @@ function incomeCard(seat, idx) {
     <table class="data"><tbody>
       ${incTrend ? `<tr><td>${L('income_median')}</td><td class="num">${incTrend}</td></tr>` : ''}
       ${realRow ? `<tr><td>${L('income_real')}</td><td class="num">${realRow}</td></tr>` : ''}
+      ${growthRow ? `<tr><td>${L('income_growth')}</td><td class="num">${growthRow}</td></tr>` : ''}
+      ${benchRow ? `<tr><td>${L('income_vs')}</td><td class="num">${benchRow}</td></tr>` : ''}
       ${expTrend ? `<tr><td>${L('spending')}</td><td class="num">${expTrend}</td></tr>` : ''}
       ${pov ? `<tr><td>${L('poverty')}</td><td class="num">${fmtPct(pov.poverty ?? pov.poverty_absolute)}</td></tr>` : ''}
       ${gin ? `<tr><td>${L('gini')}</td><td class="num">${(gin.gini ?? '\u2013')}</td></tr>` : ''}
@@ -1063,16 +1061,6 @@ function posterButton(seat) {
   return `<div class="btn-row" style="margin-bottom:16px">
     <a class="btn secondary" href="posters/${file}" download>${T('Muat turun poster', 'Download poster')}</a>
   </div>`
-}
-
-function renderBrief(seat, idx) {
-  return `
-    ${costSqueezeHero(seat, idx)}
-    ${liveAlertsCard(idx)}
-    ${gotvCard(seat)}
-    ${posterButton(seat)}
-    ${contestCard(seat)}
-    ${incomeCard(seat, idx)}`
 }
 
 // Curated issue → the change MUDA commits to, structured once and rendered
@@ -1236,7 +1224,7 @@ function bindGroundNotes(seat, rerender) {
   })
 }
 
-// The prioritized 5-beat narrative: one story a candidate can carry, ordered
+// The prioritized campaign narrative (up to 5 guarded beats): one story a candidate can carry, ordered
 // by what wins the seat — path, people, message, ground, ask. Every number is
 // pulled from the same verified data as the sections below it.
 // The punchy head of a curated issue string for a one-line doorstep message:
@@ -1348,8 +1336,8 @@ function storyFor(seat, idx) {
     if (!past) beats.push({
       title: L('beat_ask'),
       text: bm
-        ? `Undi awal <strong>7 Julai</strong> · hari mengundi <strong>11 Julai</strong>. Setiap penyokong yang dikenal pasti dalam langkah 4: pastikan mereka tahu pusat mengundi dan ada pengangkutan.`
-        : `Early voting <strong>7 July</strong> · polling day <strong>11 July</strong>. For every supporter identified in beat 4: make sure they know their polling centre and have a ride.`,
+        ? `Undi awal <strong>7 Julai</strong> · hari mengundi <strong>11 Julai</strong>. Setiap penyokong yang dikenal pasti di lapangan: pastikan mereka tahu pusat mengundi dan ada pengangkutan.`
+        : `Early voting <strong>7 July</strong> · polling day <strong>11 July</strong>. For every supporter you've identified on the ground: make sure they know their polling centre and have a ride.`,
     })
   }
   return beats
@@ -1359,7 +1347,7 @@ function storyCard(seat, idx) {
   const beats = storyFor(seat, idx)
   if (beats.length < 3) return ''
   return `<div class="card">
-    <h2>${L('story_title')}</h2>
+    <h2>${L('story_title', beats.length)}</h2>
     <p class="sub">${L('story_sub')}</p>
     <ol class="story">
       ${beats.map(b => `<li><div><div class="beat-title">${esc(b.title)}</div><div>${b.text}</div></div></li>`).join('')}
@@ -1399,6 +1387,9 @@ function issuesCard(seat, idx) {
 function renderField(seat, idx) {
   const pts = talkingPoints(seat, idx)
   return `
+    ${costSqueezeHero(seat, idx)}
+    ${gotvCard(seat)}
+    ${posterButton(seat)}
     ${storyCard(seat, idx)}
     ${issuesCard(seat, idx)}
     <div class="card">
@@ -1436,7 +1427,7 @@ function demoCard(seat) {
   </div>`
 }
 
-function renderHq(seat) {
+function renderHq(seat, idx) {
   const hist = seat.history
   const histHtml = `<div class="card">
     <h2>${L('history')}</h2>
@@ -1486,7 +1477,7 @@ function renderHq(seat) {
     </div>`
   }
 
-  return `${histHtml}${salHtml}${demoCard(seat)}
+  return `${contestCard(seat)}${incomeCard(seat, idx)}${histHtml}${salHtml}${demoCard(seat)}
     <div class="card">
       <h2>${L('export')}</h2>
       <div class="btn-row">
@@ -1497,6 +1488,7 @@ function renderHq(seat) {
 }
 
 async function renderSeat(slug, tab = 'field') {
+  if (tab === 'brief') tab = 'field' // Brief tab retired; legacy links land on Field
   const [idx, seat] = await Promise.all([loadIndex(), loadSeat(slug)])
   storage.set('last_seat', slug) // powers the home page's one-tap return chip
   let mapSvg = ''
@@ -1517,7 +1509,6 @@ async function renderSeat(slug, tab = 'field') {
     </div>
     <div class="tabs">
       <button data-tab="field" class="${tab === 'field' ? 'active' : ''}">${L('tab_field')}</button>
-      <button data-tab="brief" class="${tab === 'brief' ? 'active' : ''}">${L('tab_brief')}</button>
       <button data-tab="hq" class="${tab === 'hq' ? 'active' : ''}">${L('tab_hq')}</button>
     </div>
     <div id="tabContent"></div>
@@ -1527,8 +1518,8 @@ async function renderSeat(slug, tab = 'field') {
 
   const content = document.getElementById('tabContent')
   const renderTab = () => {
-    content.innerHTML = tab === 'field' ? renderField(seat, idx) : tab === 'hq' ? renderHq(seat) : renderBrief(seat, idx)
-    if (tab === 'field') bindGroundNotes(seat, renderTab)
+    content.innerHTML = tab === 'hq' ? renderHq(seat, idx) : renderField(seat, idx)
+    if (tab !== 'hq') bindGroundNotes(seat, renderTab)
   }
   renderTab()
 
