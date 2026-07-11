@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11a'
+const BUILD = '2026-07-11b'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -1357,6 +1357,17 @@ function demoCard(seat) {
     const maxEth = Math.max(...eth.map(a => a[1]))
     ethHtml = `<h3>${L('ethnic_dist')}</h3>
       ${eth.map(([lbl, v]) => barRow(lbl, 100 * v / maxEth, fmtPct(100 * v / demo.voters_total, 0))).join('')}`
+  } else if (seat.census_ethnic) {
+    // Melaka rolls publish no ethnicity — fall back to the DOSM census
+    // population split, clearly labelled so it is never read as the roll.
+    const c = seat.census_ethnic
+    const eth = [[T('Bumiputera', 'Bumiputera'), c.bumi], [T('Cina', 'Chinese'), c.chinese], [T('India', 'Indian'), c.indian], [T('Lain-lain', 'Others'), c.other]]
+      .filter(([, v]) => v != null)
+    if (eth.length) {
+      const maxEth = Math.max(...eth.map(a => a[1]))
+      ethHtml = `<h3>${T(`Etnik (banci ${c.year} — penduduk, bukan daftar pemilih)`, `Ethnicity (${c.year} census — population, not the electoral roll)`, `\u65cf\u7fa4\uff08${c.year} \u5e74\u4eba\u53e3\u666e\u67e5 \u2014 \u975e\u9009\u6c11\u518c\uff09`)}</h3>
+        ${eth.map(([lbl, v]) => barRow(lbl, 100 * v / maxEth, fmtPct(v, 0))).join('')}`
+    }
   }
   const rollSub = `${esc(demo.election ?? '')} ${T('daftar pemilih', 'roll')} — ElectionData.MY`
   return `<div class="card">

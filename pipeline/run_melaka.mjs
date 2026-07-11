@@ -101,6 +101,7 @@ const history = buildHistory(ballotsText, statsText, seats)
 // reads. Single-vintage, so each series has one entry — enough for the income
 // context card; no data.gov.my dependency. ----
 log('loading socioeconomic series (census_dun mirror)')
+const censusEthnic = new Map() // code -> {year,bumi,chinese,indian,other} (population %, 2020 census)
 const socio = await (async () => {
   const out = new Map(seats.map(s => [s.code, {}]))
   try {
@@ -116,6 +117,15 @@ const socio = await (async () => {
         poverty: r.poverty_incidence != null && r.poverty_incidence !== '' ? [{ date, poverty_absolute: num(r.poverty_incidence) }] : [],
         labour: r.labour_unemployment_rate ? [{ date, u_rate: num(r.labour_unemployment_rate) }] : [],
       })
+      if (r.ethnicity_proportion_bumi !== '' && r.ethnicity_proportion_bumi != null) {
+        censusEthnic.set(seat.code, {
+          year: Number(r.year ?? 2020),
+          bumi: num(r.ethnicity_proportion_bumi),
+          chinese: num(r.ethnicity_proportion_chinese),
+          indian: num(r.ethnicity_proportion_indian),
+          other: num(r.ethnicity_proportion_other),
+        })
+      }
     }
   } catch (e) {
     log(`census_dun unavailable (${e.message}), skipping socio`)
@@ -206,6 +216,7 @@ for (const seat of seats) {
     history: completed,
     saluran2022: null,
     socio: socio.get(seat.code) ?? {},
+    census_ethnic: censusEthnic.get(seat.code) ?? null,
     kawasanku: null,
     prices: null,
     local_issues: {
