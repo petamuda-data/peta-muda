@@ -170,6 +170,15 @@ a { color: inherit; }
 .seat-row .meta { font-size: .75rem; color: var(--muted); }
 .seat-row .right { font-size: .75rem; color: var(--muted); text-align: right; flex: 0 0 auto; }
 
+/* briefing builder: pickable talking points + live preview */
+.tp-pick label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.tp-pick input[type="checkbox"] { accent-color: var(--accent-2); margin-top: 3px; flex-shrink: 0; }
+.tp-preview {
+  white-space: pre-wrap; word-break: break-word; margin: 0 0 10px;
+  border: var(--border-soft); padding: 10px; font-size: .8rem;
+  background: var(--bg); font-family: inherit;
+}
+
 /* volunteer hub rows: name on top, actions below, side by side */
 .seat-row.vol-row { flex-direction: column; align-items: stretch; }
 .vol-actions { display: flex; gap: 8px; margin-top: 8px; }

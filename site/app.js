@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11b'
+const BUILD = '2026-07-11c'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -67,8 +67,7 @@ const STR = {
     brief_btn: 'Briefing AI (untuk ChatGPT/Gemini)',
     brief_saved: 'Fail .md dimuat turun!',
     volunteer_title: 'Skrip sukarelawan',
-    volunteer_sub: 'Cari kerusi anda, salin skrip rumah ke rumah dengan satu klik — sedia untuk WhatsApp.',
-    volunteer_loading: 'Menjana…',
+    volunteer_sub: 'Cari kerusi anda, bina skrip pintu ke pintu — 3 point terkuat dipilih untuk anda, salin, sedia untuk WhatsApp.',
     volunteer_none: 'Tiada kerusi sepadan.',
     bloc_candidate: 'Calon Blok Progresif',
     income_ctx: 'Konteks pendapatan',
@@ -97,7 +96,7 @@ const STR = {
     issues_sub: 'Isu khusus kawasan ini, disemak terhadap laporan berita — nombor rujukan boleh diklik',
     issues_statewide: () => `Seluruh ${REGION_LABEL()}`,
     talking_points: 'Isu untuk rumah ke rumah',
-    tp_sub: 'Dijana automatik daripada data rasmi — semak sebelum guna',
+    tp_sub: '3 point terkuat sudah ditanda — tanda/buang pilihan, semak pratonton, salin. Dijana daripada data rasmi.',
     demo_title: 'Profil pengundi (daftar pemilih 2026)',
     demo_sub: 'Daftar pemilih JHR-SE-16 — ElectionData.MY',
     age_dist: 'Umur pengundi',
@@ -155,8 +154,7 @@ const STR = {
     brief_btn: 'AI briefing (for ChatGPT/Gemini)',
     brief_saved: '.md file downloaded!',
     volunteer_title: 'Volunteer script',
-    volunteer_sub: 'Find your seat, copy its door-knocking script in one tap — ready for WhatsApp.',
-    volunteer_loading: 'Generating…',
+    volunteer_sub: 'Find your seat, build its door-knocking script — the 3 strongest points are pre-picked, copy, ready for WhatsApp.',
     volunteer_none: 'No matching seats.',
     bloc_candidate: 'Progressive Bloc candidate',
     income_ctx: 'Income context',
@@ -185,7 +183,7 @@ const STR = {
     issues_sub: 'Issues specific to this area, checked against news reporting — reference numbers are clickable',
     issues_statewide: () => `${REGION_LABEL()}-wide`,
     talking_points: 'Door-knocking talking points',
-    tp_sub: 'Auto-generated from official data — verify before use',
+    tp_sub: 'The 3 strongest points are pre-ticked — adjust the selection, check the preview, copy. Generated from official data.',
     demo_title: 'Voter profile (2026 electoral roll)',
     demo_sub: 'JHR-SE-16 roll — ElectionData.MY',
     age_dist: 'Voter age',
@@ -699,25 +697,9 @@ async function renderVolunteer() {
           <span class="meta">${esc(s.parlimen ?? '')}</span>
         </span>
         <span class="btn-row vol-actions">
-          <button class="btn" data-tp="${esc(s.slug)}">${T('Salin skrip', 'Copy script')}</button>
+          <a class="btn" href="#/seat/${esc(s.slug)}/field">${T('Bina skrip', 'Build script')}</a>
         </span>
       </div>`).join('') : `<p class="sub">${L('volunteer_none')}</p>`
-    // one tap: copy the seat's talking points as WhatsApp-ready text
-    listEl.querySelectorAll('button[data-tp]').forEach(btn => btn.addEventListener('click', async () => {
-      const orig = btn.textContent
-      btn.textContent = L('volunteer_loading')
-      btn.disabled = true
-      try {
-        const seat = await loadSeat(btn.dataset.tp)
-        const text = tpText(seat, idx)
-        const copied = await copyToClipboard(text)
-        if (copied) btn.textContent = L('copied')
-        else { window.prompt('Salin / Copy:', text); btn.textContent = orig }
-      } finally {
-        btn.disabled = false
-        if (btn.textContent === L('copied')) setTimeout(() => { btn.textContent = orig }, 2000)
-      }
-    }))
   }
   renderList()
   document.getElementById('volSearch').addEventListener('input', (e) => renderList(e.target.value))
@@ -865,14 +847,51 @@ function incomeCard(seat, idx) {
 // WhatsApp-ready plain-text talking points — one-tap value for volunteers who
 // won't paste anything into an AI chat. Mirrors the Field card's groups and
 // keeps every MUDA answer's attribution (who, role, year, source URL).
-function tpText(seat, idx) {
+// The volunteer briefing text: header, the SELECTED points grouped under
+// their section headers, seat link. selected = Set of "gi:pi" keys; null = all.
+function tpText(seat, idx, selected = null) {
   const lines = [`📍 ${seat.code} ${seat.name} — ${T('skrip rumah ke rumah', 'door-knocking script', '逐户拜访要点')}`]
-  for (const g of talkingPoints(seat, idx)) {
+  talkingPoints(seat, idx).forEach((g, gi) => {
+    const pts = g.pts.filter((_, pi) => !selected || selected.has(`${gi}:${pi}`))
+    if (!pts.length) return
     lines.push('', `— ${g.title.toUpperCase()} —`)
-    lines.push(...g.pts.map(p => `• ${p.text}`))
-  }
+    lines.push(...pts.map(p => `• ${p.text}`))
+  })
   lines.push('', `${location.origin}${location.pathname}#/seat/${seat.slug}`)
   return lines.join('\n')
+}
+
+// Default pick: the lead point of each group (groups are sorted strongest-
+// first), topped up in flat order until 3 — fewer only when the seat has <3.
+function tpDefaultPicks(groups) {
+  const picks = new Set()
+  groups.forEach((g, gi) => { if (g.pts.length && picks.size < 3) picks.add(`${gi}:0`) })
+  for (let gi = 0; gi < groups.length && picks.size < 3; gi++) {
+    for (let pi = 0; pi < groups[gi].pts.length && picks.size < 3; pi++) picks.add(`${gi}:${pi}`)
+  }
+  return picks
+}
+
+// Wire the Field tab's briefing builder: checkbox changes re-render the
+// preview; copy puts exactly the previewed text on the clipboard.
+function bindTpBuilder(seat, idx) {
+  const box = document.getElementById('tpBuilder')
+  if (!box) return
+  const preview = document.getElementById('tpPreview')
+  const update = () => {
+    const sel = new Set([...box.querySelectorAll('input[type="checkbox"]:checked')].map(i => i.dataset.k))
+    preview.textContent = tpText(seat, idx, sel)
+  }
+  box.querySelectorAll('input[type="checkbox"]').forEach(i => i.addEventListener('change', update))
+  update()
+  const btn = document.getElementById('tpCopy')
+  btn?.addEventListener('click', async () => {
+    const ok = await copyToClipboard(preview.textContent)
+    if (!ok) { window.prompt('Salin / Copy:', preview.textContent); return }
+    const orig = btn.textContent
+    btn.textContent = L('copied')
+    setTimeout(() => { btn.textContent = orig }, 2000)
+  })
 }
 
 function shareText(seat) {
@@ -1327,16 +1346,20 @@ function issuesCard(seat, idx) {
 
 function renderField(seat, idx) {
   const pts = talkingPoints(seat, idx)
+  const picks = tpDefaultPicks(pts)
   return `
     ${decisiveHero(seat, idx)}
     ${gotvCard(seat)}
     ${posterButton(seat)}
     ${storyCard(seat, idx)}
     ${issuesCard(seat, idx)}
-    <div class="card">
+    <div class="card" id="tpBuilder">
       <h2>${L('talking_points')}</h2>
       <p class="sub">${L('tp_sub')}</p>
-      ${pts.map(g => `<h3>${esc(g.title)}</h3><ul class="points">${g.pts.map(p => `<li>${p.html}</li>`).join('')}</ul>`).join('')}
+      ${pts.map((g, gi) => `<h3>${esc(g.title)}</h3><ul class="points tp-pick">${g.pts.map((p, pi) => `<li><label><input type="checkbox" data-k="${gi}:${pi}" ${picks.has(`${gi}:${pi}`) ? 'checked' : ''}> <span>${p.html}</span></label></li>`).join('')}</ul>`).join('')}
+      <h3>${T('Pratonton briefing anda', 'Your briefing preview', '简报预览')}</h3>
+      <pre class="tp-preview" id="tpPreview"></pre>
+      <div class="btn-row"><button class="btn" id="tpCopy">${T('Salin briefing', 'Copy briefing', '复制简报')}</button></div>
     </div>
     ${groundNotesCard(seat)}
     ${idx.edition === 'muda' ? `<div class="btn-row"><button class="btn" id="briefBtn">${L('brief_btn')}</button></div>` : ''}`
@@ -1487,7 +1510,7 @@ async function renderSeat(slug, tab = 'field') {
   const content = document.getElementById('tabContent')
   const renderTab = () => {
     content.innerHTML = tab === 'hq' ? renderHq(seat, idx) : renderField(seat, idx)
-    if (tab !== 'hq') bindGroundNotes(seat, renderTab)
+    if (tab !== 'hq') { bindGroundNotes(seat, renderTab); bindTpBuilder(seat, idx) }
   }
   renderTab()
 
