@@ -1,5 +1,5 @@
 {
-  "_comment": "Melaka election metadata. No polling date exists yet: the assembly's five-year term runs from Dec 2021, auto-dissolves around Dec 2026, and polls are due by late Feb 2027. Update polling_date/early_voting_date/nomination_date the day SPR announces, and switch the pipeline's saluran/roll sources to the mlk_se16 lake files when they appear.",
+  "_comment": "Melaka election metadata. No polling date announced by SPR as of 2026-07-11, but expectations have moved earlier than the legal backstop: the CM signalled (FMT, 6 Jun 2026) dissolution within ~3 months and polls possibly by September 2026, after Johor (11 Jul 2026) and Negeri Sembilan (1 Aug 2026). Legal backstop unchanged: the assembly's five-year term runs from Dec 2021, auto-dissolves 27 Dec 2026, polls due by ~25 Feb 2027. Update polling_date/early_voting_date/nomination_date the day SPR announces, and switch the pipeline's saluran/roll sources to the mlk lake files when they appear.",
   "election": {
     "id": "MLK-PRN-NEXT",
     "name_bm": "Pilihan Raya Negeri Melaka (PRN)",
@@ -8,7 +8,7 @@
     "early_voting_date": null,
     "nomination_date": null,
     "expected_by": "2027-02-25",
-    "note_bm": "Tarikh belum diumumkan — penggal DUN berakhir Dis 2026, pilihan raya perlu diadakan menjelang akhir Feb 2027.",
-    "note_en": "Date not yet announced — the assembly's term ends Dec 2026, so polls are due by late Feb 2027."
+    "note_bm": "Tarikh belum diumumkan — KM menandakan pembubaran dalam ~3 bulan (Jun 2026), PRN mungkin menjelang Sep 2026; batas undang-undang: penggal DUN tamat Dis 2026, pilihan raya selewat-lewatnya akhir Feb 2027.",
+    "note_en": "Date not yet announced — the CM signalled dissolution within ~3 months (Jun 2026), polls possibly by Sept 2026; legal backstop: the assembly's term ends Dec 2026, polls due by late Feb 2027."
   }
 }
