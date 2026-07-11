@@ -7,7 +7,7 @@
   "scripts": {
     "pipeline": "node pipeline/run.mjs",
     "serve": "node tools/serve.mjs",
-    "sim": "node tools/sim/run.mjs"
+    "smoke": "node tools/smoke.mjs"
   },
   "dependencies": {
     "hyparquet": "^1.8.0",

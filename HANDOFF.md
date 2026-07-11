@@ -56,7 +56,7 @@ there is no wrangler file in the repo).
   commit under a personal name/email, never open PRs from personal accounts
   (PR pages publicly show the opening account, and GitHub squash merges stamp
   the merger's name/email into history). Convention: work on a branch, run
-  both sim suites, then push directly to `main` with a neutral author
+  `npm run smoke` (green), then push directly to `main` with a neutral author
   (`Claude <noreply@anthropic.com>` / `peta-muda-bot`). The pre-migration
   history lives in a separate PRIVATE archive repo.
 - **The deployed build is the MUDA edition** (`EDITION: muda` in
@@ -74,7 +74,7 @@ there is no wrangler file in the repo).
   the last ~48h of news, updates the hand-curated files (`data/manual/
   issues.json`, `national_issues.json`, `muda_stances.json`,
   `price_ceilings.json`, `muda_record.json`) under the strict sourcing rules,
-  runs both edition sim suites, and pushes to `main` only when green — keeping
+  runs the smoke suite, and pushes to `main` only when green — keeping
   the curated content current without manual upkeep.
 
 ⚠️ Caveats:
@@ -212,20 +212,30 @@ rows after 18 July. The demographics parquet already carries every state.
 ## After polling day (11 July)
 
 SE-16 rows flip from `pending` to results within days of the count. The pipeline
-handles this and the flip is now hardened + regression-tested by an offline
-simulator — see "Results-day simulator" below. The contest moves from
-`election2026.ballot` into `history`, `election2026.result_date` is set, and the
-Brief tab shows an official-results card. Just re-run the pipeline or let the
-scheduled job refresh.
+handles this: the contest moves from `election2026.ballot` into `history`,
+`election2026.result_date` is set, and the Brief tab shows an official-results
+card. Just re-run the pipeline or let the scheduled job refresh. (Johor's count
+landed 11 July 2026; the offline results-day simulator that hardened this flip
+has since been retired — see "Verification" below.)
 
-## Results-day simulator (`tools/sim/`, `npm run sim`)
+## Verification (`npm run smoke`)
 
-Replays the real pipeline offline against source fixtures rebuilt from the
-committed `site/data`, rewriting the 2026 rows per scenario (pending, full-flip,
-partial-flip, stats-lag, garbage mid-count, appended-rows). Assertions live in
-`tools/sim/verify.mjs`; `.sim/` is git-ignored. Run it before touching anything
-in the flip path (`history.mjs` classifier, `run.mjs` contest2026 / integrity
-gate, `app.js` `contestCard`). See `tools/sim/README.md`.
+`tools/smoke.mjs` is the standing verification gate: it serves the built site
+and drives it headless through ~80 checks (fresh-visitor defaults to Melaka,
+seat routing, GOTV, language-aware posters, the curated-talking-points button
+and its clipboard copy, the analysis income story, the About page). Run it
+before pushing. Deployment truth = smoke green.
+
+**Retired: the Johor results-day simulator.** `tools/sim/` replayed the pipeline
+offline against rebuilt fixtures to regression-test the pending→results flip
+(full-flip, partial-flip, stats-lag, garbage mid-count, appended-rows). Johor's
+count landed 11 July 2026, so the 2026 ballot moved into `history` and the
+simulator's premise (a live, pending Johor contest) no longer holds — it was
+removed rather than left as a broken `npm run sim`. It is recoverable from git
+history (last present at commit `acad9c6`) and should be **rebuilt for Melaka**
+once that ballot is populated (candidates announced ~Sept 2026): re-point the
+fixtures at `data/melaka/`, then guard the same flip path (`history.mjs`
+classifier, `run.mjs` contest2026 / integrity gate, `app.js` `contestCard`).
 
 ## Candidate record layer ("wakilku angle")
 
@@ -237,8 +247,7 @@ party, vote share, result, 1955→now) keyed by `candidate_uid`;
 `career.party_timeline`. `recordCard`/`recordRow` in `site/app.js` render each
 2026 candidate's CV (contests/wins), party path, and a **party-switch callout**
 (Malaysia's anti-hopping law makes this a sharp, sourced line). Renders only
-while the ballot is live (campaign-time); covered by the sim's record-layer
-assertions in `tools/sim/verify.mjs`.
+while the ballot is live (campaign-time).
 
 Note: the card shows full paths + hop callouts only after a pipeline rebuild
 populates `party_timeline`; on pre-rebuild data it degrades to the CV summary
@@ -273,8 +282,9 @@ pro-MUDA advocacy layer ("small party, big bite"):
 - **Honesty guardrails (fact-checked, in `muda_record.json`):** attribute the 2019
   voting-age reform to **Syed Saddiq as 2019 minister, not the MUDA party** (party
   founded 2020); "~5.8M newly-registered", never "young voters"; anti-hopping =
-  advocacy, not authorship. `npm run sim` (and `EDITION=muda npm run sim`) assert
-  the gating + the guardrail + the Undi18 cross-check.
+  advocacy, not authorship. These guardrails are enforced by the curated
+  `muda_record.json` content itself (fact-checked copy, not computed), and the
+  edition gating is exercised by `npm run smoke`.
 - **Deploy:** the live site IS the muda edition (see "Deploying" above) —
   `refresh.yml` bakes `EDITION=muda` data on every refresh, and the single
   Cloudflare Worker serves it. The neutral edition remains one env-var flip away

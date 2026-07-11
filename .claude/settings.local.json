@@ -50,8 +50,7 @@
       "Bash(disown)",
       "Bash(curl -s http://127.0.0.1:8123/ -o /dev/null -w \"%{http_code}\\\\n\")",
       "Bash(node /tmp/claude-0/-home-user-peta-muda/354a7c7e-fe47-5306-8be6-d3d477f9058a/scratchpad/smoke.mjs)",
-      "Bash(node tools/sim/run.mjs)",
-      "Bash(EDITION=muda node tools/sim/run.mjs)"
+      "Bash(node tools/smoke.mjs)"
     ]
   }
 }
