@@ -70,12 +70,13 @@ there is no wrangler file in the repo).
   `data/manual/**`** — so a merged content/curation change rebuilds and goes
   live without a manual step. The bot commit only touches `site/data` (outside
   the paths filter), so it never re-triggers itself.
-- **Daily curated refresh:** a scheduled Claude session (06:00 MYT daily) sweeps
-  the last ~48h of news, updates the hand-curated files (`data/manual/
-  issues.json`, `national_issues.json`, `muda_stances.json`,
-  `price_ceilings.json`, `muda_record.json`) under the strict sourcing rules,
-  runs the smoke suite, and pushes to `main` only when green — keeping
-  the curated content current without manual upkeep.
+- **Daily curated refresh:** a scheduled Routine ("Melaka daily curated
+  refresh", 10:00 MYT daily, fresh session per run) sweeps the last ~36h of
+  news, watches for the SPR election call (updates `data/manual/melaka/
+  prn.json` the day dates are announced), updates the hand-curated Melaka
+  files under the strict sourcing rules, rebuilds Melaka data, runs the smoke
+  suite, and pushes to `main` only when green — keeping the curated content
+  current without manual upkeep until the PRN concludes.
 
 ⚠️ Caveats:
 - The live site exposes the Field tabs and MUDA advocacy layer to anyone with
@@ -118,9 +119,10 @@ Two feeds, one private queue, one human gate:
 - **Ground stories**: volunteers WhatsApp what they hear to an admin; the admin
   pastes it at **`/ops.html`** (hidden page, not linked from the app; shared
   passphrase). Theme + seats are auto-suggested (`site/ops-match.mjs`).
-- **News**: `.github/workflows/intake.yml` runs `pipeline/news.mjs` every 4h —
-  RSS sweep, kept only if Johor-relevant AND hitting a MUDA-stance theme —
-  and inserts DRAFTS into the same queue. It never publishes.
+- **News**: RETIRED 2026-07-12. The RSS crawler (`pipeline/news.mjs` +
+  `.github/workflows/intake.yml`) was Johor-hardwired and is deleted
+  (recoverable from git). News now enters via the daily curated Routine —
+  see "Daily curated refresh" above.
 - **Approval**: admins tap "Lulus" in /ops.html. Approved items are pulled at
   build time (`pipeline/steps/intake.mjs`), appended to `seat.local_issues`
   (cap 2/seat + 2 statewide), auto-paired with MUDA's stance via `theme`, and

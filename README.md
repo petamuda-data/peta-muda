@@ -21,7 +21,7 @@ A volunteer hub (`#/volunteer`) builds a per-seat door-knocking script in one ta
 | [data.gov.my](https://developer.data.gov.my) / OpenDOSM | `hh_income_dun`, `hh_poverty_dun`, `hh_inequality_dun`, `lfs_dun`, DUN GeoJSON, CPI | CC BY 4.0 |
 | Hand-curated `data/manual/melaka/issues.json` | Fact-checked local + national campaign issues, each carrying a sourced verdict (VERIFIED / CONFIRMED / PARTLY_CONFIRMED / REPORTED / NO_VERIFIED_POSITION) | — |
 
-Johor's PRN (polling 11 July 2026) is retired from the app; its pipeline (`pipeline/run.mjs`) still runs nightly for archive purposes but is no longer surfaced in the UI.
+Johor's PRN (polling 11 July 2026) is fully retired: nothing Johor-related runs in CI anymore, and its legacy pipeline (`pipeline/run.mjs`) exists only as inert code in the repo. Curated content is kept fresh by a daily automated news sweep (10:00 MYT) that fact-checks and pushes under the verdict rules.
 
 ## Run it
 
@@ -33,8 +33,8 @@ node tools/smoke.mjs                                               # headless en
 ```
 
 The site is fully static (`site/`) — Cloudflare Workers Builds auto-deploys on every push
-to `main`. `.github/workflows/refresh.yml` refreshes the data every 4 hours (Melaka
-pipeline is the fatal step; Johor is legacy/non-fatal).
+to `main`. `.github/workflows/refresh.yml` rebuilds the Melaka data every 4 hours and on
+any push touching `pipeline/**` or `data/manual/**`.
 
 ## Architecture
 

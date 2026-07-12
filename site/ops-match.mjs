@@ -1,6 +1,6 @@
 // Shared intake matcher: suggests a MUDA-stance theme and target seats for a
 // raw story (WhatsApp paste or news item). Used by BOTH the admin page
-// (site/ops.js, browser) and the news crawler (pipeline/news.mjs, node) —
+// (site/ops.js, browser; the node news crawler was retired 2026-07-12) —
 // keep it dependency-free ESM.
 //
 // Theme keys MUST stay aligned with data/manual/muda_stances.json `key`s —
