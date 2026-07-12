@@ -52,9 +52,15 @@ Pratonton itu ialah skrip tepat anda — poin MUDA-dahulu, petikan bersumber kat
 
 <img src="docs/screenshots/poster.png" width="260" alt="Poster kerusi dibina untuk WhatsApp, dengan kad nota lapangan di atasnya">
 
-Setiap kerusi ada poster sedia-WhatsApp yang menunjukkan **angka kerusi itu sendiri** — tiada slogan, tiada URL (ia untuk pengundi; aplikasi ini untuk anda). Dihantar oleh jiran atau kawan, ia memanaskan pintu sebelum anda mengetuk. Catat apa yang anda dengar di pintu dalam **Nota lapangan** (disimpan dalam telefon anda sahaja — eksport kepada admin anda bila siap).
+Setiap kerusi ada poster sedia-WhatsApp yang menunjukkan **angka kerusi itu sendiri** — tiada slogan, tiada URL (ia untuk pengundi; aplikasi ini untuk anda). Dihantar oleh jiran atau kawan, ia memanaskan pintu sebelum anda mengetuk.
 
-### 6. Persediaan lebih mendalam, bila anda mahu
+### 6. Selepas di pintu: catat apa yang anda dengar
+
+<img src="docs/screenshots/field-notes.png" width="260" alt="Kad nota lapangan: buku nota peribadi setiap kerusi yang disimpan dalam telefon sukarelawan">
+
+Setiap kerusi ada kad **Nota lapangan** — buku nota peribadi anda untuk apa yang penduduk betul-betul kata di pintu ("Taman X: bekalan air putus 3 hari…"). Ia disimpan **dalam telefon anda sahaja, tidak dihantar ke mana-mana**, jadi anda boleh berterus terang. Bila anda sedia, satu ketik menyalin semua nota kerusi itu untuk dikongsi dengan admin anda melalui WhatsApp, atau mengeksportnya sebagai fail.
+
+### 7. Persediaan lebih mendalam, bila anda mahu
 
 <img src="docs/screenshots/analysis.png" width="260" alt="Tab Analisis: sejarah keputusan, profil pengundi, penanda aras pendapatan">
 

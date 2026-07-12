@@ -52,9 +52,15 @@ The preview is your exact script — MUDA-first points, a verbatim sourced quote
 
 <img src="docs/screenshots/poster.png" width="260" alt="Seat poster built for WhatsApp, with the field-notes card above it">
 
-Each seat has a WhatsApp-ready poster showing **that seat's own numbers** — no slogans, no URL (it's for voters; this app is for you). Sent by a neighbour or friend, it warms the door before you knock. Jot what you hear at the doors in **Nota lapangan** (stored on your phone only — export to your admin when ready).
+Each seat has a WhatsApp-ready poster showing **that seat's own numbers** — no slogans, no URL (it's for voters; this app is for you). Sent by a neighbour or friend, it warms the door before you knock.
 
-### 6. Deeper prep, when you want it
+### 6. After the door: jot down what you heard
+
+<img src="docs/screenshots/field-notes.png" width="260" alt="Field-notes card: a private per-seat notepad stored on the volunteer's phone">
+
+Every seat has a **Nota lapangan** (field notes) card — your own private notepad for what residents actually said at the doors ("Taman X: water's been out 3 days…"). It's stored **on your phone only, never sent anywhere**, so you can be candid. When you're ready, one tap copies all your notes for that seat to share with your admin over WhatsApp, or exports them as a file.
+
+### 7. Deeper prep, when you want it
 
 <img src="docs/screenshots/analysis.png" width="260" alt="Analysis tab: result history, voter profile, income benchmarks">
 
