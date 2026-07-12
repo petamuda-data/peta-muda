@@ -73,7 +73,7 @@ Hab sukarelawan (`#/volunteer`) membina skrip rumah ke rumah bagi setiap kerusi 
 
 | Sumber | Apa yang kami ambil | Lesen |
 |---|---|---|
-| Data terbuka [ElectionData.MY](https://electiondata.my) / [MECo](https://github.com/Thevesh/paper-meco-results) | Keputusan 1955–kini, demografi pengundi setiap kerusi, GeoJSON sempadan | CC0 |
+| Data terbuka [ElectionData.MY](https://electiondata.my) / [MECo](https://github.com/Thevesh/paper-meco-results) | Keputusan 1955–kini, demografi **pengundi berdaftar setiap kerusi — umur, jantina, dan etnik** (daripada parquet `seat_info` daftar GE-15 2022), GeoJSON sempadan | CC0 |
 | [data.gov.my](https://developer.data.gov.my) / OpenDOSM | `hh_income_dun`, `hh_poverty_dun`, `hh_inequality_dun`, `lfs_dun`, GeoJSON DUN, CPI | CC BY 4.0 |
 | `data/manual/melaka/issues.json` dikurasi tangan | Isu kempen tempatan + kebangsaan yang disemak fakta, setiap satu membawa taraf pengesahan bersumber (VERIFIED / CONFIRMED / PARTLY_CONFIRMED / REPORTED / NO_VERIFIED_POSITION) | — |
 
@@ -94,13 +94,15 @@ pada mana-mana tolakan yang menyentuh `pipeline/**` atau `data/manual/**`.
 ```
 pipeline/
   config.mjs             skop STATE/EDITION, kerusi sasaran
-  run_melaka.mjs          orkestrator Melaka (cermin MECo + data sosio DOSM)
+  run_melaka.mjs          orkestrator Melaka (cermin MECo + sosio DOSM + etnik daftar pemilih)
   run.mjs                 orkestrator Johor warisan
   lib/                    fetch (cuba semula+cache), penghurai CSV, parquet (hyparquet)
-  steps/                  satu modul bagi setiap sumber: seats, history, geo, alerts
+  steps/                  satu modul bagi setiap sumber: seats, history, demographics, geo, alerts
 site/                     aplikasi statik (tiada langkah bina): index.html, app.js, styles.css
 data/manual/               nota boleh sunting, bersumber: melaka/issues.json, income_benchmarks.json,
                             muda_stances.json, national_issues.json, muda_record.json
+data/derived/              petikan binaan tersimpan: melaka_roll_ethnic.json (etnik daftar pemilih,
+                            diambil dalam CI, diguna semula oleh binaan luar talian), price_history.json, alerts_*.json
 tools/serve.mjs            pelayan pembangunan
 tools/smoke.mjs            suite regresi Playwright headless (~76 semakan)
 tools/poster/               penjanaan PNG poster (dwibahasa, setiap kerusi + seluruh negeri)

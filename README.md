@@ -73,7 +73,7 @@ A volunteer hub (`#/volunteer`) builds a per-seat door-knocking script in one ta
 
 | Source | What we take | License |
 |---|---|---|
-| [ElectionData.MY](https://electiondata.my) / [MECo](https://github.com/Thevesh/paper-meco-results) open data | Results 1955–present, per-seat voter demographics, boundary GeoJSON | CC0 |
+| [ElectionData.MY](https://electiondata.my) / [MECo](https://github.com/Thevesh/paper-meco-results) open data | Results 1955–present, per-seat **registered-voter demographics — age, sex, and ethnicity** (from the GE-15 2022 roll `seat_info` parquet), boundary GeoJSON | CC0 |
 | [data.gov.my](https://developer.data.gov.my) / OpenDOSM | `hh_income_dun`, `hh_poverty_dun`, `hh_inequality_dun`, `lfs_dun`, DUN GeoJSON, CPI | CC BY 4.0 |
 | Hand-curated `data/manual/melaka/issues.json` | Fact-checked local + national campaign issues, each carrying a sourced verdict (VERIFIED / CONFIRMED / PARTLY_CONFIRMED / REPORTED / NO_VERIFIED_POSITION) | — |
 
@@ -94,13 +94,15 @@ on any push touching `pipeline/**` or `data/manual/**`.
 ```
 pipeline/
   config.mjs             STATE/EDITION scope, target seats
-  run_melaka.mjs          Melaka orchestrator (MECo mirrors + DOSM socio data)
+  run_melaka.mjs          Melaka orchestrator (MECo mirrors + DOSM socio + roll ethnicity)
   run.mjs                 legacy Johor orchestrator
   lib/                    fetch (retry+cache), CSV parser, parquet (hyparquet)
-  steps/                  one module per source: seats, history, geo, alerts
+  steps/                  one module per source: seats, history, demographics, geo, alerts
 site/                     static app (no build step): index.html, app.js, styles.css
 data/manual/               editable, sourced notes: melaka/issues.json, income_benchmarks.json,
                             muda_stances.json, national_issues.json, muda_record.json
+data/derived/              committed build snapshots: melaka_roll_ethnic.json (roll ethnicity,
+                            fetched in CI, reused by offline builds), price_history.json, alerts_*.json
 tools/serve.mjs            dev server
 tools/smoke.mjs            headless Playwright regression suite (~76 checks)
 tools/poster/               poster PNG generation (bilingual, per-seat + statewide)

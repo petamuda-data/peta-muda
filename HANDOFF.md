@@ -186,8 +186,17 @@ Jeram, N.15 Maharani, N.51 Bukit Batu (all MUDA), N.48 Skudai (PSM).
 - electiondata.my lake (`lake.electiondata.my`, CC0, keyless) already carries the
   2026 nomination ballots as `result:"pending"` rows and the 2026 electoral roll
   in `seat_info/demographics.parquet` — candidates need no manual upkeep.
+- **Melaka registered-voter ethnicity** comes from that same `seat_info` parquet
+  (GE-15 2022 roll — real voter ethnicity, NOT the 2020 census population split).
+  `run_melaka.mjs` enriches the lighter GE-15 mirror with it via
+  `loadDemographics()`. The lake is **only reachable from GitHub Actions** (the
+  sandbox and the CCR Routine env are firewalled, 403 CONNECT), so the fetched
+  breakdown is snapshotted to `data/derived/melaka_roll_ethnic.json` (bot-committed)
+  and lake-less builds read that snapshot. ⚠️ Do NOT delete that snapshot — without
+  it, an offline rebuild silently drops every seat back to the census fallback.
+  On any miss the app degrades to labelled 2020 census population bars (never faked).
 - Seat strings are byte-identical across sources; DUN N-codes repeat across
-  states, so every DUN join is scoped to Johor.
+  states, so every DUN join is scoped to the active state (`STATE`, currently Melaka).
 - PriceCatcher has no premise coordinates and no "Kulai" district; "Ledang" ==
   "Tangkak". Premises map to seats via the parlimen→KPDN table in
   `pipeline/config.mjs` (a market-catchment approximation, disclosed in-app).
