@@ -18,11 +18,45 @@ This app was built for two specific problems on the ground — not as a general 
 
 **And before the door:** each seat has a WhatsApp-ready poster showing that seat's own numbers, not slogans — meant to be sent by a neighbour or friend the voter actually trusts, so the door-knock isn't a cold open.
 
-## Screenshots
+## How to use it — an illustrated walkthrough
 
-| Task-first home | Talking-points builder | Seat poster + field notes | Analysis for HQ |
-|---|---|---|---|
-| <img src="docs/screenshots/home.png" width="195" alt="Home: volunteer and seat-search entry points"> | <img src="docs/screenshots/talking-points.png" width="195" alt="Door-knocking talking points checklist with pre-selected strongest points"> | <img src="docs/screenshots/poster.png" width="195" alt="Device-local field notes and the seat's shareable poster"> | <img src="docs/screenshots/analysis.png" width="195" alt="Result history, voter profile and income benchmarks"> |
+The volunteer's path, start to finish. (The app is BM-first; the BM|EN toggle in the header switches everything, posters included.)
+
+### 1. Open the app, say you're a volunteer
+
+<img src="docs/screenshots/home.png" width="260" alt="Home: volunteer and seat-search entry points">
+
+The home screen asks what you want to do, not what data you want. Tap **"Saya sukarelawan — beri saya poin perbualan"**. (Voters and analysts tap "Cari kerusi anda" instead and land on the same seat pages.)
+
+### 2. Pick your seat in the volunteer hub
+
+<img src="docs/screenshots/volunteer-hub.png" width="260" alt="Volunteer hub: every Melaka seat with a build-script button">
+
+All 28 Melaka seats, searchable by seat, area, or parliament name. Tap **"Bina skrip"** on yours.
+
+### 3. Build your door-knocking script
+
+<img src="docs/screenshots/talking-points.png" width="260" alt="Talking-points checklist with the three strongest points pre-selected">
+
+Every local issue, national issue, and campaign-story beat for that seat is a checklist — the **three strongest are already ticked**. Untick anything that doesn't fit your walk; the preview updates live. Each point leads with what MUDA said or did, then the local issue as context.
+
+### 4. Copy it and go
+
+<img src="docs/screenshots/copy-script.png" width="260" alt="Live preview of the selected points with the copy button">
+
+The preview is your exact script — MUDA-first points, a verbatim sourced quote, the seat's campaign fact. **"Salin poin perbualan"** puts it on your clipboard: paste it into WhatsApp, your notes app, wherever you'll glance at the door.
+
+### 5. Before the walk: send the poster to people you know
+
+<img src="docs/screenshots/poster.png" width="260" alt="Seat poster built for WhatsApp, with the field-notes card above it">
+
+Each seat has a WhatsApp-ready poster showing **that seat's own numbers** — no slogans, no URL (it's for voters; this app is for you). Sent by a neighbour or friend, it warms the door before you knock. Jot what you hear at the doors in **Nota lapangan** (stored on your phone only — export to your admin when ready).
+
+### 6. Deeper prep, when you want it
+
+<img src="docs/screenshots/analysis.png" width="260" alt="Analysis tab: result history, voter profile, income benchmarks">
+
+The **Analisis** tab has the seat's full result history, voter profile (age/ethnicity), and income vs the national and state medians. The **"Poin perbualan terpilih"** button on the Field tab exports the seat's complete sourced dossier as a file — paste it into ChatGPT/Gemini and rehearse the hard questions before your first door.
 
 One page per DUN seat, two depths for two audiences:
 
