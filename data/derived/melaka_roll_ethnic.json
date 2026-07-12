@@ -1,0 +1,399 @@
+{
+  "source": "lake.electiondata.my/seat_info/demographics.parquet",
+  "roll": "GE-15",
+  "updated": "2026-07-12",
+  "by_seat": {
+    "N.01": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 14791,
+      "ethnic": {
+        "ethnic_malay": 10560,
+        "ethnic_chinese": 3141,
+        "ethnic_indian": 218,
+        "ethnic_bumi_sabah": 47,
+        "ethnic_bumi_sarawak": 28,
+        "ethnic_orang_asli": 1,
+        "ethnic_other": 796
+      }
+    },
+    "N.02": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 14019,
+      "ethnic": {
+        "ethnic_malay": 12972,
+        "ethnic_chinese": 632,
+        "ethnic_indian": 267,
+        "ethnic_bumi_sabah": 19,
+        "ethnic_bumi_sarawak": 20,
+        "ethnic_orang_asli": 2,
+        "ethnic_other": 107
+      }
+    },
+    "N.03": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 15001,
+      "ethnic": {
+        "ethnic_malay": 13571,
+        "ethnic_chinese": 597,
+        "ethnic_indian": 658,
+        "ethnic_bumi_sabah": 21,
+        "ethnic_bumi_sarawak": 12,
+        "ethnic_orang_asli": 8,
+        "ethnic_other": 134
+      }
+    },
+    "N.04": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 14262,
+      "ethnic": {
+        "ethnic_malay": 10924,
+        "ethnic_chinese": 2379,
+        "ethnic_indian": 696,
+        "ethnic_bumi_sabah": 54,
+        "ethnic_bumi_sarawak": 46,
+        "ethnic_orang_asli": 1,
+        "ethnic_other": 162
+      }
+    },
+    "N.05": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 11101,
+      "ethnic": {
+        "ethnic_malay": 8714,
+        "ethnic_chinese": 1343,
+        "ethnic_indian": 667,
+        "ethnic_bumi_sabah": 22,
+        "ethnic_bumi_sarawak": 3,
+        "ethnic_orang_asli": 295,
+        "ethnic_other": 57
+      }
+    },
+    "N.06": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 21894,
+      "ethnic": {
+        "ethnic_malay": 14584,
+        "ethnic_chinese": 3910,
+        "ethnic_indian": 3217,
+        "ethnic_bumi_sabah": 40,
+        "ethnic_bumi_sarawak": 32,
+        "ethnic_orang_asli": 3,
+        "ethnic_other": 108
+      }
+    },
+    "N.07": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 16344,
+      "ethnic": {
+        "ethnic_malay": 9945,
+        "ethnic_chinese": 3399,
+        "ethnic_indian": 2795,
+        "ethnic_bumi_sabah": 24,
+        "ethnic_bumi_sarawak": 15,
+        "ethnic_orang_asli": 37,
+        "ethnic_other": 129
+      }
+    },
+    "N.08": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 15880,
+      "ethnic": {
+        "ethnic_malay": 7243,
+        "ethnic_chinese": 5940,
+        "ethnic_indian": 2230,
+        "ethnic_bumi_sabah": 34,
+        "ethnic_bumi_sarawak": 16,
+        "ethnic_orang_asli": 309,
+        "ethnic_other": 108
+      }
+    },
+    "N.09": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 19189,
+      "ethnic": {
+        "ethnic_malay": 12819,
+        "ethnic_chinese": 4454,
+        "ethnic_indian": 1651,
+        "ethnic_bumi_sabah": 44,
+        "ethnic_bumi_sarawak": 49,
+        "ethnic_orang_asli": 12,
+        "ethnic_other": 160
+      }
+    },
+    "N.10": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 20004,
+      "ethnic": {
+        "ethnic_malay": 12819,
+        "ethnic_chinese": 4386,
+        "ethnic_indian": 2274,
+        "ethnic_bumi_sabah": 22,
+        "ethnic_bumi_sarawak": 18,
+        "ethnic_orang_asli": 349,
+        "ethnic_other": 136
+      }
+    },
+    "N.11": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 28257,
+      "ethnic": {
+        "ethnic_malay": 21880,
+        "ethnic_chinese": 2532,
+        "ethnic_indian": 781,
+        "ethnic_bumi_sabah": 1200,
+        "ethnic_bumi_sarawak": 1569,
+        "ethnic_orang_asli": 44,
+        "ethnic_other": 251
+      }
+    },
+    "N.12": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 20174,
+      "ethnic": {
+        "ethnic_malay": 15882,
+        "ethnic_chinese": 3285,
+        "ethnic_indian": 168,
+        "ethnic_bumi_sabah": 235,
+        "ethnic_bumi_sarawak": 50,
+        "ethnic_orang_asli": 7,
+        "ethnic_other": 547
+      }
+    },
+    "N.13": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 41144,
+      "ethnic": {
+        "ethnic_malay": 25114,
+        "ethnic_chinese": 12341,
+        "ethnic_indian": 2639,
+        "ethnic_bumi_sabah": 168,
+        "ethnic_bumi_sarawak": 99,
+        "ethnic_orang_asli": 14,
+        "ethnic_other": 769
+      }
+    },
+    "N.14": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 26423,
+      "ethnic": {
+        "ethnic_malay": 17673,
+        "ethnic_chinese": 7562,
+        "ethnic_indian": 619,
+        "ethnic_bumi_sabah": 108,
+        "ethnic_bumi_sarawak": 69,
+        "ethnic_orang_asli": 3,
+        "ethnic_other": 389
+      }
+    },
+    "N.15": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 25559,
+      "ethnic": {
+        "ethnic_malay": 16378,
+        "ethnic_chinese": 7259,
+        "ethnic_indian": 1476,
+        "ethnic_bumi_sabah": 95,
+        "ethnic_bumi_sarawak": 42,
+        "ethnic_orang_asli": 6,
+        "ethnic_other": 303
+      }
+    },
+    "N.16": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 36058,
+      "ethnic": {
+        "ethnic_malay": 15288,
+        "ethnic_chinese": 17174,
+        "ethnic_indian": 3006,
+        "ethnic_bumi_sabah": 135,
+        "ethnic_bumi_sarawak": 78,
+        "ethnic_orang_asli": 7,
+        "ethnic_other": 370
+      }
+    },
+    "N.17": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 33563,
+      "ethnic": {
+        "ethnic_malay": 21325,
+        "ethnic_chinese": 10035,
+        "ethnic_indian": 1624,
+        "ethnic_bumi_sabah": 125,
+        "ethnic_bumi_sarawak": 73,
+        "ethnic_orang_asli": 2,
+        "ethnic_other": 379
+      }
+    },
+    "N.18": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 23313,
+      "ethnic": {
+        "ethnic_malay": 20371,
+        "ethnic_chinese": 1681,
+        "ethnic_indian": 1024,
+        "ethnic_bumi_sabah": 18,
+        "ethnic_bumi_sarawak": 20,
+        "ethnic_orang_asli": 2,
+        "ethnic_other": 197
+      }
+    },
+    "N.19": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 52151,
+      "ethnic": {
+        "ethnic_malay": 19269,
+        "ethnic_chinese": 29342,
+        "ethnic_indian": 2640,
+        "ethnic_bumi_sabah": 151,
+        "ethnic_bumi_sarawak": 134,
+        "ethnic_orang_asli": 7,
+        "ethnic_other": 608
+      }
+    },
+    "N.20": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 34949,
+      "ethnic": {
+        "ethnic_malay": 6563,
+        "ethnic_chinese": 26786,
+        "ethnic_indian": 1235,
+        "ethnic_bumi_sabah": 75,
+        "ethnic_bumi_sarawak": 32,
+        "ethnic_orang_asli": 3,
+        "ethnic_other": 255
+      }
+    },
+    "N.21": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 24506,
+      "ethnic": {
+        "ethnic_malay": 15139,
+        "ethnic_chinese": 7841,
+        "ethnic_indian": 1197,
+        "ethnic_bumi_sabah": 44,
+        "ethnic_bumi_sarawak": 19,
+        "ethnic_orang_asli": 1,
+        "ethnic_other": 265
+      }
+    },
+    "N.22": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 24421,
+      "ethnic": {
+        "ethnic_malay": 3141,
+        "ethnic_chinese": 17893,
+        "ethnic_indian": 1565,
+        "ethnic_bumi_sabah": 91,
+        "ethnic_bumi_sarawak": 65,
+        "ethnic_orang_asli": 6,
+        "ethnic_other": 1660
+      }
+    },
+    "N.23": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 28113,
+      "ethnic": {
+        "ethnic_malay": 20162,
+        "ethnic_chinese": 6877,
+        "ethnic_indian": 604,
+        "ethnic_bumi_sabah": 32,
+        "ethnic_bumi_sarawak": 29,
+        "ethnic_orang_asli": 2,
+        "ethnic_other": 407
+      }
+    },
+    "N.24": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 24689,
+      "ethnic": {
+        "ethnic_malay": 14949,
+        "ethnic_chinese": 5214,
+        "ethnic_indian": 4270,
+        "ethnic_bumi_sabah": 25,
+        "ethnic_bumi_sarawak": 21,
+        "ethnic_orang_asli": 22,
+        "ethnic_other": 188
+      }
+    },
+    "N.25": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 17256,
+      "ethnic": {
+        "ethnic_malay": 11418,
+        "ethnic_chinese": 3269,
+        "ethnic_indian": 2310,
+        "ethnic_bumi_sabah": 12,
+        "ethnic_bumi_sarawak": 13,
+        "ethnic_orang_asli": 102,
+        "ethnic_other": 132
+      }
+    },
+    "N.26": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 20440,
+      "ethnic": {
+        "ethnic_malay": 18425,
+        "ethnic_chinese": 1155,
+        "ethnic_indian": 618,
+        "ethnic_bumi_sabah": 16,
+        "ethnic_bumi_sarawak": 12,
+        "ethnic_orang_asli": 4,
+        "ethnic_other": 210
+      }
+    },
+    "N.27": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 18469,
+      "ethnic": {
+        "ethnic_malay": 12932,
+        "ethnic_chinese": 3190,
+        "ethnic_indian": 2179,
+        "ethnic_bumi_sabah": 20,
+        "ethnic_bumi_sarawak": 20,
+        "ethnic_orang_asli": 7,
+        "ethnic_other": 121
+      }
+    },
+    "N.28": {
+      "election": "GE-15",
+      "date": "2022-11-19",
+      "voters_total": 15354,
+      "ethnic": {
+        "ethnic_malay": 12929,
+        "ethnic_chinese": 2019,
+        "ethnic_indian": 313,
+        "ethnic_bumi_sabah": 20,
+        "ethnic_bumi_sarawak": 4,
+        "ethnic_orang_asli": 4,
+        "ethnic_other": 65
+      }
+    }
+  }
+}
