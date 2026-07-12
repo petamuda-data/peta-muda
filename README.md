@@ -6,7 +6,7 @@
 
 ## Why this exists
 
-This app was built for two specific problems on the ground — not as a general campaign site. (The full bilingual version lives in the app at [`#/about`](https://peta-muda.petamuda-data.workers.dev/#/about).)
+This app was built for two specific problems on the ground — not as a general campaign site. It is fully bilingual (Bahasa Malaysia + English).
 
 **Problem 1 — volunteers are willing, but not confident.** MUDA has plenty of people willing to knock on doors; what's missing is people who feel *ready* to. Every conversation risks a hard question on the spot — "what's gone wrong here?", "what does MUDA think about X?" — that needs a true, specific answer. Without seat-specific facts on hand, willing volunteers hesitate, under-prepare, or don't go out at all.
 
