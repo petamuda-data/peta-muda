@@ -77,14 +77,11 @@ A volunteer hub (`#/volunteer`) builds a per-seat door-knocking script in one ta
 
 Johor's PRN (polling 11 July 2026) is fully retired: nothing Johor-related runs in CI anymore, and its legacy pipeline (`pipeline/run.mjs`) exists only as inert code in the repo. Curated content is kept fresh by a daily automated news sweep (10:00 MYT) that fact-checks and pushes under the verdict rules.
 
-## Run it
+## Use it
 
-```bash
-npm ci
-PIPELINE_STATE=Melaka EDITION=muda node pipeline/run_melaka.mjs   # writes site/data/melaka/
-node tools/serve.mjs                                              # serves site/ at http://localhost:8123
-node tools/smoke.mjs                                               # headless end-to-end check
-```
+**Nothing to install — just open https://peta-muda.petamuda-data.workers.dev on your phone.**
+Add it to your home screen for one-tap access (Share → Add to Home Screen); data refreshes
+itself daily. Developers: local build instructions are in [HANDOFF.md](HANDOFF.md).
 
 The site is fully static (`site/`) — Cloudflare Workers Builds auto-deploys on every push
 to `main`. `.github/workflows/refresh.yml` rebuilds the Melaka data daily (10:30 MYT) and

@@ -8,9 +8,9 @@ bearing context is captured here.
 ## What this is
 
 **Peta MUDA — Seat Command Center**: a static web app + Node pipeline that joins
-three Malaysian open-data sources on the constituency spine for the 2026 Johor
-state election (polling **11 July 2026**). See [README.md](README.md) for the
-full architecture. All data sources are keyless/public; there are no secrets in
+Malaysian open-data sources on the constituency spine for the **Melaka state
+election** (PRN not yet called; the app is pinned to Melaka — Johor, polling
+11 July 2026, is retired). See [README.md](README.md) for the full architecture. All data sources are keyless/public; there are no secrets in
 this repo.
 
 ## Resume on a new Mac (or any machine)
@@ -25,13 +25,14 @@ cd peta-muda
 
 # 3. Install deps + build the data + run
 npm install
-npm run pipeline         # downloads sources, writes site/data/*.json (~30-60s)
+PIPELINE_STATE=Melaka EDITION=muda node pipeline/run_melaka.mjs  # writes site/data/melaka/
 npm run serve            # serves site/ at http://localhost:8123
+npm run smoke            # headless end-to-end check (needs: npm i --no-save playwright)
 ```
 
-That's the whole loop. `npm run pipeline` is safe to re-run anytime — it refetches
-fresh prices (cache TTL is 6h; set `PIPELINE_NO_CACHE=1` to force). No API keys,
-no accounts, no env vars needed.
+That's the whole loop. The Melaka pipeline is safe to re-run anytime (set
+`PIPELINE_NO_CACHE=1` to force fresh downloads). No API keys, no accounts
+needed. (`npm run pipeline` runs the retired Johor build — legacy only.)
 
 ## What is NOT in git (and why that's fine)
 
