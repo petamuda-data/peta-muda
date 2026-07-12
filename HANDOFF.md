@@ -70,13 +70,16 @@ there is no wrangler file in the repo).
   `data/manual/**`** — so a merged content/curation change rebuilds and goes
   live without a manual step. The bot commit only touches `site/data` (outside
   the paths filter), so it never re-triggers itself.
-- **Daily curated refresh:** a scheduled Routine ("Melaka daily curated
-  refresh", 10:00 MYT daily, fresh session per run) sweeps the last ~36h of
-  news, watches for the SPR election call (updates `data/manual/melaka/
-  prn.json` the day dates are announced), updates the hand-curated Melaka
-  files under the strict sourcing rules, rebuilds Melaka data, runs the smoke
-  suite, and pushes to `main` only when green — keeping the curated content
-  current without manual upkeep until the PRN concludes.
+- **Daily curated refresh:** a scheduled Routine ("Daily curated refresh",
+  10:00 MYT daily, fresh session per run) that is STATE-AGNOSTIC: each run
+  first discovers the active campaign state from the app's region pin in
+  `site/app.js` (currently melaka) and scopes everything to it. It sweeps the
+  last ~36h of news, watches for that state's SPR election call (updates
+  `data/manual/<region>/prn.json` the day dates are announced), updates the
+  state's hand-curated files under the strict sourcing rules, rebuilds the
+  state's data, runs the smoke suite, and pushes to `main` only when green.
+  When the app pivots to a new state, the Routine follows automatically —
+  no reconfiguration needed.
 
 ⚠️ Caveats:
 - The live site exposes the Field tabs and MUDA advocacy layer to anyone with
