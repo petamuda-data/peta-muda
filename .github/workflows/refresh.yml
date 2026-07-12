@@ -3,7 +3,7 @@
 # auto-redeploys the static site/ on every push, so this workflow only needs
 # to refresh the data and push.
 #
-# Triggers: nightly cron, manual dispatch, AND any push to main that changes
+# Triggers: daily cron, manual dispatch, AND any push to main that changes
 # the pipeline or the hand-curated data (data/manual) — so a merge that edits
 # curated issues/stances goes live without a manual dispatch. The bot's own
 # commit only touches site/data, which is NOT in the paths filter, so it can
@@ -12,8 +12,10 @@ name: refresh-data
 
 on:
   schedule:
-    # every 4h during the campaign so curated updates go live same-day
-    - cron: '30 1,5,9,13,17,21 * * *'
+    # daily rebuild (10:30 MYT, just after the 10:00 MYT curated Routine).
+    # Curated pushes already trigger an immediate rebuild via the push
+    # paths-filter below — this cron only catches silent upstream source drift.
+    - cron: '30 2 * * *'
   workflow_dispatch:
   push:
     branches: [main]

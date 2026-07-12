@@ -33,8 +33,8 @@ node tools/smoke.mjs                                               # headless en
 ```
 
 The site is fully static (`site/`) — Cloudflare Workers Builds auto-deploys on every push
-to `main`. `.github/workflows/refresh.yml` rebuilds the Melaka data every 4 hours and on
-any push touching `pipeline/**` or `data/manual/**`.
+to `main`. `.github/workflows/refresh.yml` rebuilds the Melaka data daily (10:30 MYT) and
+on any push touching `pipeline/**` or `data/manual/**`.
 
 ## Architecture
 

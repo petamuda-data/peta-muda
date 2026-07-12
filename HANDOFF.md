@@ -63,9 +63,9 @@ there is no wrangler file in the repo).
   `refresh.yml`'s pipeline step): the team-facing version with the volunteer
   AI-briefing hub, MUDA record/stance cards, and briefing export. Remove that
   env to publish the neutral public edition instead.
-- **Refresh (data):** `.github/workflows/refresh.yml` runs the pipeline and
-  commits the regenerated `site/data` on three triggers: nightly cron
-  (`30 13 * * *` = 21:30 MYT, after PriceCatcher's daily update), manual
+- **Refresh (data):** `.github/workflows/refresh.yml` runs the Melaka pipeline
+  and commits the regenerated `site/data/melaka` on three triggers: daily cron
+  (`30 2 * * *` = 10:30 MYT, just after the 10:00 MYT curated Routine), manual
   dispatch, and **any push to `main` touching `pipeline/**` or
   `data/manual/**`** — so a merged content/curation change rebuilds and goes
   live without a manual step. The bot commit only touches `site/data` (outside
@@ -91,7 +91,7 @@ there is no wrangler file in the repo).
   `npx wrangler versions upload` (dashboard → Settings → Build) turns branch
   builds into true preview URLs instead.
 - GitHub **disables scheduled workflows after 60 days of no repo activity** (the
-  bot's own nightly commits do **not** reset this timer). If the repo goes quiet
+  bot's own scheduled commits do **not** reset this timer). If the repo goes quiet
   for 60 days the refresh cron silently pauses until someone pushes or re-enables
   it in the Actions tab.
 
@@ -140,8 +140,9 @@ Two feeds, one private queue, one human gate:
   `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `INTAKE_PASS`. The anon key only exposes
   the passphrase-guarded `intake_*` RPCs (RLS, no table policies). Rotate the
   passphrase by re-running the final `insert` in schema.sql.
-- The refresh cron now runs **every 4 hours** during the campaign (approved
-  items go live within ~4h; "Lulus" in /ops.html tells the admin this).
+- The refresh cron runs **daily** (10:30 MYT); pushes touching
+  `data/manual/**` rebuild immediately regardless, so approved/curated items
+  go live within minutes of landing on `main`.
 
 ## Languages (BM / EN / 中文)
 
@@ -256,7 +257,7 @@ while the ballot is live (campaign-time).
 
 Note: the card shows full paths + hop callouts only after a pipeline rebuild
 populates `party_timeline`; on pre-rebuild data it degrades to the CV summary
-(no crash). The nightly job fills it in.
+(no crash). The daily refresh job fills it in.
 
 **Deferred (needs a decision):** social handles, bios, occupation — no keyless
 source exists, so this would be a manual-curated, cited
