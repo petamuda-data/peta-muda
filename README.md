@@ -2,7 +2,7 @@
 
 **Live app: https://peta-muda.petamuda-data.workers.dev**
 
-**Constituency intelligence for the Melaka state election (PRN Melaka, date not yet announced — expected by Feb 2027), built 100% on open data.**
+**Constituency intelligence for the Melaka state election (PRN Melaka, date not yet announced), built 100% on open data.**
 
 ## Why this exists
 
@@ -106,8 +106,8 @@ tools/poster/               poster PNG generation (bilingual, per-seat + statewi
 
 ## Honest limitations
 
-- Melaka's PRN date is not yet announced — the countdown card shows the expected window
-  instead of a day count until it's set.
+- Melaka's PRN date is not yet announced — the app shows "Election not yet called"
+  instead of a day count until SPR sets one.
 - HIES income/poverty exists only for 2019/2022/2024; Melaka seat-level income is a
   single 2020 estimate compared against the nearest common benchmark year.
 - Voter-roll ethnicity is not published for Melaka; the app falls back to labelled
