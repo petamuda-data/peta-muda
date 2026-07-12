@@ -38,7 +38,7 @@ All 28 Melaka seats, searchable by seat, area, or parliament name. Tap **"Bina s
 
 <img src="docs/screenshots/talking-points.png" width="260" alt="Talking-points checklist with the three strongest points pre-selected">
 
-Every local issue, national issue, and campaign-story beat for that seat is a checklist — the **three strongest are already ticked**. Untick anything that doesn't fit your walk; the preview updates live. Each point leads with what MUDA said or did, then the local issue as context.
+Every local issue, national issue, and campaign-story beat for that seat is a checklist — the **three strongest are already ticked**. Tick or untick any point and it's instantly added to or removed from your script below — **only what you select ends up in the final copy**, nothing more. Each point leads with what MUDA said or did, then the local issue as context.
 
 ### 4. Copy it and go
 
