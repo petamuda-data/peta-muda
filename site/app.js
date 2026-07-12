@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11n'
+const BUILD = '2026-07-11o'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -1272,9 +1272,10 @@ function storyFor(seat, idx) {
 function renderField(seat, idx) {
   const pts = talkingPoints(seat, idx)
   const picks = tpDefaultPicks(pts)
+  // At-the-door tool first (talking points), share assets (poster) last —
+  // a volunteer opening this mid-walk needs the script, not the artwork.
   return `
     ${gotvCard(seat)}
-    ${posterCard(seat)}
     <div class="card" id="tpBuilder">
       <h2>${L('talking_points')}</h2>
       <p class="sub">${L('tp_sub')}</p>
@@ -1284,6 +1285,7 @@ function renderField(seat, idx) {
       <div class="btn-row"><button class="btn" id="tpCopy">${T('Salin poin perbualan', 'Copy talking points', '复制谈话要点')}</button></div>
     </div>
     ${groundNotesCard(seat)}
+    ${posterCard(seat)}
     ${idx.edition === 'muda' ? `<div class="btn-row"><button class="btn" id="briefBtn">${L('brief_btn')}</button></div>` : ''}`
 }
 

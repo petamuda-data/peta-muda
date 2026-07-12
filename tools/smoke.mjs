@@ -97,8 +97,11 @@ if (gotvActive) {
   await lacks('GOTV hidden until Melaka polling day is set', 'Jom keluar mengundi')
 }
 await has('poster download btn on Field', 'poster')
+// poster sits below the talking points and lazy-loads; scroll it into view
+await page.evaluate(() => document.querySelector('img.poster-img')?.scrollIntoView())
+await page.waitForTimeout(600)
 const posterImg = await page.evaluate(() => { const i = document.querySelector('img.poster-img'); return i ? i.naturalWidth : 0 })
-checks.push(`${posterImg > 0 ? 'PASS' : 'FAIL'} poster image visible by default (naturalWidth ${posterImg})`)
+checks.push(`${posterImg > 0 ? 'PASS' : 'FAIL'} poster image renders inline (naturalWidth ${posterImg})`)
 const storyOl = await page.locator('ol.story').count()
 checks.push(`${storyOl === 0 ? 'PASS' : 'FAIL'} duplicate story card removed (ol.story: ${storyOl})`)
 await lacks('duplicate issues card removed', 'Isu tempatan (disahkan sumber)')
@@ -205,6 +208,8 @@ const enActive = await page.$$eval('#langToggle button', bs => bs.map(b => b.cla
 checks.push(`${!enActive[0] && enActive[1] ? 'PASS' : 'FAIL'} EN segment shows active after click`)
 await page.goto(`${base}/#/seat/n01-kuala-linggi/field`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(400)
+await page.evaluate(() => document.querySelector('img.poster-img')?.scrollIntoView())
+await page.waitForTimeout(600)
 const posterSrcEn = await page.evaluate(() => document.querySelector('img.poster-img')?.getAttribute('src') || '')
 const posterNaturalWidth = await page.evaluate(() => document.querySelector('img.poster-img')?.naturalWidth || 0)
 checks.push(`${posterSrcEn.endsWith('-en.png') && posterNaturalWidth > 0 ? 'PASS' : 'FAIL'} EN language shows the -en poster variant (${posterSrcEn}, w=${posterNaturalWidth})`)
