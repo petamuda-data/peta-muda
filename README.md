@@ -4,6 +4,26 @@
 
 **Constituency intelligence for the Melaka state election (PRN Melaka, date not yet announced — expected by Feb 2027), built 100% on open data.**
 
+## Why this exists
+
+This app was built for two specific problems on the ground — not as a general campaign site. (The full bilingual version lives in the app at [`#/about`](https://peta-muda.petamuda-data.workers.dev/#/about).)
+
+**Problem 1 — volunteers are willing, but not confident.** MUDA has plenty of people willing to knock on doors; what's missing is people who feel *ready* to. Every conversation risks a hard question on the spot — "what's gone wrong here?", "what does MUDA think about X?" — that needs a true, specific answer. Without seat-specific facts on hand, willing volunteers hesitate, under-prepare, or don't go out at all.
+
+*The app's answer:* every seat page opens with a checklist of that seat's local issues, national issues, and campaign-story beats — the three strongest pre-selected, one tap to copy. Every point carries a verdict (VERIFIED / CONFIRMED / PARTLY CONFIRMED / or an honest "no verified position") so volunteers know exactly what they can defend. Nothing to memorise: it lives in the app, open at the door.
+
+**Problem 2 — voters have stopped opening the door for politics.** Promise fatigue is rational: years of party promises that didn't survive contact with government have taught people to expect nothing new. Whoever's at the door is assumed to be selling another manifesto — so the door stays shut. More promises, even sincere ones, just confirm the pattern.
+
+*The app's answer:* facts, not promises. Every card states something that *happened* — a subsidy cut, a flood, a wage figure, a vote margin — specific to **this seat**, never a national script. MUDA's position only appears with a named person, role, date, and source; where none is verified, the app says so rather than inventing one. Where MUDA claims credit, it's for something already done and independently checkable.
+
+**And before the door:** each seat has a WhatsApp-ready poster showing that seat's own numbers, not slogans — meant to be sent by a neighbour or friend the voter actually trusts, so the door-knock isn't a cold open.
+
+## Screenshots
+
+| Task-first home | Talking-points builder | Seat poster + field notes | Analysis for HQ |
+|---|---|---|---|
+| <img src="docs/screenshots/home.png" width="195" alt="Home: volunteer and seat-search entry points"> | <img src="docs/screenshots/talking-points.png" width="195" alt="Door-knocking talking points checklist with pre-selected strongest points"> | <img src="docs/screenshots/poster.png" width="195" alt="Device-local field notes and the seat's shareable poster"> | <img src="docs/screenshots/analysis.png" width="195" alt="Result history, voter profile and income benchmarks"> |
+
 One page per DUN seat, two depths for two audiences:
 
 | Tab | Audience | What it shows |
