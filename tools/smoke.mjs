@@ -1,15 +1,15 @@
 // Release smoke test: drives the built site in headless Chromium and asserts
-// the product surface end-to-end (home, seat Field/Analysis, briefing builder,
-// volunteer hub, cross-region links, language toggle, about page).
+// the product surface end-to-end (home, seat Field/Analysis, talking-points
+// builder, volunteer hub, language toggle, about page). The app is pinned to
+// Melaka — Johor deep links must land on home.
 // Fails on page/console errors, any FAIL check, or horizontal overflow.
 //
 // Run:  npm i --no-save playwright   (browsers are pre-installed in CI/dev
 //       images via PLAYWRIGHT_BROWSERS_PATH; never add playwright to deps)
 //       node tools/smoke.mjs
 //
-// Date-aware: GOTV assertions flip automatically once Johor's polling day has
-// passed (the card hides itself), and the contest card is accepted in both
-// its pre-results ("Pertandingan") and results-in ("Keputusan") forms.
+// Date-aware: GOTV assertions flip automatically once Melaka's PRN is called
+// and its polling day set (until then the card is absent).
 import { spawn } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
@@ -20,10 +20,11 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const server = spawn('node', ['tools/serve.mjs'], { cwd: ROOT, stdio: 'pipe' })
 await new Promise(r => setTimeout(r, 1500))
 
-// Johor GOTV window: the card renders only until polling day (inclusive)
-const johorIdx = JSON.parse(await readFile(new URL('../site/data/index.json', import.meta.url), 'utf8'))
+// Melaka GOTV window: the card renders only once polling_date is set and
+// until polling day (inclusive)
+const melakaIdx = JSON.parse(await readFile(new URL('../site/data/melaka/index.json', import.meta.url), 'utf8'))
 const today = new Date(); today.setHours(0, 0, 0, 0)
-const gotvActive = !!johorIdx.election?.polling_date && new Date(`${johorIdx.election.polling_date}T00:00:00`) >= today
+const gotvActive = !!melakaIdx.election?.polling_date && new Date(`${melakaIdx.election.polling_date}T00:00:00`) >= today
 
 const exe = process.env.CHROMIUM_PATH ?? (existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : undefined)
 const browser = await chromium.launch(exe ? { executablePath: exe } : {})
@@ -48,24 +49,35 @@ const noOverflow = async (label) => {
   checks.push(`${w <= 390 ? 'PASS' : 'FAIL'} ${label} no horizontal overflow (scrollWidth ${w})`)
 }
 
-// ---- home (BM, fresh visitor => Melaka is the default front) ----
+// ---- home (BM, fresh visitor) ----
 await page.goto(`${base}/#/`, { waitUntil: 'networkidle' })
-const freshMlk = await page.evaluate(() => document.querySelector('.state-toggle button[data-state="melaka"]')?.classList.contains('active') ?? false)
-checks.push(`${freshMlk ? 'PASS' : 'FAIL'} fresh visitor defaults to Melaka (MLK=${freshMlk})`)
+const stateToggles = await page.locator('.state-toggle').count()
+checks.push(`${stateToggles === 0 ? 'PASS' : 'FAIL'} region toggle gone from header (${stateToggles})`)
+await has('home is Melaka', 'Pusat Data Kerusi DUN Melaka')
+const langBtns = await page.$$eval('#langToggle button', bs => bs.map(b => ({ t: b.textContent, on: b.classList.contains('active') })))
+checks.push(`${langBtns.length === 2 && langBtns[0].t === 'BM' && langBtns[1].t === 'EN' ? 'PASS' : 'FAIL'} BM and EN both visible in header (${langBtns.map(b => b.t).join(',')})`)
+checks.push(`${langBtns[0]?.on && !langBtns[1]?.on ? 'PASS' : 'FAIL'} BM segment active by default`)
+const brandBoxed = await page.evaluate(() => {
+  const m = document.querySelector('.brand-mark')
+  return m ? getComputedStyle(m).borderTopWidth !== '0px' : true
+})
+checks.push(`${!brandBoxed ? 'PASS' : 'FAIL'} brand is a wordmark, not a boxed button`)
+const forkAbout = await page.locator('.card.fork a.fork-about[href="#/about"]').count()
+checks.push(`${forkAbout === 1 ? 'PASS' : 'FAIL'} prominent About link in the first card (${forkAbout})`)
 await has('fork volunteer btn', 'Saya sukarelawan')
 await lacks('locate button removed', 'Guna lokasi saya')
 await has('find-seat search button kept', 'Cari kerusi anda')
 await lacks('custom install chip removed', 'Pasang aplikasi')
 await lacks('cost-trend card cut', 'penunjuk lebih tinggi daripada setahun lalu')
-await lacks('crime card cut', 'Jenayah di Johor')
+await lacks('crime card cut', 'Jenayah di')
 await has('MUDA voice card present', 'Apa MUDA kata tentang isu semasa')
 await has('MUDA voice card is attributed', 'sumber')
 await lacks('no weather-alerts card on home', 'Amaran cuaca')
 await lacks('no flood-alerts card on home', 'Amaran banjir langsung')
 await noOverflow('home')
 
-// ---- seat FIELD (Johor seat: also exercises the cross-region auto-switch) ----
-await page.goto(`${base}/#/seat/n01-buloh-kasap/field`, { waitUntil: 'networkidle' })
+// ---- seat FIELD (Melaka seat) ----
+await page.goto(`${base}/#/seat/n01-kuala-linggi/field`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(600)
 const tabDefs = await page.$$eval('.tabs button', bs => bs.map(b => b.dataset.tab))
 checks.push(`${tabDefs.length === 2 && tabDefs[0] === 'field' && tabDefs[1] === 'hq' && !tabDefs.includes('brief') ? 'PASS' : 'FAIL'} exactly 2 tabs field+hq, no brief (${tabDefs.join(',')})`)
@@ -82,7 +94,7 @@ if (gotvActive) {
   const waBtn = await page.locator('a.btn.wa').count()
   checks.push(`${waBtn === 1 ? 'PASS' : 'FAIL'} WhatsApp .wa button: GOTV only (${waBtn})`)
 } else {
-  await lacks('GOTV auto-hidden after polling day', 'Jom keluar mengundi')
+  await lacks('GOTV hidden until Melaka polling day is set', 'Jom keluar mengundi')
 }
 await has('poster download btn on Field', 'poster')
 const posterImg = await page.evaluate(() => { const i = document.querySelector('img.poster-img'); return i ? i.naturalWidth : 0 })
@@ -98,20 +110,20 @@ await lacks('no flood-alerts card on seat', 'Amaran banjir langsung')
 await noOverflow('seat field top')
 
 // ---- seat default tab is FIELD, and Lapangan is the first tab ----
-await page.goto(`${base}/#/seat/n51-bukit-batu`, { waitUntil: 'networkidle' })
+await page.goto(`${base}/#/seat/n07-gadek`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(400)
-await has('bare seat URL opens Field', 'Cerita kempen')
+await has('bare seat URL opens Field', 'Isu untuk rumah ke rumah')
 const firstTab = await page.locator('.tabs button').first().getAttribute('data-tab')
 checks.push(`${firstTab === 'field' ? 'PASS' : 'FAIL'} Lapangan is the first tab (${firstTab})`)
 const backBtns = await page.locator('a.btn[href="#/"], .crumbs a[href="#/"]').count()
 checks.push(`${backBtns >= 2 ? 'PASS' : 'FAIL'} prominent back buttons on seat page (${backBtns})`)
 
-// ---- seat field (n51) ----
-await page.goto(`${base}/#/seat/n51-bukit-batu/field`, { waitUntil: 'networkidle' })
+// ---- seat field (n07 Gadek — featured, has curated issues) ----
+await page.goto(`${base}/#/seat/n07-gadek/field`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(400)
 await has('campaign-story group in builder', 'Cerita kempen')
-const heroN51Count = await page.locator('.card.hero').count()
-checks.push(`${heroN51Count === 0 ? 'PASS' : 'FAIL'} n51 Field has no black hero (${heroN51Count})`)
+const heroN07Count = await page.locator('.card.hero').count()
+checks.push(`${heroN07Count === 0 ? 'PASS' : 'FAIL'} n07 Field has no black hero (${heroN07Count})`)
 await has('talking points groups', 'Tempatan')
 await has('MUDA-first talking points', 'MUDA:')
 await has('issue as context under MUDA line', 'Isu di sini')
@@ -124,46 +136,36 @@ await lacks('demographics moved off field', 'Profil pengundi')
 await noOverflow('seat field')
 
 // ---- seat analysis ----
-await page.goto(`${base}/#/seat/n51-bukit-batu/hq`, { waitUntil: 'networkidle' })
+await page.goto(`${base}/#/seat/n01-kuala-linggi/hq`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(400)
 await has('history kept', 'Sejarah keputusan')
-await has('saluran kept', 'Analisis daerah mengundi')
 await has('demographics moved here', 'Profil pengundi')
-await has('johor roll ethnicity bars', 'Etnik pengundi')
-await lacks('no census fallback on johor', 'banci 2020')
+await has('melaka census ethnicity bars', 'banci 2020')
+await has('melaka bumiputera label', 'Bumiputera')
 await lacks('kawasanku cut', 'Penunjuk kawasan')
 await lacks('socio series cut', 'Siri sosioekonomi')
 await has('income moved to Analysis', 'Konteks pendapatan')
-await has('growth since 2019 row', 'Pertumbuhan sejak 2019')
 const incHq = await page.evaluate(() => [...document.querySelectorAll('.card h2')].find(h => /Konteks pendapatan/i.test(h.textContent))?.closest('.card')?.innerText || '')
-checks.push(`${/nasional/.test(incHq) && /Johor/.test(incHq) ? 'PASS' : 'FAIL'} income % vs national+state on Analysis`)
-checks.push(`${/Pendapatan \(nilai 2024\)/.test(incHq) ? 'PASS' : 'FAIL'} real-terms row on Analysis income card`)
-const contestHdr = await page.evaluate(() => [...document.querySelectorAll('.card h2')].some(h => /Pertandingan 11 Julai|Keputusan 11 Julai/i.test(h.textContent)))
-checks.push(`${contestHdr ? 'PASS' : 'FAIL'} contest/results card on Analysis`)
+checks.push(`${/nasional/.test(incHq) && /Melaka/.test(incHq) ? 'PASS' : 'FAIL'} income % vs national+state on Analysis`)
 await noOverflow('seat analysis')
 
-// ---- cross-region deep links just work in both directions ----
-await page.goto(`${base}/#/seat/n01-kuala-linggi/hq`, { waitUntil: 'networkidle' })
+// ---- app is Melaka-only: a Johor deep link lands on home ----
+await page.goto(`${base}/#/seat/n51-bukit-batu/hq`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(700)
-const xH1 = await page.evaluate(() => document.querySelector('h1')?.innerText || '')
-const xMlk = await page.evaluate(() => document.querySelector('.state-toggle button[data-state="melaka"]')?.classList.contains('active') ?? false)
-checks.push(`${/KUALA LINGGI/i.test(xH1) && xMlk ? 'PASS' : 'FAIL'} melaka deep link auto-switches region (${xH1}, MLK=${xMlk})`)
-await has('melaka census ethnicity bars', 'banci 2020')
-await has('melaka bumiputera label', 'Bumiputera')
-// AI briefing must actually work on a Melaka seat (regression: null roll
-// ethnicity used to crash briefingMd, making the button silently do nothing)
+const jhrHash = await page.evaluate(() => location.hash)
+const jhrBody = await page.evaluate(() => document.body.innerText)
+checks.push(`${jhrHash === '#/' && /Pusat Data Kerusi DUN Melaka/i.test(jhrBody) ? 'PASS' : 'FAIL'} johor deep link redirects home (hash=${jhrHash})`)
+
+// ---- talking-points export must actually work on a Melaka seat (regression:
+// null roll ethnicity used to crash briefingMd, button silently did nothing) ----
 await page.goto(`${base}/#/seat/n01-kuala-linggi/field`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(500)
 await page.locator('#briefBtn').click()
 await page.waitForTimeout(800)
 const briefClip = await page.evaluate(() => navigator.clipboard.readText()).catch(() => '')
 checks.push(`${briefClip.includes('Talking Points') && briefClip.includes('census, population share') ? 'PASS' : 'FAIL'} talking-points export works on a Melaka seat (${briefClip.length} chars, census-labelled ethnicity)`)
-await page.goto(`${base}/#/seat/n51-bukit-batu/hq`, { waitUntil: 'networkidle' })
-await page.waitForTimeout(700)
-const xJhr = await page.evaluate(() => document.querySelector('.state-toggle button[data-state="johor"]')?.classList.contains('active') ?? false)
-checks.push(`${xJhr ? 'PASS' : 'FAIL'} johor deep link switches back (JHR=${xJhr})`)
 
-// ---- volunteer hub (region is johor at this point in the flow) ----
+// ---- volunteer hub ----
 await page.goto(`${base}/#/volunteer`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(400)
 await lacks('AI briefing btn removed from hub', 'Dapatkan briefing AI')
@@ -171,7 +173,7 @@ await has('build script link', 'Bina skrip')
 await has('hub retitled to script', 'Skrip sukarelawan')
 const volBtns = await page.locator('#volList .vol-row a.btn[href*="/field"]').count()
 const volRows = await page.locator('#volList .vol-row').count()
-checks.push(`${volBtns === volRows && volRows > 0 ? 'PASS' : 'FAIL'} exactly one build-script link per seat row (${volBtns} links / ${volRows} rows)`)
+checks.push(`${volBtns === volRows && volRows === melakaIdx.seats.length ? 'PASS' : 'FAIL'} one build-script link per Melaka seat (${volBtns} links / ${volRows} rows / ${melakaIdx.seats.length} seats)`)
 await noOverflow('volunteer hub')
 // builder flow: hub link -> Field builder -> 3 pre-checked -> uncheck 1 -> copy
 await page.locator('#volList .vol-row a.btn[href*="/field"]').first().click()
@@ -192,14 +194,16 @@ await page.waitForTimeout(500)
 const clip = await page.evaluate(() => navigator.clipboard.readText()).catch(() => '')
 checks.push(`${clip === prev1 && (clip.match(/•/g) || []).length === 2 ? 'PASS' : 'FAIL'} copy puts exactly the previewed talking points on the clipboard`)
 
-// ---- language toggle: BM <-> EN only, zh falls back to bm ----
+// ---- language toggle: BM <-> EN segments, zh falls back to bm ----
 await page.evaluate(() => { localStorage.setItem('lang', 'zh'); location.hash = '#/'; location.reload() })
 await page.waitForTimeout(800)
 await has('zh localStorage falls back to BM', 'Saya sukarelawan')
-await page.evaluate(() => { localStorage.setItem('lang', 'en'); location.reload() })
-await page.waitForTimeout(800)
-await has('EN works', 'Find your seat')
-await page.goto(`${base}/#/seat/n01-buloh-kasap/field`, { waitUntil: 'networkidle' })
+await page.locator('#langToggle button[data-lang="en"]').click()
+await page.waitForTimeout(600)
+await has('EN segment click works', 'Find your seat')
+const enActive = await page.$$eval('#langToggle button', bs => bs.map(b => b.classList.contains('active')))
+checks.push(`${!enActive[0] && enActive[1] ? 'PASS' : 'FAIL'} EN segment shows active after click`)
+await page.goto(`${base}/#/seat/n01-kuala-linggi/field`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(400)
 const posterSrcEn = await page.evaluate(() => document.querySelector('img.poster-img')?.getAttribute('src') || '')
 const posterNaturalWidth = await page.evaluate(() => document.querySelector('img.poster-img')?.naturalWidth || 0)

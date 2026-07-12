@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11l'
+const BUILD = '2026-07-11m'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -14,13 +14,12 @@ const storage = {
   set(k, v) { try { localStorage.setItem(k, v) } catch { /* blocked */ } },
 }
 const LANGS = ['bm', 'en']
-const LANG_LABEL = { bm: 'BM', en: 'EN' }
-// which state's dataset is loaded. Johor is the live campaign; Melaka is the
-// next front (data built by pipeline/run_melaka.mjs into data/melaka/).
-const REGIONS = ['johor', 'melaka']
+// The app is pinned to Melaka — the live campaign (data built by
+// pipeline/run_melaka.mjs into data/melaka/). Johor's PRN concluded 11 July
+// 2026; its data stays on disk but has no UI entry point.
 const state = {
   lang: LANGS.includes(storage.get('lang')) ? storage.get('lang') : 'bm',
-  region: REGIONS.includes(storage.get('region')) ? storage.get('region') : 'melaka',
+  region: 'melaka',
   index: null,
   seats: new Map(), // slug -> seat json
   geo: null,
@@ -271,18 +270,6 @@ async function loadGeo() {
   if (!state.geo) state.geo = await (await fetch(GEO_URL())).json()
   return state.geo
 }
-// switching states invalidates every cached dataset and returns home
-function setRegion(region) {
-  if (!REGIONS.includes(region) || region === state.region) return
-  state.region = region
-  storage.set('region', region)
-  state.index = null; state.seats = new Map(); state.geo = null
-  storage.set('last_seat', '') // a Johor slug must not resume under Melaka
-  location.hash = '#/'
-  syncStateToggle()
-  route()
-}
-
 // ---------- views ----------
 const app = document.getElementById('app')
 
@@ -593,6 +580,7 @@ function heroFork(idx) {
     ${resume}
     ${vol}
     <button class="btn${vol ? ' secondary' : ''}" id="forkSearch">${T('Cari kerusi anda', 'Find your seat')}</button>
+    ${idx.edition === 'muda' ? `<a class="fork-about" href="#/about">${T('Kenapa aplikasi ini wujud → Tentang aplikasi ini', 'Why this app exists → About this app')}</a>` : ''}
   </div>`
 }
 
@@ -1404,22 +1392,10 @@ function renderHq(seat, idx) {
 
 async function renderSeat(slug, tab = 'field') {
   if (tab === 'brief') tab = 'field' // Brief tab retired; legacy links land on Field
-  let idx = await loadIndex()
-  // Shared links must just work: slugs are unique across regions, so a seat
-  // that isn't in the current region's index belongs to the other region —
-  // switch in place (same resets as setRegion, minus the jump to home).
-  if (!idx.seats.some(s => s.slug === slug)) {
-    const other = state.region === 'melaka' ? 'johor' : 'melaka'
-    const otherDir = other === 'melaka' ? 'data/melaka/' : 'data/'
-    const otherIdx = await (await fetch(`${otherDir}index.json`)).json()
-    if (!otherIdx.seats.some(s => s.slug === slug)) throw new Error(`unknown seat ${slug}`)
-    state.region = other
-    storage.set('region', other)
-    state.index = otherIdx; state.seats = new Map(); state.geo = null
-    storage.set('last_seat', '')
-    syncStateToggle()
-    idx = otherIdx
-  }
+  const idx = await loadIndex()
+  // The app is Melaka-only: a slug not in the index (e.g. an old Johor share
+  // link) lands on the home page instead of erroring.
+  if (!idx.seats.some(s => s.slug === slug)) { location.hash = '#/'; return }
   const seat = await loadSeat(slug)
   storage.set('last_seat', slug) // powers the home page's one-tap return chip
   let mapSvg = ''
@@ -1496,32 +1472,24 @@ async function route() {
   }
 }
 
-// cycle BM → EN → 中文 → BM; the button shows the CURRENT language
-const langBtn = document.getElementById('langToggle')
+// segmented BM | EN switch: both languages always visible, tap to pick one
+const langToggle = document.getElementById('langToggle')
 const syncLangBtn = () => {
-  langBtn.textContent = LANG_LABEL[state.lang]
-  langBtn.setAttribute('aria-label', `Language: ${state.lang.toUpperCase()} — tap to switch`)
-}
-langBtn.addEventListener('click', () => {
-  state.lang = LANGS[(LANGS.indexOf(state.lang) + 1) % LANGS.length]
-  storage.set('lang', state.lang)
-  syncLangBtn()
-  route()
-})
-syncLangBtn()
-
-// state (region) toggle: Johor ↔ Melaka
-const stateToggle = document.getElementById('stateToggle')
-const syncStateToggle = () => {
-  stateToggle?.querySelectorAll('button').forEach(b => {
-    const on = b.dataset.state === state.region
+  langToggle.querySelectorAll('button').forEach(b => {
+    const on = b.dataset.lang === state.lang
     b.classList.toggle('active', on)
     b.setAttribute('aria-pressed', on ? 'true' : 'false')
   })
 }
-stateToggle?.querySelectorAll('button').forEach(b =>
-  b.addEventListener('click', () => setRegion(b.dataset.state)))
-syncStateToggle()
+langToggle.querySelectorAll('button').forEach(b =>
+  b.addEventListener('click', () => {
+    if (b.dataset.lang === state.lang) return
+    state.lang = b.dataset.lang
+    storage.set('lang', state.lang)
+    syncLangBtn()
+    route()
+  }))
+syncLangBtn()
 
 window.addEventListener('hashchange', route)
 route()

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Peta MUDA — Pusat Data Kerusi PRN Melaka & Johor</title>
-  <meta name="description" content="Data kerusi DUN Melaka dan Johor: calon, demografi pengundi dan keputusan lalu — daripada data terbuka rasmi.">
+  <title>Peta MUDA — Pusat Data Kerusi PRN Melaka</title>
+  <meta name="description" content="Data kerusi DUN Melaka: calon, demografi pengundi dan keputusan lalu — daripada data terbuka rasmi.">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -17,13 +17,12 @@
       <a class="brand" href="#/">
         <span class="brand-mark">PETA</span><span class="brand-mark brand-invert">MUDA</span>
       </a>
-      <div class="state-toggle" id="stateToggle" role="group" aria-label="Negeri">
-        <button type="button" class="active" data-state="johor" aria-pressed="true">JHR</button>
-        <button type="button" data-state="melaka" aria-pressed="false">MLK</button>
-      </div>
     </div>
     <div class="topbar-right">
-      <button id="langToggle" class="lang-toggle" aria-label="Tukar bahasa / Language / 语言">BM</button>
+      <div class="lang-toggle" id="langToggle" role="group" aria-label="Bahasa / Language">
+        <button type="button" data-lang="bm" aria-pressed="true">BM</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
     </div>
   </header>
   <main id="app" class="container">

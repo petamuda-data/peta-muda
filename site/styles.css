@@ -65,30 +65,23 @@ a { color: inherit; }
   background: var(--bg);
   border-bottom: var(--border-hard);
 }
+/* the brand is a wordmark, NOT a button — no box, just weight + accent underline */
 .brand { text-decoration: none; display: inline-flex; letter-spacing: .5px; }
-.brand-mark {
-  font-weight: 900; font-size: 1.05rem; padding: 2px 7px;
-  border: 2px solid var(--ink); text-transform: uppercase;
-}
-.brand-invert { background: var(--ink); color: #fff; box-shadow: inset 0 -3px 0 var(--accent-2); }
+.brand-mark { font-weight: 900; font-size: 1.15rem; text-transform: uppercase; }
+.brand-invert { box-shadow: inset 0 -5px 0 var(--accent-2); margin-left: 6px; }
 .brand-group { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.state-toggle {
-  display: inline-flex; border: 2px solid var(--ink); border-radius: 0; overflow: hidden;
-  flex-shrink: 0;
+/* the language switch IS a button: segmented BM|EN, bordered + chip shadow */
+.lang-toggle {
+  display: inline-flex; border: 2px solid var(--ink); border-radius: 0;
+  box-shadow: var(--shadow-chip); flex-shrink: 0;
 }
-.state-toggle button {
+.lang-toggle button {
   border: 0; background: transparent; color: var(--ink);
   font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
-  font-size: .68rem; padding: 4px 7px; cursor: pointer;
+  font-size: .8rem; padding: 5px 12px; cursor: pointer;
 }
-.state-toggle button + button { border-left: 2px solid var(--ink); }
-.state-toggle button.active { background: var(--ink); color: var(--accent-2); }
-.state-toggle button:disabled { color: var(--ink-soft); cursor: not-allowed; opacity: .55; }
-.lang-toggle {
-  border: 2px solid var(--ink); background: transparent; color: var(--ink);
-  font-weight: 800; padding: 4px 12px; border-radius: 0; cursor: pointer;
-  font-family: var(--font-display); text-transform: uppercase;
-}
+.lang-toggle button + button { border-left: 2px solid var(--ink); }
+.lang-toggle button.active { background: var(--ink); color: #fff; }
 
 .container { max-width: 680px; margin: 0 auto; padding: 16px 16px 48px; }
 .loading { text-align: center; color: var(--muted); padding: 48px 0; }
@@ -309,6 +302,11 @@ table.data .arrow { color: var(--muted); padding: 0 2px; }
 .fork .btn + .btn { margin-top: 10px; }
 .resume-chip { display: inline-block; margin-bottom: 10px; font-size: .85rem; color: var(--muted); text-decoration: none; }
 .resume-chip strong { color: var(--ink); }
+.fork-about {
+  display: block; text-align: center; margin-top: 14px; padding: 6px 0;
+  font-family: var(--font-display); font-weight: 800; font-size: .95rem;
+  color: var(--ink); text-decoration: underline; text-underline-offset: 3px;
+}
 
 .hero-line { font-size: 1.08rem; margin: .45rem 0; line-height: 1.45; }
 
