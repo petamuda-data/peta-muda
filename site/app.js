@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11o'
+const BUILD = '2026-07-11p'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -287,13 +287,12 @@ function renderFooter(idx) {
 // administration's live exposure next to MUDA's answer.
 
 function countdownCard(idx) {
-  // no announced polling date yet (Melaka) — show the expected window instead
-  // of a broken countdown
+  // no announced polling date yet (Melaka) — show a plain notice instead of a
+  // broken countdown. The expected_by field is the legal backstop deadline,
+  // not a realistic estimate, so it's intentionally not surfaced here.
   if (!idx.election.polling_date) {
-    const exp = idx.election.expected_by
     return `<div class="card"><div class="countdown">
       <div class="label">${T('PRN belum diumumkan', 'Election not yet called')}</div>
-      ${exp ? `<div class="sublabel">${T('Dijangka menjelang', 'Expected by')} ${esc(exp)}</div>` : ''}
     </div></div>`
   }
   const today = new Date(); today.setHours(0, 0, 0, 0)
