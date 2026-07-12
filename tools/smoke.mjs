@@ -143,8 +143,11 @@ await page.goto(`${base}/#/seat/n01-kuala-linggi/hq`, { waitUntil: 'networkidle'
 await page.waitForTimeout(400)
 await has('history kept', 'Sejarah keputusan')
 await has('demographics moved here', 'Profil pengundi')
-await has('melaka census ethnicity bars', 'banci 2020')
-await has('melaka bumiputera label', 'Bumiputera')
+// ethnicity renders either as real roll bars (lake reachable at build) or the
+// census population fallback (offline build) — assert the section + a shared
+// category row, path-agnostically
+await has('melaka voter-ethnicity section present', 'Etnik')
+await has('melaka ethnicity has category rows', 'Cina')
 await lacks('kawasanku cut', 'Penunjuk kawasan')
 await lacks('socio series cut', 'Siri sosioekonomi')
 await has('income moved to Analysis', 'Konteks pendapatan')
@@ -166,7 +169,7 @@ await page.waitForTimeout(500)
 await page.locator('#briefBtn').click()
 await page.waitForTimeout(800)
 const briefClip = await page.evaluate(() => navigator.clipboard.readText()).catch(() => '')
-checks.push(`${briefClip.includes('Talking Points') && briefClip.includes('census, population share') ? 'PASS' : 'FAIL'} talking-points export works on a Melaka seat (${briefClip.length} chars, census-labelled ethnicity)`)
+checks.push(`${briefClip.includes('Talking Points') && /Ethnic/.test(briefClip) ? 'PASS' : 'FAIL'} talking-points export works on a Melaka seat (${briefClip.length} chars, ethnicity line present)`)
 
 // ---- volunteer hub ----
 await page.goto(`${base}/#/volunteer`, { waitUntil: 'networkidle' })

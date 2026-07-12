@@ -17,6 +17,7 @@ import { seatCode, seatName, slugify } from './steps/seats.mjs'
 import { buildHistory } from './steps/history.mjs'
 import { loadGeo } from './steps/geo.mjs'
 import { loadAlerts } from './steps/alerts.mjs'
+import { loadDemographics } from './steps/demographics.mjs'
 
 if (STATE !== 'Melaka') {
   console.error('run_melaka.mjs must be invoked with PIPELINE_STATE=Melaka')
@@ -66,8 +67,8 @@ const seats = voterRows.map(r => {
 log(`seats: ${seats.length} (focus: ${seats.filter(s => s.featured).map(s => s.code).join(', ')})`)
 
 // GE-15 (Nov 2022) is the freshest gazetted Melaka roll until the next PRN is
-// called; the mirror has no ethnicity columns, so `ethnic` is honestly null
-// (the app skips the ethnic bars when absent).
+// called; the mirror has age x sex only. Registered-voter ethnicity is added
+// below from the lake seat_info parquet (`ethnic` starts null here).
 const ROLL_ID = 'GE-15'
 const demographics = new Map(voterRows.map(r => {
   const rec = {
@@ -90,6 +91,51 @@ const demographics = new Map(voterRows.map(r => {
   }
   return [seatCode(r.dun), [rec]]
 }))
+
+// ---- registered-voter ethnicity from the lake seat_info parquet (the same
+// source Johor used; the GE-15 mirror above has none). The lake is only
+// reachable in CI (GitHub Actions), so the fetched breakdown is snapshotted to
+// data/derived and reused by lake-less builds (offline / the sandbox / the
+// curated Routine) — otherwise a rebuild there would silently drop back to the
+// census population bars. Whole block is non-fatal: on any miss, `ethnic` stays
+// null and demoCard falls back to census, exactly as before.
+const ROLL_ETHNIC_SNAPSHOT = path.join('data', 'derived', 'melaka_roll_ethnic.json')
+let rollEthnic = null
+try {
+  const rollDemo = await loadDemographics(seats) // Map<code, [rec desc by date]>
+  const hasEth = (r) => r.ethnic && Object.values(r.ethnic).some(v => v != null && v > 0)
+  const bySeat = {}
+  for (const seat of seats) {
+    const recs = rollDemo.get(seat.code) ?? []
+    const rec = recs.find(r => r.election === ROLL_ID && hasEth(r)) ?? recs.find(hasEth)
+    if (rec) bySeat[seat.code] = { election: rec.election, date: rec.date, voters_total: rec.voters_total, ethnic: rec.ethnic }
+  }
+  if (Object.keys(bySeat).length) {
+    rollEthnic = { source: 'lake.electiondata.my/seat_info/demographics.parquet', roll: ROLL_ID, updated: new Date().toISOString().slice(0, 10), by_seat: bySeat }
+    await mkdir(path.dirname(ROLL_ETHNIC_SNAPSHOT), { recursive: true })
+    await writeFile(ROLL_ETHNIC_SNAPSHOT, JSON.stringify(rollEthnic, null, 2) + '\n')
+    log(`roll ethnicity: fetched ${Object.keys(bySeat).length}/${seats.length} seats from lake; snapshot updated`)
+  } else {
+    log('roll ethnicity: lake reachable but no Melaka ethnic rows matched')
+  }
+} catch (e) {
+  log(`roll ethnicity: lake unavailable (${e.message})`)
+}
+if (!rollEthnic) {
+  try {
+    rollEthnic = JSON.parse(await readFile(ROLL_ETHNIC_SNAPSHOT, 'utf8'))
+    log(`roll ethnicity: using committed snapshot (${rollEthnic.updated}, ${Object.keys(rollEthnic.by_seat ?? {}).length} seats)`)
+  } catch {
+    log('roll ethnicity: no lake, no snapshot — census population bars will show instead')
+  }
+}
+if (rollEthnic?.by_seat) {
+  for (const seat of seats) {
+    const e = rollEthnic.by_seat[seat.code]
+    const rec = demographics.get(seat.code)?.[0]
+    if (e?.ethnic && rec) rec.ethnic = e.ethnic
+  }
+}
 
 // ---- history from the MECo consolidated mirror (same schema as the lake) ----
 log('loading election history (MECo mirror)')

@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11p'
+const BUILD = '2026-07-12a'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -87,7 +87,7 @@ const STR = {
     beat_national: 'Nasional',
     talking_points: 'Isu untuk rumah ke rumah',
     tp_sub: '3 point terkuat sudah ditanda — tanda/buang pilihan, semak pratonton, salin. Dijana daripada data rasmi.',
-    demo_title: 'Profil pengundi (daftar pemilih 2026)',
+    demo_title: 'Profil pengundi',
     age_dist: 'Umur pengundi',
     ethnic_dist: 'Etnik pengundi',
     new_voters: 'pengundi baharu sejak PRU15 (Nov 2022)',
@@ -164,7 +164,7 @@ const STR = {
     beat_national: 'National',
     talking_points: 'Door-knocking talking points',
     tp_sub: 'The 3 strongest points are pre-ticked — adjust the selection, check the preview, copy. Generated from official data.',
-    demo_title: 'Voter profile (2026 electoral roll)',
+    demo_title: 'Voter profile',
     age_dist: 'Voter age',
     ethnic_dist: 'Voter ethnicity',
     new_voters: 'new voters since GE15 (Nov 2022)',
