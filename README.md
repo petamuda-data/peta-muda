@@ -112,8 +112,10 @@ tools/poster/               poster PNG generation (bilingual, per-seat + statewi
   instead of a day count until SPR sets one.
 - HIES income/poverty exists only for 2019/2022/2024; Melaka seat-level income is a
   single 2020 estimate compared against the nearest common benchmark year.
-- Voter-roll ethnicity is not published for Melaka; the app falls back to labelled
-  2020 census population shares (disclosed in-app as population, not roll, data).
+- Voter ethnicity is the **registered-voter** breakdown from the GE-15 (2022) roll — the
+  freshest gazetted Melaka roll until the next PRN is called. If that source is ever
+  unavailable at build time, the app falls back to labelled 2020 census population shares
+  (clearly disclosed as population, not roll, data).
 - The in-app disclaimer asks users to verify facts before publishing campaign material.
 
 ## License & credits

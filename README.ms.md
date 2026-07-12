@@ -112,8 +112,10 @@ tools/poster/               penjanaan PNG poster (dwibahasa, setiap kerusi + sel
   dan bukan kiraan hari sehingga SPR menetapkan satu.
 - HIES pendapatan/kemiskinan hanya wujud untuk 2019/2022/2024; pendapatan peringkat kerusi Melaka ialah
   satu anggaran 2020 sahaja yang dibandingkan dengan tahun penanda aras sepunya terdekat.
-- Etnik daftar pemilih tidak diterbitkan untuk Melaka; aplikasi berbalik kepada bahagian penduduk
-  banci 2020 yang berlabel (didedahkan dalam aplikasi sebagai data penduduk, bukan daftar pemilih).
+- Etnik pengundi ialah pecahan **pengundi berdaftar** daripada daftar GE-15 (2022) — daftar
+  Melaka terkini yang diwartakan sehingga PRN akan datang diumumkan. Jika sumber itu tidak
+  tersedia semasa binaan, aplikasi berbalik kepada bahagian penduduk banci 2020 yang berlabel
+  (didedahkan dengan jelas sebagai data penduduk, bukan daftar pemilih).
 - Penafian dalam aplikasi meminta pengguna mengesahkan fakta sebelum menerbitkan bahan kempen.
 
 ## Lesen & kredit
