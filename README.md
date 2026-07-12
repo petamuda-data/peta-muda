@@ -1,85 +1,69 @@
 # Peta MUDA — Seat Command Center
 
-**Constituency intelligence for the 2026 Johor state election (PRN, polling 11 July 2026), built 100% on open data.**
+**Live app: https://peta-muda.petamuda-data.workers.dev**
 
-One page per DUN seat, three depths for three audiences:
+**Constituency intelligence for the Melaka state election (PRN Melaka, date not yet announced — expected by Feb 2027), built 100% on open data.**
+
+One page per DUN seat, two depths for two audiences:
 
 | Tab | Audience | What it shows |
 |---|---|---|
-| **Ringkas** (Brief) | Public / data novices | The official 2026 candidate list, local grocery prices vs Mar 2022 (the last election), income context, one-tap shareable summary |
-| **Lapangan** (Field) | Candidates & volunteers | Auto-generated door-knocking talking points, 2026 voter-roll profile (age / ethnicity / Undi18 cohort), latest prices at named local markets |
-| **Analisis** (Analysis) | Campaign HQ | Full result history, 2022 polling-district (saluran) breakdown with bloc shares & turnout, DOSM Kawasanku indicators, HIES/LFS series, JSON/CSV export |
+| **Lapangan** (Field) | Candidates & volunteers | Auto-generated door-knocking talking points (local + national issues + campaign stories, MUDA-first), a shareable poster, GOTV info once polling day is set, field notes |
+| **Analisis** (Analysis) | Campaign HQ | Full result history, 2026 voter-roll profile (age / ethnicity), income vs national/state benchmarks, JSON/CSV export |
 
-What makes it more useful than any single source: the three datasets are **joined on the constituency**. The price of chicken at the pasar in Muar sits next to Maharani's median household income, the size of its under-30 electorate, and MUDA's 2022 vote share by polling district — on one phone screen.
+A volunteer hub (`#/volunteer`) builds a per-seat door-knocking script in one tap: the three strongest points are pre-selected, adjustable, and copy straight to the clipboard.
 
 ## Data sources (all free, keyless)
 
 | Source | What we take | License |
 |---|---|---|
-| [ElectionData.MY](https://electiondata.my) open data lake | Results 1955–present, 2026 nomination ballots (`result: "pending"`), saluran-level 2022 results, per-seat voter demographics **including the JHR-SE-16 roll**, boundary GeoJSON | CC0 |
-| [data.gov.my](https://developer.data.gov.my) / OpenDOSM | `hh_income_dun`, `hh_poverty_dun`, `hh_inequality_dun`, `hh_expenditure_dun`, `lfs_dun`, `fuelprice`, `cpi_state_inflation`, Kawasanku scorecard, DUN GeoJSON | CC BY 4.0 |
-| KPDN **PriceCatcher** (via `storage.data.gov.my`) | Daily item-level prices at 3,884 premises; we build weekly medians for a 12-item kitchen basket at national / Johor / district scope | CC BY 4.0 |
-| [pasarapi.xyz](https://pasarapi.xyz) | API directory + `/health` uptime monitor for the datasets above (shown in the footer) | — |
+| [ElectionData.MY](https://electiondata.my) / [MECo](https://github.com/Thevesh/paper-meco-results) open data | Results 1955–present, per-seat voter demographics, boundary GeoJSON | CC0 |
+| [data.gov.my](https://developer.data.gov.my) / OpenDOSM | `hh_income_dun`, `hh_poverty_dun`, `hh_inequality_dun`, `lfs_dun`, DUN GeoJSON, CPI | CC BY 4.0 |
+| Hand-curated `data/manual/melaka/issues.json` | Fact-checked local + national campaign issues, each carrying a sourced verdict (VERIFIED / CONFIRMED / PARTLY_CONFIRMED / REPORTED / NO_VERIFIED_POSITION) | — |
+
+Johor's PRN (polling 11 July 2026) is retired from the app; its pipeline (`pipeline/run.mjs`) still runs nightly for archive purposes but is no longer surfaced in the UI.
 
 ## Run it
 
 ```bash
 npm ci
-node pipeline/run.mjs   # ~1 min first run (downloads + caches source files into .cache/)
-node tools/serve.mjs    # serves site/ at http://localhost:8123
+PIPELINE_STATE=Melaka EDITION=muda node pipeline/run_melaka.mjs   # writes site/data/melaka/
+node tools/serve.mjs                                              # serves site/ at http://localhost:8123
+node tools/smoke.mjs                                               # headless end-to-end check
 ```
 
-The pipeline writes `site/data/index.json`, `site/data/seats/<slug>.json` (56 seats) and
-`site/data/johor_dun.geojson` (~2 MB total). The site is fully static — host it anywhere
-(GitHub Pages, Cloudflare Pages, Netlify). `.github/workflows/refresh.yml` refreshes the
-data nightly and deploys to GitHub Pages once the repo is pushed to GitHub with Pages
-enabled (Settings → Pages → Source: GitHub Actions).
-
-Set `PIPELINE_NO_CACHE=1` to force fresh downloads.
+The site is fully static (`site/`) — Cloudflare Workers Builds auto-deploys on every push
+to `main`. `.github/workflows/refresh.yml` refreshes the data every 4 hours (Melaka
+pipeline is the fatal step; Johor is legacy/non-fatal).
 
 ## Architecture
 
 ```
 pipeline/
-  config.mjs          scope (Johor), target seats, basket categories, parlimen->KPDN map
-  run.mjs             orchestrator: assembles per-seat JSONs + index
-  lib/                fetch (retry+cache), CSV parser, parquet (hyparquet)
-  steps/              one module per source: seats, history, saluran,
-                      demographics, kawasanku, socio, prices, geo
-site/                 static app (no build step): index.html, app.js, styles.css
-data/manual/se16.json editable notes per seat (candidates come from live data)
-tools/serve.mjs       dev server
+  config.mjs             STATE/EDITION scope, target seats
+  run_melaka.mjs          Melaka orchestrator (MECo mirrors + DOSM socio data)
+  run.mjs                 legacy Johor orchestrator
+  lib/                    fetch (retry+cache), CSV parser, parquet (hyparquet)
+  steps/                  one module per source: seats, history, geo, alerts
+site/                     static app (no build step): index.html, app.js, styles.css
+data/manual/               editable, sourced notes: melaka/issues.json, income_benchmarks.json,
+                            muda_stances.json, national_issues.json, muda_record.json
+tools/serve.mjs            dev server
+tools/smoke.mjs            headless Playwright regression suite (~76 checks)
+tools/poster/               poster PNG generation (bilingual, per-seat + statewide)
 ```
-
-Key join facts (verified live):
-- Seat strings are byte-identical across sources: `'N.15 Maharani'` + separate `state`
-  column. electiondata.my dropdowns append `', Johor'` — stripped at ingest.
-- DUN N-codes repeat across states — every DUN join is scoped to Johor.
-- PriceCatcher premises have no coordinates; they map to seats via a hand-built
-  **parlimen → KPDN district** table (`config.mjs`). KPDN has no `Kulai` district
-  (Kulai-area seats use Johor Bahru premises) and uses both `Ledang` and `Tangkak`
-  for one district (merged). This is a *market-catchment approximation*, disclosed in-app.
-
-## Extending
-
-- **Negeri Sembilan (polling 1 Aug 2026, nomination 18 Jul):** generalize `config.mjs`
-  (STATE, ELECTION_2026, a NS parlimen→KPDN map), swap the saluran source to the NS
-  file when the lake publishes it, and re-run. The lake's demographics parquet already
-  carries every state; nomination ballots appear as `result: "pending"` rows in
-  `headline_ballots.csv` right after nomination day.
-- **GE16:** the same spine scales to all 222 parlimen + 600 DUN (use `hh_*_parlimen`,
-  `lfs_parlimen`, GE saluran files).
 
 ## Honest limitations
 
-- District-level prices are a catchment approximation, not seat-exact (KPDN monitors
-  ~180 districts, not constituencies).
-- HIES income/poverty exists only for 2019/2022/2024; LFS from 2021; both are estimates.
-- Voter-roll ethnicity/age come from the SPR roll via ElectionData.MY (CC0, anonymised).
-- The saluran analysis is the **2022** election — a guide to geography, not a prediction.
+- Melaka's PRN date is not yet announced — the countdown card shows the expected window
+  instead of a day count until it's set.
+- HIES income/poverty exists only for 2019/2022/2024; Melaka seat-level income is a
+  single 2020 estimate compared against the nearest common benchmark year.
+- Voter-roll ethnicity is not published for Melaka; the app falls back to labelled
+  2020 census population shares (disclosed in-app as population, not roll, data).
 - The in-app disclaimer asks users to verify facts before publishing campaign material.
 
 ## License & credits
 
 Code: MIT. Data: per-source licenses above. Built with the Malaysian Election Corpus
-(Thevesh Theva et al., CC0), DOSM/JDN open data, and KPDN PriceCatcher.
+(Thevesh Theva et al., CC0) and DOSM/JDN open data.
