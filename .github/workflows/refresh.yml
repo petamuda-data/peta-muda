@@ -41,8 +41,24 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - name: Run pipeline
-        run: node pipeline/run.mjs
+      - name: Run Melaka pipeline
+        # Melaka is the live campaign and the only state the app serves —
+        # this step is FATAL: a Melaka build failure must fail the job loudly,
+        # not pass silently. Writes site/data/melaka.
+        run: PIPELINE_STATE=Melaka node pipeline/run_melaka.mjs
+        env:
+          # The deployed site is the MUDA-edition build (team/campaign use:
+          # volunteer hub + talking-points export). Remove this env to publish
+          # the neutral public edition instead.
+          EDITION: muda
+          # live JPS flood-warning feed (keyless data.gov.my OpenAPI); only
+          # fetched in CI, snapshot-committed for reproducible offline builds
+          ALERTS_FEED: '1'
+      - name: Run Johor pipeline (legacy, non-fatal)
+        # Johor's PRN concluded 11 July 2026 and the app no longer surfaces
+        # it; keep the dataset ticking over for the archive but never let a
+        # decaying Johor source block the Melaka refresh.
+        run: node pipeline/run.mjs || echo "johor build skipped"
         env:
           PIPELINE_NO_CACHE: '1'
           # intake queue (approved ground/news stories); pipeline falls back to
@@ -50,19 +66,6 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           INTAKE_PASS: ${{ secrets.INTAKE_PASS }}
-          # The deployed site is the MUDA-edition build (team/campaign use:
-          # volunteer hub + AI briefings). Remove this env to publish the
-          # neutral public edition instead.
-          EDITION: muda
-          # live JPS flood-warning feed (keyless data.gov.my OpenAPI); only
-          # fetched in CI, snapshot-committed for reproducible offline builds
-          ALERTS_FEED: '1'
-      - name: Run Melaka pipeline
-        # the next front — same corpus filtered to Melaka + curated issues,
-        # written to site/data/melaka. Non-fatal so a Melaka-source hiccup
-        # never blocks the Johor refresh.
-        run: PIPELINE_STATE=Melaka node pipeline/run_melaka.mjs || echo "melaka build skipped"
-        env:
           EDITION: muda
           ALERTS_FEED: '1'
       - name: Commit refreshed data

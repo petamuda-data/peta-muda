@@ -5,7 +5,7 @@ import { suggestTheme } from './ops-match.mjs'
 // Code build tag, shown in the footer. Bump on every shipped app change — it's
 // the on-device proof of which build a phone is actually running (the cache-
 // staleness diagnostic). Not the data build time (that's idx.built_at).
-const BUILD = '2026-07-11m'
+const BUILD = '2026-07-11n'
 
 // localStorage may be blocked (SecurityError) or hold a foreign value written
 // by another app on a shared origin (e.g. github.io) — only accept 'en'/'bm'.
@@ -33,8 +33,6 @@ const REGION_LABEL = () => state.region === 'melaka' ? 'Melaka' : 'Johor'
 const STR = {
   bm: {
     days_to_poll: 'hari lagi ke hari mengundi',
-    poll_day: 'Hari mengundi: 11 Julai 2026',
-    early_vote: 'Undi awal: 7 Julai 2026',
     poll_today: 'HARI MENGUNDI — keluar mengundi!',
     poll_over: () => `PRN ${REGION_LABEL()} telah selesai. Terima kasih kerana mengundi!`,
     featured: 'Kerusi Blok Progresif (MUDA–PSM)',
@@ -90,7 +88,6 @@ const STR = {
     talking_points: 'Isu untuk rumah ke rumah',
     tp_sub: '3 point terkuat sudah ditanda — tanda/buang pilihan, semak pratonton, salin. Dijana daripada data rasmi.',
     demo_title: 'Profil pengundi (daftar pemilih 2026)',
-    demo_sub: 'Daftar pemilih JHR-SE-16 — ElectionData.MY',
     age_dist: 'Umur pengundi',
     ethnic_dist: 'Etnik pengundi',
     new_voters: 'pengundi baharu sejak PRU15 (Nov 2022)',
@@ -113,8 +110,6 @@ const STR = {
   },
   en: {
     days_to_poll: 'days to polling day',
-    poll_day: 'Polling day: 11 July 2026',
-    early_vote: 'Early voting: 7 July 2026',
     poll_today: 'POLLING DAY — get out and vote!',
     poll_over: () => `The ${REGION_LABEL()} election has concluded. Thank you for voting!`,
     featured: 'Progressive Bloc seats (MUDA–PSM)',
@@ -170,7 +165,6 @@ const STR = {
     talking_points: 'Door-knocking talking points',
     tp_sub: 'The 3 strongest points are pre-ticked — adjust the selection, check the preview, copy. Generated from official data.',
     demo_title: 'Voter profile (2026 electoral roll)',
-    demo_sub: 'JHR-SE-16 roll — ElectionData.MY',
     age_dist: 'Voter age',
     ethnic_dist: 'Voter ethnicity',
     new_voters: 'new voters since GE15 (Nov 2022)',
@@ -309,7 +303,7 @@ function countdownCard(idx) {
   if (days > 0) {
     inner = `<div class="days" style="--dleft:${Math.max(0, Math.min(1, days / 14)).toFixed(2)}">${days}</div>
       <div><div class="label">${L('days_to_poll')}</div>
-      <div class="sublabel">${L('poll_day')} · ${L('early_vote')}</div></div>`
+      <div class="sublabel">${T('Hari mengundi', 'Polling day')}: ${esc(idx.election.polling_date)}${idx.election.early_voting_date ? ` · ${T('Undi awal', 'Early voting')}: ${esc(idx.election.early_voting_date)}` : ''}</div></div>`
   } else if (days === 0) {
     inner = `<div class="days">0</div><div class="label">${L('poll_today')}</div>`
   } else {
