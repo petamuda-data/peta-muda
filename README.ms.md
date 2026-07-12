@@ -2,7 +2,7 @@
 
 [English](README.md) · **Bahasa Malaysia**
 
-**Aplikasi langsung: https://peta-muda.petamuda-data.workers.dev**
+**Aplikasi: https://peta-muda.petamuda-data.workers.dev**
 
 **Perisikan kerusi DUN untuk Pilihan Raya Negeri Melaka (PRN Melaka, tarikh belum diumumkan), dibina 100% atas data terbuka.**
 
