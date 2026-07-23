@@ -1,5 +1,5 @@
 {
- "as_of": "2026-07-22",
+ "as_of": "2026-07-23",
  "counts": {
   "danger": 0,
   "warning": 0,
@@ -10,15 +10,15 @@
  "weather": [
   {
    "title": "Warning on Thunderstorms",
-   "valid_to": "2026-07-22T17:00:00"
-  },
-  {
-   "title": "Warning on Thunderstorms",
-   "valid_to": "2026-07-22T17:00:00"
+   "valid_to": "2026-07-23T17:00:00"
   },
   {
    "title": "Warning on Strong Wind and Rough Seas (First Category)",
    "valid_to": "2026-07-25T00:00:00"
+  },
+  {
+   "title": "Thunderstorms Warning",
+   "valid_to": "2026-07-23T15:00:00"
   }
  ]
 }
