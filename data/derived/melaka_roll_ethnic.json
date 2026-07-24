@@ -1,7 +1,7 @@
 {
   "source": "lake.electiondata.my/seat_info/demographics.parquet",
   "roll": "GE-15",
-  "updated": "2026-07-23",
+  "updated": "2026-07-24",
   "by_seat": {
     "N.01": {
       "election": "GE-15",
