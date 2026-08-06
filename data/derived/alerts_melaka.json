@@ -1,5 +1,5 @@
 {
- "as_of": "2026-08-05",
+ "as_of": "2026-08-06",
  "counts": {
   "danger": 0,
   "warning": 0,
@@ -13,12 +13,12 @@
    "valid_to": "2026-08-08T00:00:00"
   },
   {
-   "title": "Warning on Thunderstorms",
-   "valid_to": "2026-08-05T17:00:00"
+   "title": "Warning on Strong Wind and Rough Seas (First Category)",
+   "valid_to": "2026-08-08T00:00:00"
   },
   {
-   "title": "Warning on Thunderstorms",
-   "valid_to": "2026-08-05T17:00:00"
+   "title": "Warning on Strong Wind and Rough Seas (First Category)",
+   "valid_to": "2026-08-08T00:00:00"
   }
  ]
 }
