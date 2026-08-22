@@ -1,5 +1,5 @@
 {
- "as_of": "2026-08-21",
+ "as_of": "2026-08-22",
  "counts": {
   "danger": 0,
   "warning": 0,
@@ -9,16 +9,16 @@
  "stations": [],
  "weather": [
   {
-   "title": "FOR SHIPPING",
-   "valid_to": "2026-08-21T00:00:00"
+   "title": "FIRST CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
+   "valid_to": "2026-08-27T00:00:00"
   },
   {
-   "title": "FOR SHIPPING",
-   "valid_to": "2026-08-21T13:00:00"
+   "title": "FIRST CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
+   "valid_to": "2026-08-27T00:00:00"
   },
   {
-   "title": "No Advisory",
-   "valid_to": null
+   "title": "FIRST CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
+   "valid_to": "2026-08-22T13:00:00"
   }
  ]
 }
