@@ -1,5 +1,5 @@
 {
- "as_of": "2026-08-24",
+ "as_of": "2026-08-25",
  "counts": {
   "danger": 0,
   "warning": 0,
@@ -9,16 +9,16 @@
  "stations": [],
  "weather": [
   {
+   "title": "THUNDERSTORMS WARNING",
+   "valid_to": "2026-08-25T13:00:00"
+  },
+  {
    "title": "FIRST CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
    "valid_to": "2026-08-27T00:00:00"
   },
   {
    "title": "FIRST CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
    "valid_to": "2026-08-25T00:00:00"
-  },
-  {
-   "title": "FIRST CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
-   "valid_to": "2026-08-24T14:00:00"
   }
  ]
 }
