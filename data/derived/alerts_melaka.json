@@ -1,5 +1,5 @@
 {
- "as_of": "2026-08-26",
+ "as_of": "2026-08-27",
  "counts": {
   "danger": 0,
   "warning": 0,
@@ -9,16 +9,16 @@
  "stations": [],
  "weather": [
   {
-   "title": "FIRST CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
-   "valid_to": "2026-08-27T00:00:00"
+   "title": "SECOND CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
+   "valid_to": "2026-08-31T00:00:00"
   },
   {
-   "title": "FIRST CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
-   "valid_to": "2026-08-27T00:00:00"
+   "title": "SECOND CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
+   "valid_to": "2026-08-29T00:00:00"
   },
   {
-   "title": "FIRST CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
-   "valid_to": "2026-08-26T13:00:00"
+   "title": "SECOND CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
+   "valid_to": "2026-08-28T01:00:00"
   }
  ]
 }
