@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-19",
+ "as_of": "2026-10-20",
  "counts": {
   "danger": 0,
   "warning": 0,
@@ -10,15 +10,15 @@
  "weather": [
   {
    "title": "Warning on Strong Wind and Rough Seas",
-   "valid_to": "2026-10-19T00:00:00"
+   "valid_to": "2026-10-23T00:00:00"
   },
   {
    "title": "Warning on Strong Wind and Rough Seas",
-   "valid_to": "2026-10-19T18:00:00"
+   "valid_to": "2026-10-20T17:00:00"
   },
   {
-   "title": "No Advisory",
-   "valid_to": null
+   "title": "THUNDERSTORMS WARNING",
+   "valid_to": "2026-10-20T18:00:00"
   }
  ]
 }
