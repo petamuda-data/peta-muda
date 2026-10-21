@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-20",
+ "as_of": "2026-10-21",
  "counts": {
   "danger": 0,
   "warning": 0,
@@ -9,16 +9,16 @@
  "stations": [],
  "weather": [
   {
-   "title": "Warning on Strong Wind and Rough Seas",
+   "title": "SECOND CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
+   "valid_to": "2026-10-27T00:00:00"
+  },
+  {
+   "title": "SECOND CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
    "valid_to": "2026-10-23T00:00:00"
   },
   {
-   "title": "Warning on Strong Wind and Rough Seas",
-   "valid_to": "2026-10-20T17:00:00"
-  },
-  {
-   "title": "THUNDERSTORMS WARNING",
-   "valid_to": "2026-10-20T18:00:00"
+   "title": "SECOND CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
+   "valid_to": "2026-10-21T18:00:00"
   }
  ]
 }
