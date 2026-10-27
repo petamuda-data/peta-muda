@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-26",
+ "as_of": "2026-10-27",
  "counts": {
   "danger": 0,
   "warning": 0,
@@ -14,11 +14,11 @@
   },
   {
    "title": "SECOND CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
-   "valid_to": "2026-10-27T00:00:00"
+   "valid_to": "2026-10-27T18:00:00"
   },
   {
-   "title": "SECOND CATEGORY WARNING ON STRONG WINDS AND ROUGH SEAS",
-   "valid_to": "2026-10-26T18:00:00"
+   "title": "No Advisory",
+   "valid_to": null
   }
  ]
 }
