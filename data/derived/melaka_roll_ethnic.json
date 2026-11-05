@@ -1,20 +1,20 @@
 {
   "source": "lake.electiondata.my/seat_info/demographics.parquet",
   "roll": "GE-15",
-  "updated": "2026-11-03",
+  "updated": "2026-11-05",
   "by_seat": {
     "N.01": {
       "election": "GE-15",
       "date": "2022-11-19",
       "voters_total": 14791,
       "ethnic": {
-        "ethnic_malay": 10560,
+        "ethnic_malay": 10561,
         "ethnic_chinese": 3141,
         "ethnic_indian": 218,
         "ethnic_bumi_sabah": 47,
         "ethnic_bumi_sarawak": 28,
         "ethnic_orang_asli": 1,
-        "ethnic_other": 796
+        "ethnic_other": 795
       }
     },
     "N.02": {
@@ -22,13 +22,13 @@
       "date": "2022-11-19",
       "voters_total": 14019,
       "ethnic": {
-        "ethnic_malay": 12971,
-        "ethnic_chinese": 633,
+        "ethnic_malay": 12973,
+        "ethnic_chinese": 632,
         "ethnic_indian": 267,
         "ethnic_bumi_sabah": 19,
         "ethnic_bumi_sarawak": 20,
         "ethnic_orang_asli": 2,
-        "ethnic_other": 107
+        "ethnic_other": 106
       }
     },
     "N.03": {
@@ -38,11 +38,11 @@
       "ethnic": {
         "ethnic_malay": 13571,
         "ethnic_chinese": 597,
-        "ethnic_indian": 658,
+        "ethnic_indian": 659,
         "ethnic_bumi_sabah": 21,
         "ethnic_bumi_sarawak": 12,
         "ethnic_orang_asli": 8,
-        "ethnic_other": 134
+        "ethnic_other": 133
       }
     },
     "N.04": {
@@ -65,11 +65,11 @@
       "voters_total": 11101,
       "ethnic": {
         "ethnic_malay": 8714,
-        "ethnic_chinese": 1343,
+        "ethnic_chinese": 1345,
         "ethnic_indian": 667,
         "ethnic_bumi_sabah": 22,
         "ethnic_bumi_sarawak": 3,
-        "ethnic_orang_asli": 295,
+        "ethnic_orang_asli": 293,
         "ethnic_other": 57
       }
     },
@@ -79,9 +79,9 @@
       "voters_total": 21894,
       "ethnic": {
         "ethnic_malay": 14585,
-        "ethnic_chinese": 3911,
-        "ethnic_indian": 3216,
-        "ethnic_bumi_sabah": 40,
+        "ethnic_chinese": 3910,
+        "ethnic_indian": 3218,
+        "ethnic_bumi_sabah": 39,
         "ethnic_bumi_sarawak": 32,
         "ethnic_orang_asli": 3,
         "ethnic_other": 107
@@ -92,12 +92,12 @@
       "date": "2022-11-19",
       "voters_total": 16344,
       "ethnic": {
-        "ethnic_malay": 9946,
-        "ethnic_chinese": 3405,
-        "ethnic_indian": 2790,
+        "ethnic_malay": 9944,
+        "ethnic_chinese": 3400,
+        "ethnic_indian": 2799,
         "ethnic_bumi_sabah": 24,
         "ethnic_bumi_sarawak": 15,
-        "ethnic_orang_asli": 37,
+        "ethnic_orang_asli": 35,
         "ethnic_other": 127
       }
     },
@@ -106,9 +106,9 @@
       "date": "2022-11-19",
       "voters_total": 15880,
       "ethnic": {
-        "ethnic_malay": 7243,
-        "ethnic_chinese": 5940,
-        "ethnic_indian": 2230,
+        "ethnic_malay": 7242,
+        "ethnic_chinese": 5939,
+        "ethnic_indian": 2232,
         "ethnic_bumi_sabah": 34,
         "ethnic_bumi_sarawak": 16,
         "ethnic_orang_asli": 309,
@@ -135,11 +135,11 @@
       "voters_total": 20004,
       "ethnic": {
         "ethnic_malay": 12819,
-        "ethnic_chinese": 4388,
-        "ethnic_indian": 2273,
+        "ethnic_chinese": 4384,
+        "ethnic_indian": 2278,
         "ethnic_bumi_sabah": 22,
         "ethnic_bumi_sarawak": 18,
-        "ethnic_orang_asli": 349,
+        "ethnic_orang_asli": 348,
         "ethnic_other": 135
       }
     },
@@ -148,13 +148,13 @@
       "date": "2022-11-19",
       "voters_total": 28257,
       "ethnic": {
-        "ethnic_malay": 21879,
+        "ethnic_malay": 21882,
         "ethnic_chinese": 2532,
-        "ethnic_indian": 781,
-        "ethnic_bumi_sabah": 1201,
-        "ethnic_bumi_sarawak": 1569,
-        "ethnic_orang_asli": 44,
-        "ethnic_other": 251
+        "ethnic_indian": 782,
+        "ethnic_bumi_sabah": 1200,
+        "ethnic_bumi_sarawak": 1566,
+        "ethnic_orang_asli": 45,
+        "ethnic_other": 250
       }
     },
     "N.12": {
@@ -162,13 +162,13 @@
       "date": "2022-11-19",
       "voters_total": 20174,
       "ethnic": {
-        "ethnic_malay": 15882,
-        "ethnic_chinese": 3285,
-        "ethnic_indian": 168,
-        "ethnic_bumi_sabah": 235,
+        "ethnic_malay": 15880,
+        "ethnic_chinese": 3282,
+        "ethnic_indian": 169,
+        "ethnic_bumi_sabah": 236,
         "ethnic_bumi_sarawak": 50,
         "ethnic_orang_asli": 7,
-        "ethnic_other": 547
+        "ethnic_other": 550
       }
     },
     "N.13": {
@@ -176,13 +176,13 @@
       "date": "2022-11-19",
       "voters_total": 41144,
       "ethnic": {
-        "ethnic_malay": 25115,
-        "ethnic_chinese": 12342,
-        "ethnic_indian": 2639,
-        "ethnic_bumi_sabah": 168,
+        "ethnic_malay": 25116,
+        "ethnic_chinese": 12341,
+        "ethnic_indian": 2641,
+        "ethnic_bumi_sabah": 167,
         "ethnic_bumi_sarawak": 99,
         "ethnic_orang_asli": 14,
-        "ethnic_other": 767
+        "ethnic_other": 766
       }
     },
     "N.14": {
@@ -190,13 +190,13 @@
       "date": "2022-11-19",
       "voters_total": 26423,
       "ethnic": {
-        "ethnic_malay": 17673,
-        "ethnic_chinese": 7564,
-        "ethnic_indian": 618,
+        "ethnic_malay": 17672,
+        "ethnic_chinese": 7562,
+        "ethnic_indian": 620,
         "ethnic_bumi_sabah": 108,
         "ethnic_bumi_sarawak": 69,
         "ethnic_orang_asli": 3,
-        "ethnic_other": 388
+        "ethnic_other": 389
       }
     },
     "N.15": {
@@ -204,9 +204,9 @@
       "date": "2022-11-19",
       "voters_total": 25559,
       "ethnic": {
-        "ethnic_malay": 16379,
+        "ethnic_malay": 16376,
         "ethnic_chinese": 7260,
-        "ethnic_indian": 1476,
+        "ethnic_indian": 1479,
         "ethnic_bumi_sabah": 95,
         "ethnic_bumi_sarawak": 42,
         "ethnic_orang_asli": 6,
@@ -219,12 +219,12 @@
       "voters_total": 36058,
       "ethnic": {
         "ethnic_malay": 15288,
-        "ethnic_chinese": 17173,
+        "ethnic_chinese": 17172,
         "ethnic_indian": 3006,
         "ethnic_bumi_sabah": 135,
         "ethnic_bumi_sarawak": 78,
         "ethnic_orang_asli": 7,
-        "ethnic_other": 371
+        "ethnic_other": 372
       }
     },
     "N.17": {
@@ -233,8 +233,8 @@
       "voters_total": 33563,
       "ethnic": {
         "ethnic_malay": 21325,
-        "ethnic_chinese": 10034,
-        "ethnic_indian": 1624,
+        "ethnic_chinese": 10035,
+        "ethnic_indian": 1623,
         "ethnic_bumi_sabah": 125,
         "ethnic_bumi_sarawak": 73,
         "ethnic_orang_asli": 2,
@@ -246,13 +246,13 @@
       "date": "2022-11-19",
       "voters_total": 23313,
       "ethnic": {
-        "ethnic_malay": 20372,
-        "ethnic_chinese": 1681,
-        "ethnic_indian": 1024,
+        "ethnic_malay": 20369,
+        "ethnic_chinese": 1680,
+        "ethnic_indian": 1026,
         "ethnic_bumi_sabah": 18,
         "ethnic_bumi_sarawak": 20,
         "ethnic_orang_asli": 2,
-        "ethnic_other": 196
+        "ethnic_other": 198
       }
     },
     "N.19": {
@@ -260,13 +260,13 @@
       "date": "2022-11-19",
       "voters_total": 52151,
       "ethnic": {
-        "ethnic_malay": 19269,
-        "ethnic_chinese": 29341,
-        "ethnic_indian": 2642,
+        "ethnic_malay": 19268,
+        "ethnic_chinese": 29342,
+        "ethnic_indian": 2643,
         "ethnic_bumi_sabah": 151,
         "ethnic_bumi_sarawak": 134,
         "ethnic_orang_asli": 7,
-        "ethnic_other": 607
+        "ethnic_other": 606
       }
     },
     "N.20": {
@@ -275,8 +275,8 @@
       "voters_total": 34949,
       "ethnic": {
         "ethnic_malay": 6563,
-        "ethnic_chinese": 26787,
-        "ethnic_indian": 1235,
+        "ethnic_chinese": 26772,
+        "ethnic_indian": 1250,
         "ethnic_bumi_sabah": 75,
         "ethnic_bumi_sarawak": 32,
         "ethnic_orang_asli": 3,
@@ -289,12 +289,12 @@
       "voters_total": 24506,
       "ethnic": {
         "ethnic_malay": 15139,
-        "ethnic_chinese": 7842,
-        "ethnic_indian": 1197,
+        "ethnic_chinese": 7840,
+        "ethnic_indian": 1198,
         "ethnic_bumi_sabah": 44,
         "ethnic_bumi_sarawak": 19,
         "ethnic_orang_asli": 1,
-        "ethnic_other": 264
+        "ethnic_other": 265
       }
     },
     "N.22": {
@@ -302,13 +302,13 @@
       "date": "2022-11-19",
       "voters_total": 24421,
       "ethnic": {
-        "ethnic_malay": 3143,
-        "ethnic_chinese": 17894,
-        "ethnic_indian": 1566,
+        "ethnic_malay": 3137,
+        "ethnic_chinese": 17891,
+        "ethnic_indian": 1578,
         "ethnic_bumi_sabah": 91,
         "ethnic_bumi_sarawak": 65,
-        "ethnic_orang_asli": 6,
-        "ethnic_other": 1656
+        "ethnic_orang_asli": 5,
+        "ethnic_other": 1654
       }
     },
     "N.23": {
@@ -316,13 +316,13 @@
       "date": "2022-11-19",
       "voters_total": 28113,
       "ethnic": {
-        "ethnic_malay": 20162,
-        "ethnic_chinese": 6878,
-        "ethnic_indian": 606,
+        "ethnic_malay": 20164,
+        "ethnic_chinese": 6876,
+        "ethnic_indian": 608,
         "ethnic_bumi_sabah": 32,
         "ethnic_bumi_sarawak": 29,
         "ethnic_orang_asli": 2,
-        "ethnic_other": 404
+        "ethnic_other": 402
       }
     },
     "N.24": {
@@ -330,9 +330,9 @@
       "date": "2022-11-19",
       "voters_total": 24689,
       "ethnic": {
-        "ethnic_malay": 14949,
-        "ethnic_chinese": 5213,
-        "ethnic_indian": 4271,
+        "ethnic_malay": 14950,
+        "ethnic_chinese": 5209,
+        "ethnic_indian": 4274,
         "ethnic_bumi_sabah": 25,
         "ethnic_bumi_sarawak": 21,
         "ethnic_orang_asli": 22,
@@ -344,9 +344,9 @@
       "date": "2022-11-19",
       "voters_total": 17256,
       "ethnic": {
-        "ethnic_malay": 11419,
+        "ethnic_malay": 11418,
         "ethnic_chinese": 3268,
-        "ethnic_indian": 2311,
+        "ethnic_indian": 2312,
         "ethnic_bumi_sabah": 12,
         "ethnic_bumi_sarawak": 13,
         "ethnic_orang_asli": 102,
@@ -358,9 +358,9 @@
       "date": "2022-11-19",
       "voters_total": 20440,
       "ethnic": {
-        "ethnic_malay": 18424,
+        "ethnic_malay": 18422,
         "ethnic_chinese": 1154,
-        "ethnic_indian": 620,
+        "ethnic_indian": 622,
         "ethnic_bumi_sabah": 16,
         "ethnic_bumi_sarawak": 12,
         "ethnic_orang_asli": 4,
@@ -373,8 +373,8 @@
       "voters_total": 18469,
       "ethnic": {
         "ethnic_malay": 12932,
-        "ethnic_chinese": 3189,
-        "ethnic_indian": 2180,
+        "ethnic_chinese": 3188,
+        "ethnic_indian": 2181,
         "ethnic_bumi_sabah": 20,
         "ethnic_bumi_sarawak": 20,
         "ethnic_orang_asli": 7,
@@ -386,13 +386,13 @@
       "date": "2022-11-19",
       "voters_total": 15354,
       "ethnic": {
-        "ethnic_malay": 12929,
-        "ethnic_chinese": 2020,
-        "ethnic_indian": 312,
+        "ethnic_malay": 12931,
+        "ethnic_chinese": 2019,
+        "ethnic_indian": 314,
         "ethnic_bumi_sabah": 20,
         "ethnic_bumi_sarawak": 4,
         "ethnic_orang_asli": 4,
-        "ethnic_other": 65
+        "ethnic_other": 62
       }
     }
   }
